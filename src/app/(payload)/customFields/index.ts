@@ -1,0 +1,1 @@
+export { CustomSlugField } from "./slug";
