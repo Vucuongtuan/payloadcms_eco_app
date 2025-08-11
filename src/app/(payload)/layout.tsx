@@ -1,7 +1,9 @@
 /* THIS FILE WAS GENERATED AUTOMATICALLY BY PAYLOAD. */
 import "@payloadcms/next/css";
 import "./custom.scss";
+import "./payloadStyles.css"; // Import Payload styles
 
+// ---- End Css Import ---- //
 // import "@/app/globals.css";
 import React from "react";
 

@@ -1,11 +1,10 @@
-import { unique } from "next/dist/build/utils";
-import { CollectionConfig } from "payload";
+import { CollectionConfig } from 'payload';
 
-import { CustomSlugField } from "@/app/(payload)/customFields";
-import { SlugFields } from "@/components/fields/Slug";
+import { baseField } from '../../customFields/baseField';
 
 export const Categories: CollectionConfig = {
   slug: "category",
+  folders: true,
   labels: {
     singular: {
       en: "Category",
@@ -23,17 +22,7 @@ export const Categories: CollectionConfig = {
     delete: () => true
   },
   fields: [
-    {
-      name: "title",
-      label: {
-        en: "Title ",
-        vi: "Tiêu đề "
-      },
-      type: "text",
-      required: true,
-      unique: true
-    },
-    CustomSlugField
+    ...baseField
     // { ...CustomSlugField }
   ]
 };
