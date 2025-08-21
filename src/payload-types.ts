@@ -69,7 +69,12 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
-    category: Category;
+    categories: Category;
+    subcategories: Subcategory;
+    products: Product;
+    tags: Tag;
+    brands: Brand;
+    search: Search;
     'payload-folders': FolderInterface;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -77,13 +82,18 @@ export interface Config {
   };
   collectionsJoins: {
     'payload-folders': {
-      documentsAndFolders: 'payload-folders' | 'category';
+      documentsAndFolders: 'payload-folders' | 'media' | 'categories' | 'subcategories' | 'products';
     };
   };
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
-    category: CategorySelect<false> | CategorySelect<true>;
+    categories: CategoriesSelect<false> | CategoriesSelect<true>;
+    subcategories: SubcategoriesSelect<false> | SubcategoriesSelect<true>;
+    products: ProductsSelect<false> | ProductsSelect<true>;
+    tags: TagsSelect<false> | TagsSelect<true>;
+    brands: BrandsSelect<false> | BrandsSelect<true>;
+    search: SearchSelect<false> | SearchSelect<true>;
     'payload-folders': PayloadFoldersSelect<false> | PayloadFoldersSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -94,7 +104,7 @@ export interface Config {
   };
   globals: {};
   globalsSelect: {};
-  locale: null;
+  locale: 'vi' | 'en';
   user: User & {
     collection: 'users';
   };
@@ -155,6 +165,7 @@ export interface Media {
   id: number;
   alt: string;
   prefix?: string | null;
+  folder?: (number | null) | FolderInterface;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -195,15 +206,52 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "category".
+ * via the `definition` "payload-folders".
+ */
+export interface FolderInterface {
+  id: number;
+  name: string;
+  folder?: (number | null) | FolderInterface;
+  documentsAndFolders?: {
+    docs?: (
+      | {
+          relationTo?: 'payload-folders';
+          value: number | FolderInterface;
+        }
+      | {
+          relationTo?: 'media';
+          value: number | Media;
+        }
+      | {
+          relationTo?: 'categories';
+          value: number | Category;
+        }
+      | {
+          relationTo?: 'subcategories';
+          value: number | Subcategory;
+        }
+      | {
+          relationTo?: 'products';
+          value: number | Product;
+        }
+    )[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  folderType?: ('media' | 'categories' | 'subcategories' | 'products')[] | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "categories".
  */
 export interface Category {
   id: number;
   title: string;
-  /**
-   * Slug will be generated from title when save
-   */
-  slug: string;
+  description?: string | null;
+  slug?: string | null;
+  slugLock?: boolean | null;
   meta?: {
     title?: string | null;
     description?: string | null;
@@ -218,27 +266,123 @@ export interface Category {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "payload-folders".
+ * via the `definition` "subcategories".
  */
-export interface FolderInterface {
+export interface Subcategory {
   id: number;
-  name: string;
-  folder?: (number | null) | FolderInterface;
-  documentsAndFolders?: {
-    docs?: (
-      | {
-          relationTo?: 'payload-folders';
-          value: number | FolderInterface;
-        }
-      | {
-          relationTo?: 'category';
-          value: number | Category;
-        }
-    )[];
-    hasNextPage?: boolean;
-    totalDocs?: number;
+  title: string;
+  description?: string | null;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  category: number | Category;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
   };
-  folderType?: 'category'[] | null;
+  folder?: (number | null) | FolderInterface;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products".
+ */
+export interface Product {
+  id: number;
+  title: string;
+  description?: string | null;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  category: number | Category;
+  subCategory?: (number | Subcategory)[] | null;
+  brands?: (number | Brand)[] | null;
+  /**
+   * Enter the price in VND only, other currencies will be automatically converted based on the exchange rates defined in GlobalSetting.
+   */
+  pricing: {
+    price: number;
+    discount: number;
+    total: string;
+  };
+  image: number | Media;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+  };
+  folder?: (number | null) | FolderInterface;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "brands".
+ */
+export interface Brand {
+  id: number;
+  title: string;
+  description?: string | null;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  location?: string | null;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tags".
+ */
+export interface Tag {
+  id: number;
+  title: string;
+  description?: string | null;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This is a collection of automatically created search results. These results are used by the global site search and will be updated automatically as documents in the CMS are created or updated.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "search".
+ */
+export interface Search {
+  id: number;
+  title?: string | null;
+  priority?: number | null;
+  doc:
+    | {
+        relationTo: 'categories';
+        value: number | Category;
+      }
+    | {
+        relationTo: 'subcategories';
+        value: number | Subcategory;
+      }
+    | {
+        relationTo: 'products';
+        value: number | Product;
+      }
+    | {
+        relationTo: 'brands';
+        value: number | Brand;
+      };
   updatedAt: string;
   createdAt: string;
 }
@@ -258,8 +402,28 @@ export interface PayloadLockedDocument {
         value: number | Media;
       } | null)
     | ({
-        relationTo: 'category';
+        relationTo: 'categories';
         value: number | Category;
+      } | null)
+    | ({
+        relationTo: 'subcategories';
+        value: number | Subcategory;
+      } | null)
+    | ({
+        relationTo: 'products';
+        value: number | Product;
+      } | null)
+    | ({
+        relationTo: 'tags';
+        value: number | Tag;
+      } | null)
+    | ({
+        relationTo: 'brands';
+        value: number | Brand;
+      } | null)
+    | ({
+        relationTo: 'search';
+        value: number | Search;
       } | null)
     | ({
         relationTo: 'payload-folders';
@@ -338,6 +502,7 @@ export interface UsersSelect<T extends boolean = true> {
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
   prefix?: T;
+  folder?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -386,11 +551,13 @@ export interface MediaSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "category_select".
+ * via the `definition` "categories_select".
  */
-export interface CategorySelect<T extends boolean = true> {
+export interface CategoriesSelect<T extends boolean = true> {
   title?: T;
+  description?: T;
   slug?: T;
+  slugLock?: T;
   meta?:
     | T
     | {
@@ -399,6 +566,101 @@ export interface CategorySelect<T extends boolean = true> {
         image?: T;
       };
   folder?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "subcategories_select".
+ */
+export interface SubcategoriesSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  slug?: T;
+  slugLock?: T;
+  category?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
+  folder?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products_select".
+ */
+export interface ProductsSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  slug?: T;
+  slugLock?: T;
+  category?: T;
+  subCategory?: T;
+  brands?: T;
+  pricing?:
+    | T
+    | {
+        price?: T;
+        discount?: T;
+        total?: T;
+      };
+  image?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
+  folder?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tags_select".
+ */
+export interface TagsSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  slug?: T;
+  slugLock?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "brands_select".
+ */
+export interface BrandsSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  slug?: T;
+  slugLock?: T;
+  location?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "search_select".
+ */
+export interface SearchSelect<T extends boolean = true> {
+  title?: T;
+  priority?: T;
+  doc?: T;
   updatedAt?: T;
   createdAt?: T;
 }

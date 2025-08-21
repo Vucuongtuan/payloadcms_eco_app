@@ -1,28 +1,52 @@
-import { CollectionConfig } from 'payload';
+import { CollectionConfig } from "payload";
 
-import { baseField } from '../../customFields/baseField';
+import { baseField } from "../../fields/baseField";
+import generateSlugForTitle from "../../hooks/genarateSlugForTitle";
 
 export const Categories: CollectionConfig = {
-  slug: "category",
+  slug: "categories",
   folders: true,
   labels: {
     singular: {
-      en: "Category",
-      vi: "Danh mục"
+      en: "Categories",
+      vi: "Danh mục",
     },
     plural: {
       en: "Categories",
-      vi: "Danh mục"
-    }
+      vi: "Danh mục",
+    },
+  },
+  admin: {
+    useAsTitle: "title",
+    group: {
+      vi: "Danh mục",
+      en: "Categories",
+    },
   },
   access: {
     read: () => true,
     create: () => true,
     update: () => true,
-    delete: () => true
+    delete: () => true,
+  },
+  // defaultSort: "title",
+  // defaultPopulate: ["title", "description", "slug"],
+  // defaultPopulate: ["title", "description", "slug"],
+  hooks: {
+    // beforeChange: [generateSlugForTitle],
   },
   fields: [
-    ...baseField
+    ...baseField,
+    // {
+    //   name: "breadcrumbs",
+    //   type: "ui",
+    //   admin: {
+    //     components: {
+    //       Field:
+    //         "@/app/(payload)/customFields/breadcrumbs/breadcrumbsUI#BreadcrumbsUI"
+    //     }
+    //   }
+    // }
     // { ...CustomSlugField }
-  ]
+  ],
 };
