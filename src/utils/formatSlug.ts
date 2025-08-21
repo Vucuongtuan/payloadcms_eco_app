@@ -1,4 +1,6 @@
-export default const formatSlug = (val: string): string => {
+import { FieldHook } from "payload";
+
+export const formatSlug = (val: string): string => {
   if (!val) return "";
   return val
     .toString()
@@ -12,3 +14,21 @@ export default const formatSlug = (val: string): string => {
     .replace(/^-+/, "")
     .replace(/-+$/, "");
 };
+
+export const formatSlugHook =
+  (fallback: string): FieldHook =>
+  ({ data, operation, value }) => {
+    if (typeof value === "string") {
+      return formatSlug(value);
+    }
+
+    if (operation === "create" || data?.slug === undefined) {
+      const fallbackData = data?.[fallback];
+
+      if (typeof fallbackData === "string") {
+        return formatSlug(fallbackData);
+      }
+    }
+
+    return value;
+  };
