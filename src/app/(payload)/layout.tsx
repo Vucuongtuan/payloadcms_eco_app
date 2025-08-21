@@ -1,7 +1,7 @@
 /* THIS FILE WAS GENERATED AUTOMATICALLY BY PAYLOAD. */
 import "@payloadcms/next/css";
 import "./custom.scss";
-import "./payloadStyles.css"; // Import Payload styles
+import "./payloadStyles.scss"; // Import Payload styles
 
 // ---- End Css Import ---- //
 // import "@/app/globals.css";
@@ -11,6 +11,9 @@ import React from "react";
 import config from "@payload-config";
 import { handleServerFunctions, RootLayout } from "@payloadcms/next/layouts";
 
+// feature experimental
+import { unstable_ViewTransition as ViewTransition } from "react";
+//---
 import { importMap } from "./admin/importMap.js";
 
 import type { ServerFunctionClient } from "payload";
@@ -23,7 +26,7 @@ const serverFunction: ServerFunctionClient = async function (args) {
   return handleServerFunctions({
     ...args,
     config,
-    importMap
+    importMap,
   });
 };
 
@@ -33,7 +36,7 @@ const Layout = ({ children }: Args) => (
     importMap={importMap}
     serverFunction={serverFunction}
   >
-    {children}
+    <ViewTransition>{children}</ViewTransition>
   </RootLayout>
 );
 

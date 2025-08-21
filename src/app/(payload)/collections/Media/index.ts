@@ -1,9 +1,9 @@
-import type { CollectionConfig, ImageSize } from "payload";
-import { renameFileBeforeChange } from "./hooks/renameFileBeforChange";
+import type { CollectionConfig } from "payload";
 import { MediaDoc } from "./types";
 
 export const Media: CollectionConfig = {
   slug: "media",
+  folders: true,
   labels: {
     singular: {
       en: "Media",
