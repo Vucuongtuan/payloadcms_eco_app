@@ -74,6 +74,13 @@ export interface Config {
     products: Product;
     tags: Tag;
     brands: Brand;
+    orders: Order;
+    reviews: Review;
+    'product-variants': ProductVariant;
+    newsletter: Newsletter;
+    'email-subscribe': EmailSubscribe;
+    pages: Page;
+    posts: Post;
     search: Search;
     'payload-folders': FolderInterface;
     'payload-locked-documents': PayloadLockedDocument;
@@ -82,7 +89,7 @@ export interface Config {
   };
   collectionsJoins: {
     'payload-folders': {
-      documentsAndFolders: 'payload-folders' | 'media' | 'categories' | 'subcategories' | 'products';
+      documentsAndFolders: 'payload-folders' | 'media' | 'categories' | 'subcategories' | 'products' | 'pages';
     };
   };
   collectionsSelect: {
@@ -93,6 +100,13 @@ export interface Config {
     products: ProductsSelect<false> | ProductsSelect<true>;
     tags: TagsSelect<false> | TagsSelect<true>;
     brands: BrandsSelect<false> | BrandsSelect<true>;
+    orders: OrdersSelect<false> | OrdersSelect<true>;
+    reviews: ReviewsSelect<false> | ReviewsSelect<true>;
+    'product-variants': ProductVariantsSelect<false> | ProductVariantsSelect<true>;
+    newsletter: NewsletterSelect<false> | NewsletterSelect<true>;
+    'email-subscribe': EmailSubscribeSelect<false> | EmailSubscribeSelect<true>;
+    pages: PagesSelect<false> | PagesSelect<true>;
+    posts: PostsSelect<false> | PostsSelect<true>;
     search: SearchSelect<false> | SearchSelect<true>;
     'payload-folders': PayloadFoldersSelect<false> | PayloadFoldersSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -102,8 +116,12 @@ export interface Config {
   db: {
     defaultIDType: number;
   };
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    menu: Menu;
+  };
+  globalsSelect: {
+    menu: MenuSelect<false> | MenuSelect<true>;
+  };
   locale: 'vi' | 'en';
   user: User & {
     collection: 'users';
@@ -164,7 +182,6 @@ export interface User {
 export interface Media {
   id: number;
   alt: string;
-  prefix?: string | null;
   folder?: (number | null) | FolderInterface;
   updatedAt: string;
   createdAt: string;
@@ -234,11 +251,15 @@ export interface FolderInterface {
           relationTo?: 'products';
           value: number | Product;
         }
+      | {
+          relationTo?: 'pages';
+          value: number | Page;
+        }
     )[];
     hasNextPage?: boolean;
     totalDocs?: number;
   };
-  folderType?: ('media' | 'categories' | 'subcategories' | 'products')[] | null;
+  folderType?: ('media' | 'categories' | 'subcategories' | 'products' | 'pages')[] | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -293,22 +314,72 @@ export interface Subcategory {
  */
 export interface Product {
   id: number;
+  productType?: ('simple' | 'variable') | null;
+  views?: number | null;
+  sales?: number | null;
   title: string;
   description?: string | null;
+  layout?:
+    | {
+        content?: {
+          root: {
+            type: string;
+            children: {
+              type: string;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'richText';
+      }[]
+    | null;
+  specifications?:
+    | {
+        key: string;
+        value: string;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'specItem';
+      }[]
+    | null;
+  gallery?:
+    | {
+        image: number | Media;
+        caption?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  status?: ('draft' | 'published' | 'out-of-stock' | 'archived') | null;
   slug?: string | null;
   slugLock?: boolean | null;
-  category: number | Category;
-  subCategory?: (number | Subcategory)[] | null;
-  brands?: (number | Brand)[] | null;
+  image: number | Media;
+  taxonomies: {
+    brands?: (number | Brand)[] | null;
+    category: number | Category;
+    subCategory?: (number | Subcategory)[] | null;
+    tags?: (number | Tag)[] | null;
+  };
   /**
    * Enter the price in VND only, other currencies will be automatically converted based on the exchange rates defined in GlobalSetting.
    */
-  pricing: {
+  pricing?: {
     price: number;
     discount: number;
     total: string;
   };
-  image: number | Media;
+  inventory?: {
+    sku?: string | null;
+    stock?: number | null;
+  };
+  variants?: (number | ProductVariant)[] | null;
   meta?: {
     title?: string | null;
     description?: string | null;
@@ -357,6 +428,193 @@ export interface Tag {
   createdAt: string;
 }
 /**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "product-variants".
+ */
+export interface ProductVariant {
+  id: number;
+  /**
+   * Ví dụ: 'Màu Đỏ / Layout 100%' hoặc 'Bản 256GB màu Titan'
+   */
+  name: string;
+  product: number | Product;
+  status?: ('draft' | 'published' | 'out-of-stock' | 'archived') | null;
+  price: number;
+  options?:
+    | {
+        /**
+         * Ví dụ: 'Màu sắc', 'Dung lượng', 'Layout'
+         */
+        option: string;
+        /**
+         * Ví dụ: 'Đỏ', '256GB', '100%'
+         */
+        value: string;
+        id?: string | null;
+      }[]
+    | null;
+  inventory?: {
+    sku?: string | null;
+    stock?: number | null;
+  };
+  gallery?:
+    | {
+        image: number | Media;
+        caption?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages".
+ */
+export interface Page {
+  id: number;
+  title: string;
+  description?: string | null;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  blocks?: AnnouncementBar[] | null;
+  folder?: (number | null) | FolderInterface;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "Announcement Bar".
+ */
+export interface AnnouncementBar {
+  options?: ('announcement' | 'static') | null;
+  backgroundColor?: string | null;
+  title?: string | null;
+  content?:
+    | {
+        title?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'announcementBar';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "orders".
+ */
+export interface Order {
+  id: number;
+  user: number | User;
+  items?:
+    | {
+        product: number | Product;
+        variant?: (number | null) | ProductVariant;
+        quantity: number;
+        /**
+         * Giá của sản phẩm tại thời điểm đặt hàng.
+         */
+        price?: number | null;
+        id?: string | null;
+      }[]
+    | null;
+  total: number;
+  status?: ('pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled') | null;
+  shippingAddress: {
+    fullName: string;
+    phone: string;
+    address: string;
+    city: string;
+    country: string;
+  };
+  paymentMethod?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "reviews".
+ */
+export interface Review {
+  id: number;
+  user: number | User;
+  product: number | Product;
+  rating: number;
+  comment?: string | null;
+  approved?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "newsletter".
+ */
+export interface Newsletter {
+  id: number;
+  listEmail?: (number | null) | EmailSubscribe;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "email-subscribe".
+ */
+export interface EmailSubscribe {
+  id: number;
+  email: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "posts".
+ */
+export interface Post {
+  id: number;
+  title?: string | null;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  content?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  image: number | Media;
+  linkedProducts?:
+    | (
+        | {
+            relationTo: 'products';
+            value: number | Product;
+          }
+        | {
+            relationTo: 'brands';
+            value: number | Brand;
+          }
+      )[]
+    | null;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This is a collection of automatically created search results. These results are used by the global site search and will be updated automatically as documents in the CMS are created or updated.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -382,6 +640,10 @@ export interface Search {
     | {
         relationTo: 'brands';
         value: number | Brand;
+      }
+    | {
+        relationTo: 'posts';
+        value: number | Post;
       };
   updatedAt: string;
   createdAt: string;
@@ -420,6 +682,34 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'brands';
         value: number | Brand;
+      } | null)
+    | ({
+        relationTo: 'orders';
+        value: number | Order;
+      } | null)
+    | ({
+        relationTo: 'reviews';
+        value: number | Review;
+      } | null)
+    | ({
+        relationTo: 'product-variants';
+        value: number | ProductVariant;
+      } | null)
+    | ({
+        relationTo: 'newsletter';
+        value: number | Newsletter;
+      } | null)
+    | ({
+        relationTo: 'email-subscribe';
+        value: number | EmailSubscribe;
+      } | null)
+    | ({
+        relationTo: 'pages';
+        value: number | Page;
+      } | null)
+    | ({
+        relationTo: 'posts';
+        value: number | Post;
       } | null)
     | ({
         relationTo: 'search';
@@ -501,7 +791,6 @@ export interface UsersSelect<T extends boolean = true> {
  */
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
-  prefix?: T;
   folder?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -595,13 +884,53 @@ export interface SubcategoriesSelect<T extends boolean = true> {
  * via the `definition` "products_select".
  */
 export interface ProductsSelect<T extends boolean = true> {
+  productType?: T;
+  views?: T;
+  sales?: T;
   title?: T;
   description?: T;
+  layout?:
+    | T
+    | {
+        richText?:
+          | T
+          | {
+              content?: T;
+              id?: T;
+              blockName?: T;
+            };
+      };
+  specifications?:
+    | T
+    | {
+        specItem?:
+          | T
+          | {
+              key?: T;
+              value?: T;
+              id?: T;
+              blockName?: T;
+            };
+      };
+  gallery?:
+    | T
+    | {
+        image?: T;
+        caption?: T;
+        id?: T;
+      };
+  status?: T;
   slug?: T;
   slugLock?: T;
-  category?: T;
-  subCategory?: T;
-  brands?: T;
+  image?: T;
+  taxonomies?:
+    | T
+    | {
+        brands?: T;
+        category?: T;
+        subCategory?: T;
+        tags?: T;
+      };
   pricing?:
     | T
     | {
@@ -609,7 +938,13 @@ export interface ProductsSelect<T extends boolean = true> {
         discount?: T;
         total?: T;
       };
-  image?: T;
+  inventory?:
+    | T
+    | {
+        sku?: T;
+        stock?: T;
+      };
+  variants?: T;
   meta?:
     | T
     | {
@@ -643,6 +978,155 @@ export interface BrandsSelect<T extends boolean = true> {
   slug?: T;
   slugLock?: T;
   location?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "orders_select".
+ */
+export interface OrdersSelect<T extends boolean = true> {
+  user?: T;
+  items?:
+    | T
+    | {
+        product?: T;
+        variant?: T;
+        quantity?: T;
+        price?: T;
+        id?: T;
+      };
+  total?: T;
+  status?: T;
+  shippingAddress?:
+    | T
+    | {
+        fullName?: T;
+        phone?: T;
+        address?: T;
+        city?: T;
+        country?: T;
+      };
+  paymentMethod?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "reviews_select".
+ */
+export interface ReviewsSelect<T extends boolean = true> {
+  user?: T;
+  product?: T;
+  rating?: T;
+  comment?: T;
+  approved?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "product-variants_select".
+ */
+export interface ProductVariantsSelect<T extends boolean = true> {
+  name?: T;
+  product?: T;
+  status?: T;
+  price?: T;
+  options?:
+    | T
+    | {
+        option?: T;
+        value?: T;
+        id?: T;
+      };
+  inventory?:
+    | T
+    | {
+        sku?: T;
+        stock?: T;
+      };
+  gallery?:
+    | T
+    | {
+        image?: T;
+        caption?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "newsletter_select".
+ */
+export interface NewsletterSelect<T extends boolean = true> {
+  listEmail?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "email-subscribe_select".
+ */
+export interface EmailSubscribeSelect<T extends boolean = true> {
+  email?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages_select".
+ */
+export interface PagesSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  slug?: T;
+  slugLock?: T;
+  blocks?:
+    | T
+    | {
+        announcementBar?: T | AnnouncementBarSelect<T>;
+      };
+  folder?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "Announcement Bar_select".
+ */
+export interface AnnouncementBarSelect {
+  options?: boolean;
+  backgroundColor?: boolean;
+  title?: boolean;
+  content?:
+    | boolean
+    | {
+        title?: boolean;
+        id?: boolean;
+      };
+  id?: boolean;
+  blockName?: boolean;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "posts_select".
+ */
+export interface PostsSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  slugLock?: T;
+  content?: T;
+  image?: T;
+  linkedProducts?: T;
   meta?:
     | T
     | {
@@ -707,6 +1191,166 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "menu".
+ */
+export interface Menu {
+  id: number;
+  header?: {
+    logo?: (number | null) | Media;
+    navItems?:
+      | {
+          /**
+           * Choose whether this is an internal or external link
+           */
+          checkTypeLink?: ('internal' | 'external') | null;
+          /**
+           * Check if this item opens the document in a new window or tab
+           */
+          isblank?: boolean | null;
+          /**
+           * Enter the external URL to link to
+           */
+          link?: string | null;
+          /**
+           * Select an internal page or product to link to
+           */
+          localLink?: (number | null) | Page;
+          /**
+           * Add nested navigation items
+           */
+          children?:
+            | {
+                /**
+                 * Choose whether this is an internal or external link
+                 */
+                checkTypeLink?: ('internal' | 'external') | null;
+                /**
+                 * Check if this item opens the document in a new window or tab
+                 */
+                isblank?: boolean | null;
+                /**
+                 * Enter the external URL to link to
+                 */
+                link?: string | null;
+                /**
+                 * Select an internal page or product to link to
+                 */
+                localLink?: (number | null) | Page;
+                id?: string | null;
+              }[]
+            | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  footer?: {
+    logo?: (number | null) | Media;
+    navItems?:
+      | {
+          /**
+           * Choose whether this is an internal or external link
+           */
+          checkTypeLink?: ('internal' | 'external') | null;
+          /**
+           * Check if this item opens the document in a new window or tab
+           */
+          isblank?: boolean | null;
+          /**
+           * Enter the external URL to link to
+           */
+          link?: string | null;
+          /**
+           * Select an internal page or product to link to
+           */
+          localLink?: (number | null) | Page;
+          /**
+           * Add nested navigation items
+           */
+          children?:
+            | {
+                /**
+                 * Choose whether this is an internal or external link
+                 */
+                checkTypeLink?: ('internal' | 'external') | null;
+                /**
+                 * Check if this item opens the document in a new window or tab
+                 */
+                isblank?: boolean | null;
+                /**
+                 * Enter the external URL to link to
+                 */
+                link?: string | null;
+                /**
+                 * Select an internal page or product to link to
+                 */
+                localLink?: (number | null) | Page;
+                id?: string | null;
+              }[]
+            | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "menu_select".
+ */
+export interface MenuSelect<T extends boolean = true> {
+  header?:
+    | T
+    | {
+        logo?: T;
+        navItems?:
+          | T
+          | {
+              checkTypeLink?: T;
+              isblank?: T;
+              link?: T;
+              localLink?: T;
+              children?:
+                | T
+                | {
+                    checkTypeLink?: T;
+                    isblank?: T;
+                    link?: T;
+                    localLink?: T;
+                    id?: T;
+                  };
+              id?: T;
+            };
+      };
+  footer?:
+    | T
+    | {
+        logo?: T;
+        navItems?:
+          | T
+          | {
+              checkTypeLink?: T;
+              isblank?: T;
+              link?: T;
+              localLink?: T;
+              children?:
+                | T
+                | {
+                    checkTypeLink?: T;
+                    isblank?: T;
+                    link?: T;
+                    localLink?: T;
+                    id?: T;
+                  };
+              id?: T;
+            };
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
