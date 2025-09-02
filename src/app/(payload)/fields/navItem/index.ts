@@ -66,7 +66,7 @@ const getNavItemFields = (): Field[] => [
 ];
 
 // Create the main function that includes children
-export const navItem = (): Field[] => {
+export const navItem = ({isNav = true}:{isNav?:boolean}): Field[] => {
   const baseFields = getNavItemFields();
   
   const children: Field = {
@@ -81,6 +81,5 @@ export const navItem = (): Field[] => {
     },
     fields: getNavItemFields() 
   };
-
-  return [...baseFields, children];
+  return isNav ? [...baseFields, children] : baseFields;
 };

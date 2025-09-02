@@ -7,29 +7,29 @@ export const AnnouncementBar:Block={
     slug:"announcementBar",
     interfaceName:"Announcement Bar",
     fields:[
-        {
-            name:"options",
-            type:"select",
-            options:[
+         createBackgroundColorField({
+                    name:"backgroundColor",
+                    label:"Background Color",
+                }),
                 {
-                    label:"Announcement",
-                    value:"announcement"
-                },{
-                    label:"Static",
-                    value:"static"
-                }
-            ],
-            defaultValue:"static"
-        },
-       createBackgroundColorField({
-            name:"backgroundColor",
-            label:"Background Color",
-        }),
+                    name:"options",
+                    type:"select",
+                    options:[
+                        {
+                            label:"Announcement",
+                            value:"announcement"
+                        },{
+                            label:"Static",
+                            value:"static"
+                        }
+                    ],
+                    defaultValue:"static"
+                },
         {
             name:"title",
             type:"text",
             admin:{
-                condition:(data)=>data.siblingData.options==="static"
+                condition:(_,siblingData)=>siblingData?.options==="static"
             }
         },
         {
@@ -42,7 +42,7 @@ export const AnnouncementBar:Block={
                }
             ],
             admin:{
-                condition:(data)=>data.siblingData.options==="announcement"
+                condition:(_,siblingData)=>siblingData?.options==="announcement"
             }
         }
     ]

@@ -1,6 +1,6 @@
 import { CollectionConfig } from "payload";
 import { baseField } from "../../fields/baseField";
-import { AnnouncementBar } from "../../blocks/AnnouncementBar";
+import { Hero,AnnouncementBar, ModalBlock } from "../../blocks";
 
 export const Pages: CollectionConfig = {
   slug: "pages",
@@ -25,7 +25,7 @@ export const Pages: CollectionConfig = {
     {
       name:"blocks",
       type:"blocks",
-      blocks:[AnnouncementBar]
+      blocks:[AnnouncementBar,Hero,ModalBlock]
     }
   ],
 };

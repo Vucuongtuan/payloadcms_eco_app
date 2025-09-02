@@ -20,7 +20,7 @@ const createMenuTab = ({ label, name }: MenuFieldProps): Tab => ({
       name: "navItems",
       type: "array",
       label: "Navigation Items",
-      fields: navItem()
+      fields: navItem({isNav: true})
     }
   ]
 });

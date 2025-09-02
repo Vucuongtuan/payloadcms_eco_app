@@ -477,7 +477,33 @@ export interface Page {
   description?: string | null;
   slug?: string | null;
   slugLock?: boolean | null;
-  blocks?: AnnouncementBar[] | null;
+  blocks?:
+    | (
+        | AnnouncementBar
+        | Hero
+        | {
+            title?: string | null;
+            content?: {
+              root: {
+                type: string;
+                children: {
+                  type: string;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'modal';
+          }
+      )[]
+    | null;
   folder?: (number | null) | FolderInterface;
   updatedAt: string;
   createdAt: string;
@@ -487,8 +513,8 @@ export interface Page {
  * via the `definition` "Announcement Bar".
  */
 export interface AnnouncementBar {
-  options?: ('announcement' | 'static') | null;
   backgroundColor?: string | null;
+  options?: ('announcement' | 'static') | null;
   title?: string | null;
   content?:
     | {
@@ -499,6 +525,38 @@ export interface AnnouncementBar {
   id?: string | null;
   blockName?: string | null;
   blockType: 'announcementBar';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "Hero".
+ */
+export interface Hero {
+  gallery?:
+    | {
+        image: number | Media;
+        caption?: string | null;
+        /**
+         * Choose whether this is an internal or external link
+         */
+        checkTypeLink?: ('internal' | 'external') | null;
+        /**
+         * Check if this item opens the document in a new window or tab
+         */
+        isblank?: boolean | null;
+        /**
+         * Enter the external URL to link to
+         */
+        link?: string | null;
+        /**
+         * Select an internal page or product to link to
+         */
+        localLink?: (number | null) | Page;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'hero';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1094,6 +1152,15 @@ export interface PagesSelect<T extends boolean = true> {
     | T
     | {
         announcementBar?: T | AnnouncementBarSelect<T>;
+        hero?: T | HeroSelect<T>;
+        modal?:
+          | T
+          | {
+              title?: T;
+              content?: T;
+              id?: T;
+              blockName?: T;
+            };
       };
   folder?: T;
   updatedAt?: T;
@@ -1104,8 +1171,8 @@ export interface PagesSelect<T extends boolean = true> {
  * via the `definition` "Announcement Bar_select".
  */
 export interface AnnouncementBarSelect {
-  options?: boolean;
   backgroundColor?: boolean;
+  options?: boolean;
   title?: boolean;
   content?:
     | boolean
@@ -1115,6 +1182,25 @@ export interface AnnouncementBarSelect {
       };
   id?: boolean;
   blockName?: boolean;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "Hero_select".
+ */
+export interface HeroSelect<T extends boolean = true> {
+  gallery?:
+    | T
+    | {
+        image?: T;
+        caption?: T;
+        checkTypeLink?: T;
+        isblank?: T;
+        link?: T;
+        localLink?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
