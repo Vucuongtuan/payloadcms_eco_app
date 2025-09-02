@@ -83,6 +83,8 @@ export const Media: CollectionConfig = {
         width: 1600
       }
     ],
+    staticDir:"media",
+    staticURL:"/media",
     resizeOptions: {
       fit: "contain",
       withoutEnlargement: true

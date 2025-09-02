@@ -19,8 +19,8 @@ export const Categories: CollectionConfig = {
   admin: {
     useAsTitle: "title",
     group: {
-      vi: "Danh mục",
-      en: "Categories",
+      vi: "Sản phẩm",
+      en: "Products",
     },
   },
   access: {

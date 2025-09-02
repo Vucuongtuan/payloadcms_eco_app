@@ -51,9 +51,9 @@ export const SubCategories: CollectionConfig = {
   ],
   admin: {
     useAsTitle: "title",
-    group: {
-      vi: "Danh mục",
-      en: "Categories",
+     group: {
+      vi: "Sản phẩm",
+      en: "Products",
     },
   },
 };

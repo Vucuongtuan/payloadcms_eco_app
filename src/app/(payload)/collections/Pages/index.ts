@@ -1,5 +1,6 @@
 import { CollectionConfig } from "payload";
 import { baseField } from "../../fields/baseField";
+import { AnnouncementBar } from "../../blocks/AnnouncementBar";
 
 export const Pages: CollectionConfig = {
   slug: "pages",
@@ -20,5 +21,11 @@ export const Pages: CollectionConfig = {
     update: () => true,
     delete: () => true,
   },
-  fields: [...baseField],
+  fields: [...baseField,
+    {
+      name:"blocks",
+      type:"blocks",
+      blocks:[AnnouncementBar]
+    }
+  ],
 };
