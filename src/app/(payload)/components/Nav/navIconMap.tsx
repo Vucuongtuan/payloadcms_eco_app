@@ -24,16 +24,23 @@ import { ExoticComponent } from "react";
 export const navIconMap: Partial<
   Record<CollectionSlug | GlobalSlug, ExoticComponent<LucideProps>>
 > = {
+  users: User,
+  media: Image,
   categories: List,
   subcategories: ListCheck,
-  media: Image,
-  users: User,
   products: PackageSearch,
-  search: Search,
-  "payload-folders": Folder,
   tags: Hash,
-  // customers: User,
-  // posts: LayoutGrid,
+  brands: Star,
+  orders: TabletSmartphone,
+  reviews: Smile,
+  "product-variants": Percent,
+  newsletter: StickyNote,
+  "email-subscribe": Menu,
+  pages: LayoutGrid,
+  posts: BookCopy,
+  "payload-folders": Folder,
+  search: Search,
+  menu:Menu
 };
 
 export const getNavIcon = (slug: string) =>
