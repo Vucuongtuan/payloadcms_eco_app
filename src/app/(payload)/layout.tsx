@@ -36,7 +36,9 @@ const Layout = ({ children }: Args) => (
     importMap={importMap}
     serverFunction={serverFunction}
   >
-    <ViewTransition>{children}</ViewTransition>
+    <ViewTransition>
+      {children}
+    </ViewTransition>
   </RootLayout>
 );
 
