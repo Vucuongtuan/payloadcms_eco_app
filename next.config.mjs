@@ -1,11 +1,16 @@
 import { withPayload } from "@payloadcms/next/withPayload";
+import createNextIntlPlugin from 'next-intl/plugin';
 import path from "path";
+import { fileURLToPath } from "url";
+
 
 /// dev
-import { fileURLToPath } from "url";
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 ///-----
+const withNextIntl = createNextIntlPlugin();
+
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -43,10 +48,17 @@ const nextConfig = {
   //   return webpackConfig;
   // },
 
+  //Config I18n next-intl
+  // i18n: {
+  //   locales: ['vi', 'en'],
+  //   defaultLocale: 'vi',
+  // },
+
+
   sassOptions: {
     silenceDeprecations: ["import"],
     includePaths: [path.join(__dirname, "styles")],
   },
 };
 
-export default withPayload(nextConfig, { devBundleServerPackages: false });
+export default withNextIntl(withPayload(nextConfig));
