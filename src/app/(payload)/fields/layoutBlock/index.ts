@@ -1,5 +1,6 @@
 import { Field, Option, SelectField } from "payload";
 
+<<<<<<< HEAD
 const layoutOptions: Option[] = [
   {
     label: "grid",
@@ -10,6 +11,9 @@ const layoutOptions: Option[] = [
     value: "list",
   },
 ];
+=======
+const layoutOptions: Option[] = [];
+>>>>>>> 4544019ae85173e44fdbc8897c62b598e02bf364
 
 interface LayoutBlockOptions {
   name?: string;

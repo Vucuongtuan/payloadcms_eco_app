@@ -1363,6 +1363,7 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
  */
 export interface Setting {
   id: number;
+<<<<<<< HEAD
   nav?: {
     header?: {
       logo?: (number | null) | Media;
@@ -1478,14 +1479,122 @@ export interface Setting {
           }[]
         | null;
     };
+=======
+  header?: {
+    logo?: (number | null) | Media;
+    navItems?:
+      | {
+          /**
+           * Choose whether this is an internal or external link
+           */
+          checkTypeLink?: ('internal' | 'external') | null;
+          /**
+           * Check if this item opens the document in a new window or tab
+           */
+          isblank?: boolean | null;
+          /**
+           * Enter the name for the menu item
+           */
+          title?: string | null;
+          /**
+           * Enter the external URL to link to
+           */
+          link?: string | null;
+          /**
+           * Select an internal page or product to link to
+           */
+          localLink?: (number | null) | Page;
+          /**
+           * Add nested navigation items
+           */
+          children?:
+            | {
+                /**
+                 * Choose whether this is an internal or external link
+                 */
+                checkTypeLink?: ('internal' | 'external') | null;
+                /**
+                 * Check if this item opens the document in a new window or tab
+                 */
+                isblank?: boolean | null;
+                /**
+                 * Enter the name for the menu item
+                 */
+                title?: string | null;
+                /**
+                 * Enter the external URL to link to
+                 */
+                link?: string | null;
+                /**
+                 * Select an internal page or product to link to
+                 */
+                localLink?: (number | null) | Page;
+                id?: string | null;
+              }[]
+            | null;
+          id?: string | null;
+        }[]
+      | null;
+>>>>>>> 4544019ae85173e44fdbc8897c62b598e02bf364
   };
   announcement?: {
     transition?: ('blur' | 'slide-horizontal' | 'slide-vertical') | null;
     interval?: number | null;
     announcement?:
       | {
+<<<<<<< HEAD
           content?: string | null;
           link?: string | null;
+=======
+          /**
+           * Choose whether this is an internal or external link
+           */
+          checkTypeLink?: ('internal' | 'external') | null;
+          /**
+           * Check if this item opens the document in a new window or tab
+           */
+          isblank?: boolean | null;
+          /**
+           * Enter the name for the menu item
+           */
+          title?: string | null;
+          /**
+           * Enter the external URL to link to
+           */
+          link?: string | null;
+          /**
+           * Select an internal page or product to link to
+           */
+          localLink?: (number | null) | Page;
+          /**
+           * Add nested navigation items
+           */
+          children?:
+            | {
+                /**
+                 * Choose whether this is an internal or external link
+                 */
+                checkTypeLink?: ('internal' | 'external') | null;
+                /**
+                 * Check if this item opens the document in a new window or tab
+                 */
+                isblank?: boolean | null;
+                /**
+                 * Enter the name for the menu item
+                 */
+                title?: string | null;
+                /**
+                 * Enter the external URL to link to
+                 */
+                link?: string | null;
+                /**
+                 * Select an internal page or product to link to
+                 */
+                localLink?: (number | null) | Page;
+                id?: string | null;
+              }[]
+            | null;
+>>>>>>> 4544019ae85173e44fdbc8897c62b598e02bf364
           id?: string | null;
         }[]
       | null;
@@ -1504,9 +1613,18 @@ export interface SettingsSelect<T extends boolean = true> {
         header?:
           | T
           | {
+<<<<<<< HEAD
               logo?: T;
               logoDark?: T;
               navItems?:
+=======
+              checkTypeLink?: T;
+              isblank?: T;
+              title?: T;
+              link?: T;
+              localLink?: T;
+              children?:
+>>>>>>> 4544019ae85173e44fdbc8897c62b598e02bf364
                 | T
                 | {
                     checkTypeLink?: T;
@@ -1562,8 +1680,26 @@ export interface SettingsSelect<T extends boolean = true> {
         announcement?:
           | T
           | {
+<<<<<<< HEAD
               content?: T;
               link?: T;
+=======
+              checkTypeLink?: T;
+              isblank?: T;
+              title?: T;
+              link?: T;
+              localLink?: T;
+              children?:
+                | T
+                | {
+                    checkTypeLink?: T;
+                    isblank?: T;
+                    title?: T;
+                    link?: T;
+                    localLink?: T;
+                    id?: T;
+                  };
+>>>>>>> 4544019ae85173e44fdbc8897c62b598e02bf364
               id?: T;
             };
       };

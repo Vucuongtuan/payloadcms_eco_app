@@ -20,7 +20,11 @@ import { vi } from '@payloadcms/translations/languages/vi';
 
 import { Brands, Categories, EmailSubscribe, Media, Newsletter, Orders, Pages, Posts, Products, ProductVariants, Reviews, SubCategories, Tags, Users } from './app/(payload)/collections';
 import { defaultLexical } from './app/(payload)/fields/defaultLexical';
+<<<<<<< HEAD
 import { Settings } from './app/(payload)/globals';
+=======
+import { Menu } from './app/(payload)/globals';
+>>>>>>> 4544019ae85173e44fdbc8897c62b598e02bf364
 import { truncate } from './utils/truncateText';
 //---
 
@@ -41,7 +45,11 @@ const maxLengthSEO: Record<string, number> = {
   description: 150
 }
 const allCollections = [Users, Media, Categories, SubCategories, Products, Tags, Brands, Orders, Reviews, ProductVariants, Newsletter, EmailSubscribe, Pages, Posts];
+<<<<<<< HEAD
 const golobalCollections = [Settings]
+=======
+const golobalCollections = [Menu]
+>>>>>>> 4544019ae85173e44fdbc8897c62b598e02bf364
 const applySearchForCollection = ['categories', 'subcategories', 'products', 'brands', 'posts']
 const applySEOForCollection = ['categories', 'subcategories', 'products', 'brands', 'posts', 'pages']
 
@@ -188,6 +196,10 @@ export default buildConfig({
     //     docs.reduce((url, doc) => `${url}/${doc.slug}`, ''),
     // }),
     //Config vercel Blob Storage
+<<<<<<< HEAD
+=======
+
+>>>>>>> 4544019ae85173e44fdbc8897c62b598e02bf364
 
 
     // Config Stripe Plugin

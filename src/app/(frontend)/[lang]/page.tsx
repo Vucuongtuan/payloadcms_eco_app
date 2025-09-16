@@ -51,6 +51,7 @@ export default async function Page() {
 // Find all page for generateStatic side
 
 const findAllPages = async () => {
+<<<<<<< HEAD
   const [result, err] = await query(async (payload) => {
     const res = await payload.find({
       collection: "pages",
@@ -61,3 +62,15 @@ const findAllPages = async () => {
   if (err) throw err;
   return result;
 };
+=======
+    const [result, err] = await query(async (payload) => {
+        const res = await payload.find({
+            collection: "pages",
+            limit: 100,
+        });
+        return res.docs;
+    });
+    if (err) throw err;
+    return result;
+};
+>>>>>>> 4544019ae85173e44fdbc8897c62b598e02bf364

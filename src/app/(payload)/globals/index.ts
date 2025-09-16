@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { GlobalConfig, Tab } from "payload";
 import { navItem } from "../fields/navItem";
 import { revalidateGlobal } from "./hook/revalidateGlobal";
@@ -127,3 +128,6 @@ export const Settings: GlobalConfig = {
     },
   ],
 };
+=======
+export { Menu } from "./Menu";
+>>>>>>> 4544019ae85173e44fdbc8897c62b598e02bf364
