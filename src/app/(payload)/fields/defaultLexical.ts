@@ -10,7 +10,6 @@ export const defaultLexical: Config["editor"] = lexicalEditor({
   features: ({ defaultFeatures }) => {
     return [
       ...defaultFeatures,
-
       LinkFeature({
         enabledCollections: ["products"],
         fields: ({ defaultFields }) => {

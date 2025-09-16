@@ -117,10 +117,10 @@ export interface Config {
     defaultIDType: number;
   };
   globals: {
-    menu: Menu;
+    settings: Setting;
   };
   globalsSelect: {
-    menu: MenuSelect<false> | MenuSelect<true>;
+    settings: SettingsSelect<false> | SettingsSelect<true>;
   };
   locale: 'vi' | 'en';
   user: User & {
@@ -346,14 +346,26 @@ export interface Product {
         key: string;
         value: string;
         id?: string | null;
-        blockName?: string | null;
-        blockType: 'specItem';
       }[]
     | null;
   gallery?:
     | {
         image: number | Media;
-        caption?: string | null;
+        content?: {
+          root: {
+            type: string;
+            children: {
+              type: string;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
         id?: string | null;
       }[]
     | null;
@@ -460,7 +472,21 @@ export interface ProductVariant {
   gallery?:
     | {
         image: number | Media;
-        caption?: string | null;
+        content?: {
+          root: {
+            type: string;
+            children: {
+              type: string;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
         id?: string | null;
       }[]
     | null;
@@ -477,54 +503,18 @@ export interface Page {
   description?: string | null;
   slug?: string | null;
   slugLock?: boolean | null;
-  blocks?:
-    | (
-        | AnnouncementBar
-        | Hero
-        | {
-            title?: string | null;
-            content?: {
-              root: {
-                type: string;
-                children: {
-                  type: string;
-                  version: number;
-                  [k: string]: unknown;
-                }[];
-                direction: ('ltr' | 'rtl') | null;
-                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-                indent: number;
-                version: number;
-              };
-              [k: string]: unknown;
-            } | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'modal';
-          }
-      )[]
-    | null;
+  blocks?: (Hero | ModalBlock | NewProduct | CategoryProduct)[] | null;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+  };
   folder?: (number | null) | FolderInterface;
   updatedAt: string;
   createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "Announcement Bar".
- */
-export interface AnnouncementBar {
-  backgroundColor?: string | null;
-  options?: ('announcement' | 'static') | null;
-  title?: string | null;
-  content?:
-    | {
-        title?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'announcementBar';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -534,7 +524,21 @@ export interface Hero {
   gallery?:
     | {
         image: number | Media;
-        caption?: string | null;
+        content?: {
+          root: {
+            type: string;
+            children: {
+              type: string;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
         /**
          * Choose whether this is an internal or external link
          */
@@ -543,6 +547,10 @@ export interface Hero {
          * Check if this item opens the document in a new window or tab
          */
         isblank?: boolean | null;
+        /**
+         * Enter the name for the menu item
+         */
+        title?: string | null;
         /**
          * Enter the external URL to link to
          */
@@ -557,6 +565,60 @@ export interface Hero {
   id?: string | null;
   blockName?: string | null;
   blockType: 'hero';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "Modal Block".
+ */
+export interface ModalBlock {
+  title?: string | null;
+  content?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'modalBlock';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "New Product".
+ */
+export interface NewProduct {
+  title: string;
+  description: string;
+  categories: (number | Category)[];
+  layout?: ('grid' | 'carousel') | null;
+  limit: number;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'newProduct';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "Category Product".
+ */
+export interface CategoryProduct {
+  category: number | Category;
+  soft?: ('datePublic' | 'hotDeal' | 'newArrival' | 'featured' | 'bestSeller' | 'onSale' | 'brand' | 'hashtags') | null;
+  layout?: ('grid' | 'carousel') | null;
+  limit?: number | null;
+  brand?: (number | Brand)[] | null;
+  hashtags?: (number | Tag)[] | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'categoryProduct';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -961,20 +1023,15 @@ export interface ProductsSelect<T extends boolean = true> {
   specifications?:
     | T
     | {
-        specItem?:
-          | T
-          | {
-              key?: T;
-              value?: T;
-              id?: T;
-              blockName?: T;
-            };
+        key?: T;
+        value?: T;
+        id?: T;
       };
   gallery?:
     | T
     | {
         image?: T;
-        caption?: T;
+        content?: T;
         id?: T;
       };
   status?: T;
@@ -1115,7 +1172,7 @@ export interface ProductVariantsSelect<T extends boolean = true> {
     | T
     | {
         image?: T;
-        caption?: T;
+        content?: T;
         id?: T;
       };
   updatedAt?: T;
@@ -1151,37 +1208,21 @@ export interface PagesSelect<T extends boolean = true> {
   blocks?:
     | T
     | {
-        announcementBar?: T | AnnouncementBarSelect<T>;
         hero?: T | HeroSelect<T>;
-        modal?:
-          | T
-          | {
-              title?: T;
-              content?: T;
-              id?: T;
-              blockName?: T;
-            };
+        modalBlock?: T | ModalBlockSelect<T>;
+        newProduct?: T | NewProductSelect<T>;
+        categoryProduct?: T | CategoryProductSelect<T>;
+      };
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
       };
   folder?: T;
   updatedAt?: T;
   createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "Announcement Bar_select".
- */
-export interface AnnouncementBarSelect {
-  backgroundColor?: boolean;
-  options?: boolean;
-  title?: boolean;
-  content?:
-    | boolean
-    | {
-        title?: boolean;
-        id?: boolean;
-      };
-  id?: boolean;
-  blockName?: boolean;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1192,15 +1233,53 @@ export interface HeroSelect<T extends boolean = true> {
     | T
     | {
         image?: T;
-        caption?: T;
+        content?: T;
         checkTypeLink?: T;
         isblank?: T;
+        title?: T;
         link?: T;
         localLink?: T;
         id?: T;
       };
   id?: T;
   blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "Modal Block_select".
+ */
+export interface ModalBlockSelect {
+  title?: boolean;
+  content?: boolean;
+  id?: boolean;
+  blockName?: boolean;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "New Product_select".
+ */
+export interface NewProductSelect {
+  title?: boolean;
+  description?: boolean;
+  categories?: boolean;
+  layout?: boolean;
+  limit?: boolean;
+  id?: boolean;
+  blockName?: boolean;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "Category Product_select".
+ */
+export interface CategoryProductSelect {
+  category?: boolean;
+  soft?: boolean;
+  layout?: boolean;
+  limit?: boolean;
+  brand?: boolean;
+  hashtags?: boolean;
+  id?: boolean;
+  blockName?: boolean;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1280,102 +1359,133 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "menu".
+ * via the `definition` "settings".
  */
-export interface Menu {
+export interface Setting {
   id: number;
-  header?: {
-    logo?: (number | null) | Media;
-    navItems?:
-      | {
-          /**
-           * Choose whether this is an internal or external link
-           */
-          checkTypeLink?: ('internal' | 'external') | null;
-          /**
-           * Check if this item opens the document in a new window or tab
-           */
-          isblank?: boolean | null;
-          /**
-           * Enter the external URL to link to
-           */
-          link?: string | null;
-          /**
-           * Select an internal page or product to link to
-           */
-          localLink?: (number | null) | Page;
-          /**
-           * Add nested navigation items
-           */
-          children?:
-            | {
-                /**
-                 * Choose whether this is an internal or external link
-                 */
-                checkTypeLink?: ('internal' | 'external') | null;
-                /**
-                 * Check if this item opens the document in a new window or tab
-                 */
-                isblank?: boolean | null;
-                /**
-                 * Enter the external URL to link to
-                 */
-                link?: string | null;
-                /**
-                 * Select an internal page or product to link to
-                 */
-                localLink?: (number | null) | Page;
-                id?: string | null;
-              }[]
-            | null;
-          id?: string | null;
-        }[]
-      | null;
+  nav?: {
+    header?: {
+      logo?: (number | null) | Media;
+      logoDark?: (number | null) | Media;
+      navItems?:
+        | {
+            /**
+             * Choose whether this is an internal or external link
+             */
+            checkTypeLink?: ('internal' | 'external') | null;
+            /**
+             * Check if this item opens the document in a new window or tab
+             */
+            isblank?: boolean | null;
+            /**
+             * Enter the name for the menu item
+             */
+            title?: string | null;
+            /**
+             * Enter the external URL to link to
+             */
+            link?: string | null;
+            /**
+             * Select an internal page or product to link to
+             */
+            localLink?: (number | null) | Page;
+            /**
+             * Add nested navigation items
+             */
+            children?:
+              | {
+                  /**
+                   * Choose whether this is an internal or external link
+                   */
+                  checkTypeLink?: ('internal' | 'external') | null;
+                  /**
+                   * Check if this item opens the document in a new window or tab
+                   */
+                  isblank?: boolean | null;
+                  /**
+                   * Enter the name for the menu item
+                   */
+                  title?: string | null;
+                  /**
+                   * Enter the external URL to link to
+                   */
+                  link?: string | null;
+                  /**
+                   * Select an internal page or product to link to
+                   */
+                  localLink?: (number | null) | Page;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+          }[]
+        | null;
+    };
+    footer?: {
+      logo?: (number | null) | Media;
+      logoDark?: (number | null) | Media;
+      navItems?:
+        | {
+            /**
+             * Choose whether this is an internal or external link
+             */
+            checkTypeLink?: ('internal' | 'external') | null;
+            /**
+             * Check if this item opens the document in a new window or tab
+             */
+            isblank?: boolean | null;
+            /**
+             * Enter the name for the menu item
+             */
+            title?: string | null;
+            /**
+             * Enter the external URL to link to
+             */
+            link?: string | null;
+            /**
+             * Select an internal page or product to link to
+             */
+            localLink?: (number | null) | Page;
+            /**
+             * Add nested navigation items
+             */
+            children?:
+              | {
+                  /**
+                   * Choose whether this is an internal or external link
+                   */
+                  checkTypeLink?: ('internal' | 'external') | null;
+                  /**
+                   * Check if this item opens the document in a new window or tab
+                   */
+                  isblank?: boolean | null;
+                  /**
+                   * Enter the name for the menu item
+                   */
+                  title?: string | null;
+                  /**
+                   * Enter the external URL to link to
+                   */
+                  link?: string | null;
+                  /**
+                   * Select an internal page or product to link to
+                   */
+                  localLink?: (number | null) | Page;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+          }[]
+        | null;
+    };
   };
-  footer?: {
-    logo?: (number | null) | Media;
-    navItems?:
+  announcement?: {
+    transition?: ('blur' | 'slide-horizontal' | 'slide-vertical') | null;
+    interval?: number | null;
+    announcement?:
       | {
-          /**
-           * Choose whether this is an internal or external link
-           */
-          checkTypeLink?: ('internal' | 'external') | null;
-          /**
-           * Check if this item opens the document in a new window or tab
-           */
-          isblank?: boolean | null;
-          /**
-           * Enter the external URL to link to
-           */
+          content?: string | null;
           link?: string | null;
-          /**
-           * Select an internal page or product to link to
-           */
-          localLink?: (number | null) | Page;
-          /**
-           * Add nested navigation items
-           */
-          children?:
-            | {
-                /**
-                 * Choose whether this is an internal or external link
-                 */
-                checkTypeLink?: ('internal' | 'external') | null;
-                /**
-                 * Check if this item opens the document in a new window or tab
-                 */
-                isblank?: boolean | null;
-                /**
-                 * Enter the external URL to link to
-                 */
-                link?: string | null;
-                /**
-                 * Select an internal page or product to link to
-                 */
-                localLink?: (number | null) | Page;
-                id?: string | null;
-              }[]
-            | null;
           id?: string | null;
         }[]
       | null;
@@ -1385,52 +1495,75 @@ export interface Menu {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "menu_select".
+ * via the `definition` "settings_select".
  */
-export interface MenuSelect<T extends boolean = true> {
-  header?:
+export interface SettingsSelect<T extends boolean = true> {
+  nav?:
     | T
     | {
-        logo?: T;
-        navItems?:
+        header?:
           | T
           | {
-              checkTypeLink?: T;
-              isblank?: T;
-              link?: T;
-              localLink?: T;
-              children?:
+              logo?: T;
+              logoDark?: T;
+              navItems?:
                 | T
                 | {
                     checkTypeLink?: T;
                     isblank?: T;
+                    title?: T;
                     link?: T;
                     localLink?: T;
+                    children?:
+                      | T
+                      | {
+                          checkTypeLink?: T;
+                          isblank?: T;
+                          title?: T;
+                          link?: T;
+                          localLink?: T;
+                          id?: T;
+                        };
                     id?: T;
                   };
-              id?: T;
+            };
+        footer?:
+          | T
+          | {
+              logo?: T;
+              logoDark?: T;
+              navItems?:
+                | T
+                | {
+                    checkTypeLink?: T;
+                    isblank?: T;
+                    title?: T;
+                    link?: T;
+                    localLink?: T;
+                    children?:
+                      | T
+                      | {
+                          checkTypeLink?: T;
+                          isblank?: T;
+                          title?: T;
+                          link?: T;
+                          localLink?: T;
+                          id?: T;
+                        };
+                    id?: T;
+                  };
             };
       };
-  footer?:
+  announcement?:
     | T
     | {
-        logo?: T;
-        navItems?:
+        transition?: T;
+        interval?: T;
+        announcement?:
           | T
           | {
-              checkTypeLink?: T;
-              isblank?: T;
+              content?: T;
               link?: T;
-              localLink?: T;
-              children?:
-                | T
-                | {
-                    checkTypeLink?: T;
-                    isblank?: T;
-                    link?: T;
-                    localLink?: T;
-                    id?: T;
-                  };
               id?: T;
             };
       };

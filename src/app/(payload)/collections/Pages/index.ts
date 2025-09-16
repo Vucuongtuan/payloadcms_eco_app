@@ -1,6 +1,7 @@
 import { CollectionConfig } from "payload";
+import { Hero, ModalBlock, NewProduct } from "../../blocks";
+import { CategoryProduct } from "../../blocks/CategoryProduct";
 import { baseField } from "../../fields/baseField";
-import { Hero,AnnouncementBar, ModalBlock } from "../../blocks";
 
 export const Pages: CollectionConfig = {
   slug: "pages",
@@ -15,17 +16,21 @@ export const Pages: CollectionConfig = {
       en: "Page",
     },
   },
+  admin: {
+    useAsTitle: "title",
+  },
   access: {
     read: () => true,
     create: () => true,
     update: () => true,
     delete: () => true,
   },
-  fields: [...baseField,
+  fields: [
+    ...baseField,
     {
-      name:"blocks",
-      type:"blocks",
-      blocks:[AnnouncementBar,Hero,ModalBlock]
-    }
+      name: "blocks",
+      type: "blocks",
+      blocks: [Hero, ModalBlock, NewProduct, CategoryProduct],
+    },
   ],
 };

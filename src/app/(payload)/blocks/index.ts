@@ -1,3 +1,4 @@
-export {Hero} from "./Hero"
-export {AnnouncementBar} from "./AnnouncementBar"
-export {ModalBlock} from "./Modal"
+export { Hero } from "./Hero";
+export { ModalBlock } from "./Modal";
+
+export { NewProduct } from "./NewProduct";

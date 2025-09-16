@@ -32,12 +32,10 @@ import { BoldFeatureClient as BoldFeatureClient_e70f5e05f09f93e00b997edb1ef0c864
 import { ItalicFeatureClient as ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { MediaPreview as MediaPreview_97d8d04ab7718ee07887a44e3d1dbbd1 } from '@/app/(payload)/fields/upload/previewUploadUi'
 import { TotalFinalPrice as TotalFinalPrice_03e8b7877e3e54e128f13a7851712907 } from '@/app/(payload)/fields/price/totalFinalPrice'
-import { SelectColorBackground as SelectColorBackground_4d266a3d01ba54adc68d7c8827b8e9be } from '@/app/(payload)/fields/colorPicker/CustomTailWindColors'
 import { LinkToDoc as LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
 import { ReindexButton as ReindexButton_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
 import { FolderTypeField as FolderTypeField_3817bf644402e67bfe6577f60ef982de } from '@payloadcms/ui'
 import { Nav as Nav_e797816935839bf59598465bc3cbdc3e } from '@/app/(payload)/components/Nav'
-import { Reporting as Reporting_fe2c3671b720e58b14871d1c6d0a4369 } from '@/app/(payload)/components/Reporting'
 
 export const importMap = {
   "@payloadcms/ui/rsc#FolderTableCell": FolderTableCell_ab83ff7e88da8d3530831f296ec4756a,
@@ -74,10 +72,8 @@ export const importMap = {
   "@payloadcms/richtext-lexical/client#ItalicFeatureClient": ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@/app/(payload)/fields/upload/previewUploadUi#MediaPreview": MediaPreview_97d8d04ab7718ee07887a44e3d1dbbd1,
   "@/app/(payload)/fields/price/totalFinalPrice#TotalFinalPrice": TotalFinalPrice_03e8b7877e3e54e128f13a7851712907,
-  "@/app/(payload)/fields/colorPicker/CustomTailWindColors#SelectColorBackground": SelectColorBackground_4d266a3d01ba54adc68d7c8827b8e9be,
   "@payloadcms/plugin-search/client#LinkToDoc": LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634,
   "@payloadcms/plugin-search/client#ReindexButton": ReindexButton_aead06e4cbf6b2620c5c51c9ab283634,
   "@payloadcms/ui#FolderTypeField": FolderTypeField_3817bf644402e67bfe6577f60ef982de,
-  "@/app/(payload)/components/Nav#Nav": Nav_e797816935839bf59598465bc3cbdc3e,
-  "@/app/(payload)/components/Reporting#Reporting": Reporting_fe2c3671b720e58b14871d1c6d0a4369
+  "@/app/(payload)/components/Nav#Nav": Nav_e797816935839bf59598465bc3cbdc3e
 }

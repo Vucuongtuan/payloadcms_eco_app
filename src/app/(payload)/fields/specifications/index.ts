@@ -6,7 +6,7 @@ export const specificationsField = (): Field => ({
     vi: "Thông số kỹ thuật",
     en: "Specifications",
   },
-  type: "blocks",
+  type: "array",
   labels: {
     singular: {
       vi: "Thông số",
@@ -17,45 +17,30 @@ export const specificationsField = (): Field => ({
       en: "Specifications",
     },
   },
-  blocks: [
+  fields: [
     {
-      slug: "specItem",
-      labels: {
-        singular: {
-          vi: "Thông số",
-          en: "Specification",
-        },
-        plural: {
-          vi: "Thông số",
-          en: "Specification",
-        },
+      name: "key",
+      type: "text",
+      required: true,
+      label: {
+        vi: "Tên thông số",
+        en: "Specification Name",
       },
-      fields: [
-        {
-          name: "key",
-          type: "text",
-          required: true,
-          label: {
-            vi: "Tên thông số",
-            en: "Specification Name",
-          },
-          admin: {
-            width: "50%",
-          },
-        },
-        {
-          name: "value",
-          type: "text",
-          required: true,
-          label: {
-            vi: "Giá trị",
-            en: "Value",
-          },
-          admin: {
-            width: "50%",
-          },
-        },
-      ],
+      admin: {
+        width: "50%",
+      },
+    },
+    {
+      name: "value",
+      type: "text",
+      required: true,
+      label: {
+        vi: "Giá trị",
+        en: "Value",
+      },
+      admin: {
+        width: "50%",
+      },
     },
   ],
 });

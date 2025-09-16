@@ -1,10 +1,11 @@
-import { ArrayField, Field } from "payload";
+import { ArrayField } from "payload";
 import { navItem } from "../navItem";
 
-type GalleryField = (isLink?:boolean) => ArrayField
+type GalleryField = (isLink?: boolean) => ArrayField;
 
-
-export const galleryField: GalleryField = (isLink: boolean = false): ArrayField => ({
+export const galleryField: GalleryField = (
+  isLink: boolean = false,
+): ArrayField => ({
   name: "gallery",
   type: "array",
   label: {
@@ -20,11 +21,12 @@ export const galleryField: GalleryField = (isLink: boolean = false): ArrayField 
       label: { vi: "Hình ảnh", en: "Image" },
     },
     {
-      name: "caption",
-      type: "text",
-      label: { vi: "Chú thích", en: "Caption" },
+      name: "content",
+      type: "richText",
+      label: { vi: "Nội dung", en: "Content" },
+      required: false,
     },
-    ...(isLink ? [...navItem({isNav: false})]
-      : []),
+
+    ...(isLink ? [...navItem({ isNav: false })] : []),
   ],
 });

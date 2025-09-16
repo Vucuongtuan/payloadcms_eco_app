@@ -7,15 +7,15 @@ export const Media: CollectionConfig = {
   labels: {
     singular: {
       en: "Media",
-      vi: "Tài nguyên"
+      vi: "Tài nguyên",
     },
     plural: {
       en: "Media",
-      vi: "Tài nguyên"
-    }
+      vi: "Tài nguyên",
+    },
   },
   access: {
-    read: () => true
+    read: () => true,
   },
   hooks: {},
   fields: [
@@ -23,8 +23,8 @@ export const Media: CollectionConfig = {
       name: "alt",
 
       type: "text",
-      required: true
-    }
+      required: true,
+    },
   ],
   upload: {
     skipSafeFetch: true,
@@ -39,7 +39,7 @@ export const Media: CollectionConfig = {
         "image/bmp",
         "image/webp",
         "image/heic",
-        "image/tiff"
+        "image/tiff",
       ];
       if (typeof doc.mimeType !== "string") return undefined;
 
@@ -54,41 +54,49 @@ export const Media: CollectionConfig = {
       return [
         process.env.BASE_URL_BLOB,
         thumbnailPrefix,
-        thumbnailFileName
+        thumbnailFileName,
       ].join("/");
     },
     imageSizes: [
       {
         name: "thumbnail",
         formatOptions: {
-          format: "avif"
+          format: "avif",
         },
         height: undefined,
-        width: 240
+        width: 240,
       },
       {
         name: "small",
         formatOptions: {
-          format: "avif"
+          format: "avif",
         },
         height: undefined,
-        width: 480
+        width: 480,
+      },
+      {
+        name: "medium",
+        formatOptions: {
+          format: "avif",
+        },
+        height: undefined,
+        width: 1200,
       },
       {
         name: "large",
         formatOptions: {
-          format: "avif"
+          format: "avif",
         },
         height: undefined,
-        width: 1600
-      }
+        width: 1600,
+      },
     ],
-    staticDir:"media",
-    staticURL:"/media",
+    staticDir: "media",
+    staticURL: "/media",
     resizeOptions: {
       fit: "contain",
-      withoutEnlargement: true
+      withoutEnlargement: true,
     },
-    mimeTypes: ["image/*", "audio/*", "video/*", "application/pdf"]
-  }
+    mimeTypes: ["image/*", "audio/*", "video/*", "application/pdf"],
+  },
 };
