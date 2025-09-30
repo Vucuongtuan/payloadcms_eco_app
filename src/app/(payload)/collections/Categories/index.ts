@@ -1,14 +1,16 @@
 import { CollectionConfig } from "payload";
 
 import { baseField } from "../../fields/baseField";
-import generateSlugForTitle from "../../hooks/genarateSlugForTitle";
+import { CategoryBlock } from "../blocks";
 
 export const Categories: CollectionConfig = {
   slug: "categories",
-  folders: true,
+  folders: {
+    browseByFolder:true
+  },
   labels: {
     singular: {
-      en: "Categories",
+      en: "Category",
       vi: "Danh mục",
     },
     plural: {
@@ -19,8 +21,8 @@ export const Categories: CollectionConfig = {
   admin: {
     useAsTitle: "title",
     group: {
-      vi: "Sản phẩm",
-      en: "Products",
+      vi: "Danh Mục",
+      en: "Categories",
     },
   },
   access: {
@@ -37,6 +39,26 @@ export const Categories: CollectionConfig = {
   },
   fields: [
     ...baseField,
+    {
+      type:"group",
+      name:"blocks",
+      fields:[
+        {
+          type:"radio",
+          name:"direction",
+          options:[
+            {label:"Top",value:"top"},
+            {label:"Bottom",value:"bottom"}
+          ],
+          defaultValue:"top"
+        },
+        {
+          name:"sections",
+          type:"blocks",
+          blocks:CategoryBlock
+        }
+      ]
+    }
     // {
     //   name: "breadcrumbs",
     //   type: "ui",

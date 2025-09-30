@@ -36,6 +36,8 @@ const nextConfig = {
   experimental: {
     viewTransition: true,
     reactCompiler: true,
+    ppr: "incremental",
+    inlineCss: true,
   },
   // webpack: (webpackConfig) => {
   //   webpackConfig.resolve.extensionAlias = {

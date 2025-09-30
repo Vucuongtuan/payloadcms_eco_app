@@ -13,7 +13,7 @@ const parseNumber = (str: string): number => {
   return Number(String(str).replace(/,/g, ""));
 };
 
-export const PriceInput = props => {
+export const PriceInput = (props: any) => {
   const { path, label, required, description, readOnly } = props;
   const { value, setValue } = useField<number>({ path });
 

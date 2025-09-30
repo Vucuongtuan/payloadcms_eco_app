@@ -8,6 +8,7 @@ import { vercelPostgresAdapter } from '@payloadcms/db-vercel-postgres';
 import { payloadCloudPlugin } from '@payloadcms/payload-cloud';
 // ---
 // plugins
+import { nestedDocsPlugin } from '@payloadcms/plugin-nested-docs';
 import { searchPlugin } from '@payloadcms/plugin-search';
 import { seoPlugin } from '@payloadcms/plugin-seo';
 // ---
@@ -18,14 +19,10 @@ import { vi } from '@payloadcms/translations/languages/vi';
 // ---
 // collections
 
-import { Brands, Categories, EmailSubscribe, Media, Newsletter, Orders, Pages, Posts, Products, ProductVariants, Reviews, SubCategories, Tags, Users } from './app/(payload)/collections';
+import { Categories, EmailSubscribe, Media, Newsletter, Orders, Pages, Posts, Products, Reviews, Tags, Users } from './app/(payload)/collections';
 import { defaultLexical } from './app/(payload)/fields/defaultLexical';
-<<<<<<< HEAD
 import { Settings } from './app/(payload)/globals';
-=======
-import { Menu } from './app/(payload)/globals';
->>>>>>> 4544019ae85173e44fdbc8897c62b598e02bf364
-import { truncate } from './utils/truncateText';
+import { shorten, truncate } from './utils/truncateText';
 //---
 
 
@@ -36,6 +33,7 @@ const configEnv = {
   baseUrlBlob: process.env.BASE_URL_BLOB || "",
   stripeSecretKey: process.env.STRIPE_SECRET_KEY || "",
   stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET || "",
+  postgresUrlNonPooling: process.env.POSTGRES_URL_NON_POOLING || "",
 }
 
 const filename = fileURLToPath(import.meta.url);
@@ -44,14 +42,10 @@ const maxLengthSEO: Record<string, number> = {
   title: 60,
   description: 150
 }
-const allCollections = [Users, Media, Categories, SubCategories, Products, Tags, Brands, Orders, Reviews, ProductVariants, Newsletter, EmailSubscribe, Pages, Posts];
-<<<<<<< HEAD
+const allCollections = [Users, Media, Categories, Products, Tags, Orders, Reviews, Newsletter, EmailSubscribe, Pages, Posts];
 const golobalCollections = [Settings]
-=======
-const golobalCollections = [Menu]
->>>>>>> 4544019ae85173e44fdbc8897c62b598e02bf364
-const applySearchForCollection = ['categories', 'subcategories', 'products', 'brands', 'posts']
-const applySEOForCollection = ['categories', 'subcategories', 'products', 'brands', 'posts', 'pages']
+const applySearchForCollection = ['categories', 'products', 'posts']
+const applySEOForCollection = ['categories', 'products', 'posts', 'pages']
 
 
 
@@ -85,7 +79,7 @@ export default buildConfig({
     locales: ['vi', 'en'],
     defaultLocale: 'vi',
   },
-  editor: defaultLexical,
+  editor: defaultLexical(),
   folders: {
     debug: true, // optional
     collectionOverrides: [
@@ -103,9 +97,11 @@ export default buildConfig({
   },
   db: vercelPostgresAdapter({
     pool: {
-      connectionString: configEnv.postgresUrl
-    }
+      connectionString: configEnv.postgresUrlNonPooling
+    },
+    
   }),
+  
   sharp,
   plugins: [
     // Payload Cloud Plugin
@@ -116,22 +112,20 @@ export default buildConfig({
       collections: applySEOForCollection,
       uploadsCollection: "media",
       generateTitle: ({ doc, collectionSlug, locale }) => {
-        const brandName = 'TCGear';
+        const brandName = 'Moon co.';
         const brandTagline: Record<string, string> = {
-          vi: 'Phụ kiện máy tính cao cấp - Bàn phím, Chuột, Tai nghe',
-          en: 'High-end computer peripherals - Keyboard, Mouse, Headphones'
+          vi: 'Thời trang nam nữ, trẻ em - Quần áo, Giày dép, Phụ kiện',
+          en: 'Fashion for Men, Women & Kids - Clothing, Shoes, Accessories'
         };
 
-        if (collectionSlug === "categories" || collectionSlug === "subcategories") {
-          const l = locale || 'vi'
-          const fullTitle = `${doc.title} | ${brandName} | ${brandTagline[l]}`;
-          return truncate(fullTitle, maxLengthSEO.title);
+        if (collectionSlug === "categories") {
+          const l = locale || "vi";
+          return shorten(`${doc.title} | ${brandName}`, maxLengthSEO.title);
+        } else if (collectionSlug === "pages") {
+          const l = locale || "vi";
+          return shorten(`${brandName} | ${brandTagline[l]}`, maxLengthSEO.title);
         }
-        else if (collectionSlug === "pages") {
-          const l = locale || 'vi'
-          const fullTitle = `${brandName} | ${brandTagline[l]}`;
-          return truncate(fullTitle, maxLengthSEO.title);
-        }
+        
         return truncate(doc.title, maxLengthSEO.title);
       },
       // generateImage:({doc ,collectionSlug})=>{
@@ -141,13 +135,13 @@ export default buildConfig({
         const l = locale || 'vi'
 
         const baseDescription: Record<string, string> = {
-          vi: 'TCGear cung cấp các phụ kiện máy tính cao cấp như bàn phím, chuột, tai nghe với thiết kế hiện đại và hiệu suất vượt trội.',
-          en: 'TCGear offers high-end computer accessories such as keyboards, mice, and headphones with modern design and superior performance.'
+          vi: 'Moon co. mang đến phong cách thời trang hiện đại cho nam, nữ và trẻ em với nhiều lựa chọn quần áo, giày dép và phụ kiện.',
+          en: 'Moon co. delivers modern fashion for men, women, and kids with a wide selection of clothing, shoes, and accessories.'
         };
         const desValue = doc.description || baseDescription[l];
         return truncate(desValue, maxLengthSEO.description)
       },
-      generateImage: ({ doc }) => doc.image || `/assets/default-image.png`,
+      generateImage: ({ doc }) => doc.image || `/img/Logo_black.png` || null,
       // tabbedUI:true
     }),
 
@@ -159,6 +153,7 @@ export default buildConfig({
         products: 20
       },
       searchOverrides: {
+        // @ts-expect-error
         fields: ({ defaultFields }) => defaultFields.map(field => {
           if ((field as { name: string }).name === 'doc') {
             return {
@@ -179,8 +174,8 @@ export default buildConfig({
           return field
         })
       },
-      beforeSync: ({ doc, searchDoc }) => {
 
+      beforeSync: ({ doc, searchDoc }:any) => {
         return {
           ...searchDoc,
           title: doc?.title,
@@ -189,17 +184,13 @@ export default buildConfig({
       localize: true
     }),
     // Nesterd Docs
-    // nestedDocsPlugin({
-    //   collections: ['category'],
-    //   generateLabel: (_, doc) => doc.title,
-    //   generateURL: (docs) =>
-    //     docs.reduce((url, doc) => `${url}/${doc.slug}`, ''),
-    // }),
+    nestedDocsPlugin({
+      collections: ['categories'],
+      generateLabel: (_, doc) => doc.title || doc.name || '',
+      generateURL: (docs) =>
+        docs.reduce((url, doc) => `${url}/${doc.slug}`, ''),
+    }),
     //Config vercel Blob Storage
-<<<<<<< HEAD
-=======
-
->>>>>>> 4544019ae85173e44fdbc8897c62b598e02bf364
 
 
     // Config Stripe Plugin
@@ -230,3 +221,53 @@ export default buildConfig({
     // storage-adapter-placeholder
   ]
 });
+const defaultImage = {
+  id: 6,
+  alt: "Plaholder",
+  folder: null,
+  updatedAt: "2025-09-22T09:59:40.505Z",
+  createdAt: "2025-09-22T09:59:40.505Z",
+  url: "/api/media/file/Logo_black-1.png",
+  thumbnailURL: "//Logo_black-1-240x240.avif",
+  filename: "Logo_black-1.png",
+  mimeType: "image/png",
+  filesize: 98161,
+  width: 512,
+  height: 512,
+  focalX: 50,
+  focalY: 50,
+  sizes: {
+    thumbnail: {
+      url: "/api/media/file/Logo_black-1-240x240.avif",
+      width: 240,
+      height: 240,
+      mimeType: "image/avif",
+      filesize: 879,
+      filename: "Logo_black-1-240x240.avif"
+    },
+    small: {
+      url: "/api/media/file/Logo_black-1-480x480.avif",
+      width: 480,
+      height: 480,
+      mimeType: "image/avif",
+      filesize: 1397,
+      filename: "Logo_black-1-480x480.avif"
+    },
+    medium: {
+      url: null,
+      width: null,
+      height: null,
+      mimeType: null,
+      filesize: null,
+      filename: null
+    },
+    large: {
+      url: null,
+      width: null,
+      height: null,
+      mimeType: null,
+      filesize: null,
+      filename: null
+    }
+  }
+};

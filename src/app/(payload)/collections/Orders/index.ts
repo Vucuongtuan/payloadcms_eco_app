@@ -1,10 +1,11 @@
-import { CollectionConfig } from "payload";
-import { AfterChangeHook, BeforeChangeHook } from "payload/dist/collections/config/types";
+// @ts-nocheck
+
+import { CollectionBeforeChangeHook, CollectionConfig } from "payload";
 import { Product, ProductVariant } from "../../../../payload-types";
 import { shippingAddressField } from "../../fields/shippingAddress";
 
 // This hook is responsible for checking inventory and decrementing stock before an order is created.
-const checkInventoryAndDecrement: BeforeChangeHook = async ({ data, req, operation }) => {
+const checkInventoryAndDecrement: CollectionBeforeChangeHook = async ({ data, req, operation }) => {
   if (operation === 'create' && data.items) {
     const { payload } = req;
 
@@ -123,12 +124,6 @@ export const Orders: CollectionConfig = {
       label: { vi: "Sản phẩm trong đơn", en: "Order Items" },
       fields: [
         { name: "product", type: "relationship", relationTo: "products", required: true },
-        {
-          name: "variant",
-          type: "relationship",
-          relationTo: "product-variants",
-          label: { vi: "Biến thể cụ thể", en: "Specific Variant" },
-        },
         { name: "quantity", type: "number", label: { vi: "Số lượng", en: "Quantity" }, min: 1, required: true },
         {
           name: "price",

@@ -39,7 +39,7 @@ export const Posts: CollectionConfig = {
         }),
         {
             type: "relationship",
-            relationTo: ["products", "brands"],
+            relationTo: ["products"],
             label: {
                 vi: "Sản phẩm",
                 en: "Product"

@@ -7,13 +7,13 @@ const RichTextBlock: Block = {
     singular: { vi: "Khối văn bản", en: "Rich Text Block" },
     plural: { vi: "Các khối văn bản", en: "Rich Text Blocks" },
   },
-  fields:[
+  fields: [
     {
-      name:"content",
-      type:"richText",
-      editor:defaultLexical
-    }
-  ]
+      name: "content",
+      type: "richText",
+      editor: defaultLexical(),
+    },
+  ],
 };
 
 // const ImageBlock: Block = {

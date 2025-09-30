@@ -49,14 +49,14 @@ export default function AnnouncementTransition(
   // //           transition={{ duration: 0.5, ease: "easeInOut" }}
   // //           className="text-center px-4"
   return (
-    <div className="relative">
+    <div className="relative ">
       <AnimatePresence mode="wait">
         <motion.div
           key={currentIndex}
           {...motionTransition[transition]}
-          className="text-center px-4"
+          className="text-center  lg:px-4"
         >
-          <p className="text-sm font-medium text-balance">
+          <p className="text-xs lg:text-sm truncate ">
             {messages[currentIndex].content}
           </p>
         </motion.div>

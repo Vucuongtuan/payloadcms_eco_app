@@ -1,4 +1,8 @@
-export { Hero } from "./Hero";
-export { ModalBlock } from "./Modal";
 
-export { NewProduct } from "./NewProduct";
+
+export { FAQ } from "./FAQ";
+export { HeroBlock } from "./Hero";
+export { MediaBlock } from "./Media";
+export { RichTextBlock } from "./RichText";
+export { SingleProductBlock } from "./SingleProduct";
+

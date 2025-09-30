@@ -1,32 +1,67 @@
-import { ArrayField } from "payload";
+import { ArrayField, Field } from "payload";
 import { navItem } from "../navItem";
 
-type GalleryField = (isLink?: boolean) => ArrayField;
+type GalleryField = (isLink?: boolean, isContent?: boolean) => ArrayField;
 
 export const galleryField: GalleryField = (
   isLink: boolean = false,
-): ArrayField => ({
-  name: "gallery",
-  type: "array",
-  label: {
-    vi: "Bộ sưu tập ảnh",
-    en: "Image Gallery",
-  },
-  fields: [
-    {
-      name: "image",
-      type: "upload",
-      relationTo: "media",
-      required: true,
-      label: { vi: "Hình ảnh", en: "Image" },
-    },
-    {
-      name: "content",
-      type: "richText",
-      label: { vi: "Nội dung", en: "Content" },
-      required: false,
-    },
+  isContent: boolean = false,
+): ArrayField => {
+  const fields: any[] = [];
 
-    ...(isLink ? [...navItem({ isNav: false })] : []),
-  ],
-});
+  if (isLink) {
+    fields.push({
+      name: "link",
+      type: "group",
+      label: {
+        vi: "Liên kết",
+        en: "Link",
+      },
+      fields: [...navItem({ isNav: false })],
+    });
+  }
+  if (isContent) {
+    fields.push(
+      {
+        name: "title",
+        type: "text",
+        label: {
+          vi: "Tiêu đề",
+          en: "Title",
+        },
+      },
+      {
+        name: "description",
+        type: "textarea",
+        label: {
+          vi: "Mô tả",
+          en: "Description",
+        },
+      },
+      {
+        name: "cta",
+        type: "group",
+        label: {
+          vi: "Liên kết",
+          en: "Link",
+        },
+        fields: [...navItem({ isNav: false })],
+      },
+    );
+  }
+
+  return {
+    name: "gallery",
+    type: "array",
+    fields: [
+      {
+        name: "image",
+        type: "upload",
+        relationTo: "media",
+        required: true,
+        label: { vi: "Hình ảnh", en: "Image" },
+      },
+      ...fields,
+    ],
+  };
+};

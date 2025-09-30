@@ -1,5 +1,5 @@
-import nextPlugin from "eslint-config-next";
 import typescriptParser from "@typescript-eslint/parser";
+import nextPlugin from "eslint-config-next";
 import globals from "globals";
 
 /** @type {import('eslint').Linter.FlatConfig[]} */

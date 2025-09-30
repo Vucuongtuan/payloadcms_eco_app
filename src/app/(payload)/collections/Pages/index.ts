@@ -1,7 +1,6 @@
 import { CollectionConfig } from "payload";
-import { Hero, ModalBlock, NewProduct } from "../../blocks";
-import { CategoryProduct } from "../../blocks/CategoryProduct";
 import { baseField } from "../../fields/baseField";
+import { PageBlock } from "../blocks";
 
 export const Pages: CollectionConfig = {
   slug: "pages",
@@ -18,6 +17,7 @@ export const Pages: CollectionConfig = {
   },
   admin: {
     useAsTitle: "title",
+
   },
   access: {
     read: () => true,
@@ -30,7 +30,7 @@ export const Pages: CollectionConfig = {
     {
       name: "blocks",
       type: "blocks",
-      blocks: [Hero, ModalBlock, NewProduct, CategoryProduct],
+      blocks: PageBlock,
     },
   ],
 };

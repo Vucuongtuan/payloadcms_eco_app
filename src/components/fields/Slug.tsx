@@ -1,7 +1,8 @@
+// @ts-nocheck
 "use client";
 
 import { PayloadComponent, TextFieldClientComponent } from "payload";
-import React, { useCallback, useEffect } from "react";
+import { useCallback, useEffect } from "react";
 
 import { TextField, useFormFields, withCondition } from "@payloadcms/ui";
 

@@ -41,7 +41,6 @@ export const Users: CollectionConfig = {
         vi: "Vai trò"
       },
       type: "select",
-      hasMany: true,
       options: [
         {
           label: {

@@ -70,13 +70,10 @@ export interface Config {
     users: User;
     media: Media;
     categories: Category;
-    subcategories: Subcategory;
     products: Product;
     tags: Tag;
-    brands: Brand;
     orders: Order;
     reviews: Review;
-    'product-variants': ProductVariant;
     newsletter: Newsletter;
     'email-subscribe': EmailSubscribe;
     pages: Page;
@@ -89,20 +86,17 @@ export interface Config {
   };
   collectionsJoins: {
     'payload-folders': {
-      documentsAndFolders: 'payload-folders' | 'media' | 'categories' | 'subcategories' | 'products' | 'pages';
+      documentsAndFolders: 'payload-folders' | 'media' | 'categories' | 'products' | 'pages';
     };
   };
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
-    subcategories: SubcategoriesSelect<false> | SubcategoriesSelect<true>;
     products: ProductsSelect<false> | ProductsSelect<true>;
     tags: TagsSelect<false> | TagsSelect<true>;
-    brands: BrandsSelect<false> | BrandsSelect<true>;
     orders: OrdersSelect<false> | OrdersSelect<true>;
     reviews: ReviewsSelect<false> | ReviewsSelect<true>;
-    'product-variants': ProductVariantsSelect<false> | ProductVariantsSelect<true>;
     newsletter: NewsletterSelect<false> | NewsletterSelect<true>;
     'email-subscribe': EmailSubscribeSelect<false> | EmailSubscribeSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
@@ -156,7 +150,7 @@ export interface UserAuthOperations {
 export interface User {
   id: number;
   name: string;
-  role?: ('admin' | 'editor' | 'user')[] | null;
+  role?: ('admin' | 'editor' | 'user') | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -211,6 +205,14 @@ export interface Media {
       filesize?: number | null;
       filename?: string | null;
     };
+    medium?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
     large?: {
       url?: string | null;
       width?: number | null;
@@ -244,10 +246,6 @@ export interface FolderInterface {
           value: number | Category;
         }
       | {
-          relationTo?: 'subcategories';
-          value: number | Subcategory;
-        }
-      | {
           relationTo?: 'products';
           value: number | Product;
         }
@@ -259,7 +257,7 @@ export interface FolderInterface {
     hasNextPage?: boolean;
     totalDocs?: number;
   };
-  folderType?: ('media' | 'categories' | 'subcategories' | 'products' | 'pages')[] | null;
+  folderType?: ('media' | 'categories' | 'products' | 'pages')[] | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -273,6 +271,96 @@ export interface Category {
   description?: string | null;
   slug?: string | null;
   slugLock?: boolean | null;
+  blocks?: {
+    direction?: ('top' | 'bottom') | null;
+    sections?:
+      | (
+          | {
+              layout?: ('container' | 'full' | 'wide' | 'narrow') | null;
+              spacing?: ('none' | 'small' | 'medium' | 'large') | null;
+              aspect?:
+                | (
+                    | 'auto'
+                    | 'ultrawide'
+                    | 'photo'
+                    | 'poster'
+                    | 'story'
+                    | 'insta'
+                    | 'retro'
+                    | 'video'
+                    | 'square'
+                    | 'wide'
+                  )
+                | null;
+              column?: ('one-column' | 'two-column' | 'three-column') | null;
+              gallery?:
+                | {
+                    caption?: string | null;
+                    image?: (number | null) | Media;
+                    /**
+                     * Choose whether this is an internal or external link
+                     */
+                    checkTypeLink?: ('internal' | 'external') | null;
+                    /**
+                     * Check if this item opens the document in a new window or tab
+                     */
+                    isblank?: boolean | null;
+                    /**
+                     * Enter the name for the menu item
+                     */
+                    title?: string | null;
+                    /**
+                     * Enter the external URL to link to
+                     */
+                    link?: string | null;
+                    /**
+                     * Select an internal page or product to link to
+                     */
+                    localLink?:
+                      | ({
+                          relationTo: 'pages';
+                          value: number | Page;
+                        } | null)
+                      | ({
+                          relationTo: 'posts';
+                          value: number | Post;
+                        } | null)
+                      | ({
+                          relationTo: 'categories';
+                          value: number | Category;
+                        } | null);
+                    id?: string | null;
+                  }[]
+                | null;
+              id?: string | null;
+              blockName?: string | null;
+              blockType: 'mediaBlock';
+            }
+          | {
+              layout?: ('container' | 'full' | 'wide' | 'narrow') | null;
+              spacing?: ('none' | 'small' | 'medium' | 'large') | null;
+              content?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+              id?: string | null;
+              blockName?: string | null;
+              blockType: 'richTextBlock';
+            }
+        )[]
+      | null;
+  };
   meta?: {
     title?: string | null;
     description?: string | null;
@@ -281,21 +369,245 @@ export interface Category {
      */
     image?: (number | null) | Media;
   };
+  parent?: (number | null) | Category;
+  breadcrumbs?:
+    | {
+        doc?: (number | null) | Category;
+        url?: string | null;
+        label?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   folder?: (number | null) | FolderInterface;
   updatedAt: string;
   createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "subcategories".
+ * via the `definition` "pages".
  */
-export interface Subcategory {
+export interface Page {
   id: number;
   title: string;
   description?: string | null;
   slug?: string | null;
   slugLock?: boolean | null;
-  category: number | Category;
+  blocks?:
+    | (
+        | {
+            layout?: ('container' | 'full' | 'wide' | 'narrow') | null;
+            spacing?: ('none' | 'small' | 'medium' | 'large') | null;
+            type?: ('auto' | 'manual') | null;
+            product?: (number | null) | Product;
+            image?: (number | Media)[] | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'SingleProductBlock';
+          }
+        | {
+            layout?: ('container' | 'full' | 'wide' | 'narrow') | null;
+            spacing?: ('none' | 'small' | 'medium' | 'large') | null;
+            aspect?:
+              | ('auto' | 'ultrawide' | 'photo' | 'poster' | 'story' | 'insta' | 'retro' | 'video' | 'square' | 'wide')
+              | null;
+            type?: ('single' | 'carousel') | null;
+            single?: {
+              image?: (number | null) | Media;
+              /**
+               * Choose whether this is an internal or external link
+               */
+              checkTypeLink?: ('internal' | 'external') | null;
+              /**
+               * Check if this item opens the document in a new window or tab
+               */
+              isblank?: boolean | null;
+              /**
+               * Enter the name for the menu item
+               */
+              title?: string | null;
+              /**
+               * Enter the external URL to link to
+               */
+              link?: string | null;
+              /**
+               * Select an internal page or product to link to
+               */
+              localLink?:
+                | ({
+                    relationTo: 'pages';
+                    value: number | Page;
+                  } | null)
+                | ({
+                    relationTo: 'posts';
+                    value: number | Post;
+                  } | null)
+                | ({
+                    relationTo: 'categories';
+                    value: number | Category;
+                  } | null);
+              caption?: string | null;
+            };
+            gallery?:
+              | {
+                  image?: (number | null) | Media;
+                  /**
+                   * Choose whether this is an internal or external link
+                   */
+                  checkTypeLink?: ('internal' | 'external') | null;
+                  /**
+                   * Check if this item opens the document in a new window or tab
+                   */
+                  isblank?: boolean | null;
+                  /**
+                   * Enter the name for the menu item
+                   */
+                  title?: string | null;
+                  /**
+                   * Enter the external URL to link to
+                   */
+                  link?: string | null;
+                  /**
+                   * Select an internal page or product to link to
+                   */
+                  localLink?:
+                    | ({
+                        relationTo: 'pages';
+                        value: number | Page;
+                      } | null)
+                    | ({
+                        relationTo: 'posts';
+                        value: number | Post;
+                      } | null)
+                    | ({
+                        relationTo: 'categories';
+                        value: number | Category;
+                      } | null);
+                  caption?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'heroBlock';
+          }
+        | {
+            layout?: ('container' | 'full' | 'wide' | 'narrow') | null;
+            spacing?: ('none' | 'small' | 'medium' | 'large') | null;
+            aspect?:
+              | ('auto' | 'ultrawide' | 'photo' | 'poster' | 'story' | 'insta' | 'retro' | 'video' | 'square' | 'wide')
+              | null;
+            column?: ('one-column' | 'two-column' | 'three-column') | null;
+            gallery?:
+              | {
+                  caption?: string | null;
+                  image?: (number | null) | Media;
+                  /**
+                   * Choose whether this is an internal or external link
+                   */
+                  checkTypeLink?: ('internal' | 'external') | null;
+                  /**
+                   * Check if this item opens the document in a new window or tab
+                   */
+                  isblank?: boolean | null;
+                  /**
+                   * Enter the name for the menu item
+                   */
+                  title?: string | null;
+                  /**
+                   * Enter the external URL to link to
+                   */
+                  link?: string | null;
+                  /**
+                   * Select an internal page or product to link to
+                   */
+                  localLink?:
+                    | ({
+                        relationTo: 'pages';
+                        value: number | Page;
+                      } | null)
+                    | ({
+                        relationTo: 'posts';
+                        value: number | Post;
+                      } | null)
+                    | ({
+                        relationTo: 'categories';
+                        value: number | Category;
+                      } | null);
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'mediaBlock';
+          }
+        | {
+            layout?: ('container' | 'full' | 'wide' | 'narrow') | null;
+            spacing?: ('none' | 'small' | 'medium' | 'large') | null;
+            content?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'richTextBlock';
+          }
+        | {
+            layout?: ('container' | 'full' | 'wide' | 'narrow') | null;
+            spacing?: ('none' | 'small' | 'medium' | 'large') | null;
+            direction?: ('horizontal' | 'vertical') | null;
+            content?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
+            faqList?:
+              | {
+                  question?: string | null;
+                  answer?: {
+                    root: {
+                      type: string;
+                      children: {
+                        type: any;
+                        version: number;
+                        [k: string]: unknown;
+                      }[];
+                      direction: ('ltr' | 'rtl') | null;
+                      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                      indent: number;
+                      version: number;
+                    };
+                    [k: string]: unknown;
+                  } | null;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'faq';
+          }
+      )[]
+    | null;
   meta?: {
     title?: string | null;
     description?: string | null;
@@ -314,84 +626,79 @@ export interface Subcategory {
  */
 export interface Product {
   id: number;
-  productType?: ('simple' | 'variable') | null;
   views?: number | null;
-  sales?: number | null;
   title: string;
   description?: string | null;
-  layout?:
-    | {
-        content?: {
-          root: {
-            type: string;
-            children: {
-              type: string;
-              version: number;
-              [k: string]: unknown;
-            }[];
-            direction: ('ltr' | 'rtl') | null;
-            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-            indent: number;
-            version: number;
-          };
-          [k: string]: unknown;
-        } | null;
-        id?: string | null;
-        blockName?: string | null;
-        blockType: 'richText';
-      }[]
-    | null;
-  specifications?:
-    | {
-        key: string;
-        value: string;
-        id?: string | null;
-      }[]
-    | null;
-  gallery?:
-    | {
-        image: number | Media;
-        content?: {
-          root: {
-            type: string;
-            children: {
-              type: string;
-              version: number;
-              [k: string]: unknown;
-            }[];
-            direction: ('ltr' | 'rtl') | null;
-            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-            indent: number;
-            version: number;
-          };
-          [k: string]: unknown;
-        } | null;
-        id?: string | null;
-      }[]
-    | null;
-  status?: ('draft' | 'published' | 'out-of-stock' | 'archived') | null;
-  slug?: string | null;
-  slugLock?: boolean | null;
-  image: number | Media;
-  taxonomies: {
-    brands?: (number | Brand)[] | null;
-    category: number | Category;
-    subCategory?: (number | Subcategory)[] | null;
-    tags?: (number | Tag)[] | null;
-  };
+  sales?: number | null;
+  name?: string | null;
+  color: string;
   /**
    * Enter the price in VND only, other currencies will be automatically converted based on the exchange rates defined in GlobalSetting.
    */
-  pricing?: {
+  pricing: {
     price: number;
     discount: number;
-    total: string;
   };
-  inventory?: {
-    sku?: string | null;
-    stock?: number | null;
+  sizes?:
+    | {
+        size: 'S' | 'M' | 'L' | 'XL' | 'XXL';
+        inventory?: {
+          sku?: string | null;
+          stock?: number | null;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  variants?:
+    | {
+        name?: string | null;
+        color: string;
+        status?: ('draft' | 'published' | 'out-of-stock' | 'archived') | null;
+        sizes?:
+          | {
+              size: 'S' | 'M' | 'L' | 'XL' | 'XXL';
+              /**
+               * Enter the price in VND only, other currencies will be automatically converted based on the exchange rates defined in GlobalSetting.
+               */
+              pricing?: {
+                price?: number | null;
+                discount?: number | null;
+              };
+              inventory?: {
+                sku?: string | null;
+                stock?: number | null;
+              };
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  content?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  status?: ('draft' | 'published' | 'out-of-stock' | 'archived') | null;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  image: (number | Media)[];
+  taxonomies: {
+    gender: number | Category;
+    category: number | Category;
+    subCategory: number | Category;
+    tags?: (number | Tag)[] | null;
   };
-  variants?: (number | ProductVariant)[] | null;
   meta?: {
     title?: string | null;
     description?: string | null;
@@ -401,28 +708,6 @@ export interface Product {
     image?: (number | null) | Media;
   };
   folder?: (number | null) | FolderInterface;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "brands".
- */
-export interface Brand {
-  id: number;
-  title: string;
-  description?: string | null;
-  slug?: string | null;
-  slugLock?: boolean | null;
-  location?: string | null;
-  meta?: {
-    title?: string | null;
-    description?: string | null;
-    /**
-     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
-     */
-    image?: (number | null) | Media;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -441,142 +726,18 @@ export interface Tag {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "product-variants".
+ * via the `definition` "posts".
  */
-export interface ProductVariant {
+export interface Post {
   id: number;
-  /**
-   * Ví dụ: 'Màu Đỏ / Layout 100%' hoặc 'Bản 256GB màu Titan'
-   */
-  name: string;
-  product: number | Product;
-  status?: ('draft' | 'published' | 'out-of-stock' | 'archived') | null;
-  price: number;
-  options?:
-    | {
-        /**
-         * Ví dụ: 'Màu sắc', 'Dung lượng', 'Layout'
-         */
-        option: string;
-        /**
-         * Ví dụ: 'Đỏ', '256GB', '100%'
-         */
-        value: string;
-        id?: string | null;
-      }[]
-    | null;
-  inventory?: {
-    sku?: string | null;
-    stock?: number | null;
-  };
-  gallery?:
-    | {
-        image: number | Media;
-        content?: {
-          root: {
-            type: string;
-            children: {
-              type: string;
-              version: number;
-              [k: string]: unknown;
-            }[];
-            direction: ('ltr' | 'rtl') | null;
-            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-            indent: number;
-            version: number;
-          };
-          [k: string]: unknown;
-        } | null;
-        id?: string | null;
-      }[]
-    | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "pages".
- */
-export interface Page {
-  id: number;
-  title: string;
-  description?: string | null;
+  title?: string | null;
   slug?: string | null;
   slugLock?: boolean | null;
-  blocks?: (Hero | ModalBlock | NewProduct | CategoryProduct)[] | null;
-  meta?: {
-    title?: string | null;
-    description?: string | null;
-    /**
-     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
-     */
-    image?: (number | null) | Media;
-  };
-  folder?: (number | null) | FolderInterface;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "Hero".
- */
-export interface Hero {
-  gallery?:
-    | {
-        image: number | Media;
-        content?: {
-          root: {
-            type: string;
-            children: {
-              type: string;
-              version: number;
-              [k: string]: unknown;
-            }[];
-            direction: ('ltr' | 'rtl') | null;
-            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-            indent: number;
-            version: number;
-          };
-          [k: string]: unknown;
-        } | null;
-        /**
-         * Choose whether this is an internal or external link
-         */
-        checkTypeLink?: ('internal' | 'external') | null;
-        /**
-         * Check if this item opens the document in a new window or tab
-         */
-        isblank?: boolean | null;
-        /**
-         * Enter the name for the menu item
-         */
-        title?: string | null;
-        /**
-         * Enter the external URL to link to
-         */
-        link?: string | null;
-        /**
-         * Select an internal page or product to link to
-         */
-        localLink?: (number | null) | Page;
-        id?: string | null;
-      }[]
-    | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'hero';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "Modal Block".
- */
-export interface ModalBlock {
-  title?: string | null;
   content?: {
     root: {
       type: string;
       children: {
-        type: string;
+        type: any;
         version: number;
         [k: string]: unknown;
       }[];
@@ -587,38 +748,23 @@ export interface ModalBlock {
     };
     [k: string]: unknown;
   } | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'modalBlock';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "New Product".
- */
-export interface NewProduct {
-  title: string;
-  description: string;
-  categories: (number | Category)[];
-  layout?: ('grid' | 'carousel') | null;
-  limit: number;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'newProduct';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "Category Product".
- */
-export interface CategoryProduct {
-  category: number | Category;
-  soft?: ('datePublic' | 'hotDeal' | 'newArrival' | 'featured' | 'bestSeller' | 'onSale' | 'brand' | 'hashtags') | null;
-  layout?: ('grid' | 'carousel') | null;
-  limit?: number | null;
-  brand?: (number | Brand)[] | null;
-  hashtags?: (number | Tag)[] | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'categoryProduct';
+  image: number | Media;
+  linkedProducts?:
+    | {
+        relationTo: 'products';
+        value: number | Product;
+      }[]
+    | null;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+  };
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -630,7 +776,6 @@ export interface Order {
   items?:
     | {
         product: number | Product;
-        variant?: (number | null) | ProductVariant;
         quantity: number;
         /**
          * Giá của sản phẩm tại thời điểm đặt hàng.
@@ -672,7 +817,7 @@ export interface Review {
  */
 export interface Newsletter {
   id: number;
-  listEmail?: (number | null) | EmailSubscribe;
+  listEmail?: (number | EmailSubscribe)[] | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -683,54 +828,6 @@ export interface Newsletter {
 export interface EmailSubscribe {
   id: number;
   email: string;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "posts".
- */
-export interface Post {
-  id: number;
-  title?: string | null;
-  slug?: string | null;
-  slugLock?: boolean | null;
-  content?: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  image: number | Media;
-  linkedProducts?:
-    | (
-        | {
-            relationTo: 'products';
-            value: number | Product;
-          }
-        | {
-            relationTo: 'brands';
-            value: number | Brand;
-          }
-      )[]
-    | null;
-  meta?: {
-    title?: string | null;
-    description?: string | null;
-    /**
-     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
-     */
-    image?: (number | null) | Media;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -750,16 +847,8 @@ export interface Search {
         value: number | Category;
       }
     | {
-        relationTo: 'subcategories';
-        value: number | Subcategory;
-      }
-    | {
         relationTo: 'products';
         value: number | Product;
-      }
-    | {
-        relationTo: 'brands';
-        value: number | Brand;
       }
     | {
         relationTo: 'posts';
@@ -788,10 +877,6 @@ export interface PayloadLockedDocument {
         value: number | Category;
       } | null)
     | ({
-        relationTo: 'subcategories';
-        value: number | Subcategory;
-      } | null)
-    | ({
         relationTo: 'products';
         value: number | Product;
       } | null)
@@ -800,20 +885,12 @@ export interface PayloadLockedDocument {
         value: number | Tag;
       } | null)
     | ({
-        relationTo: 'brands';
-        value: number | Brand;
-      } | null)
-    | ({
         relationTo: 'orders';
         value: number | Order;
       } | null)
     | ({
         relationTo: 'reviews';
         value: number | Review;
-      } | null)
-    | ({
-        relationTo: 'product-variants';
-        value: number | ProductVariant;
       } | null)
     | ({
         relationTo: 'newsletter';
@@ -946,6 +1023,16 @@ export interface MediaSelect<T extends boolean = true> {
               filesize?: T;
               filename?: T;
             };
+        medium?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
         large?:
           | T
           | {
@@ -967,6 +1054,46 @@ export interface CategoriesSelect<T extends boolean = true> {
   description?: T;
   slug?: T;
   slugLock?: T;
+  blocks?:
+    | T
+    | {
+        direction?: T;
+        sections?:
+          | T
+          | {
+              mediaBlock?:
+                | T
+                | {
+                    layout?: T;
+                    spacing?: T;
+                    aspect?: T;
+                    column?: T;
+                    gallery?:
+                      | T
+                      | {
+                          caption?: T;
+                          image?: T;
+                          checkTypeLink?: T;
+                          isblank?: T;
+                          title?: T;
+                          link?: T;
+                          localLink?: T;
+                          id?: T;
+                        };
+                    id?: T;
+                    blockName?: T;
+                  };
+              richTextBlock?:
+                | T
+                | {
+                    layout?: T;
+                    spacing?: T;
+                    content?: T;
+                    id?: T;
+                    blockName?: T;
+                  };
+            };
+      };
   meta?:
     | T
     | {
@@ -974,26 +1101,14 @@ export interface CategoriesSelect<T extends boolean = true> {
         description?: T;
         image?: T;
       };
-  folder?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "subcategories_select".
- */
-export interface SubcategoriesSelect<T extends boolean = true> {
-  title?: T;
-  description?: T;
-  slug?: T;
-  slugLock?: T;
-  category?: T;
-  meta?:
+  parent?: T;
+  breadcrumbs?:
     | T
     | {
-        title?: T;
-        description?: T;
-        image?: T;
+        doc?: T;
+        url?: T;
+        label?: T;
+        id?: T;
       };
   folder?: T;
   updatedAt?: T;
@@ -1004,36 +1119,57 @@ export interface SubcategoriesSelect<T extends boolean = true> {
  * via the `definition` "products_select".
  */
 export interface ProductsSelect<T extends boolean = true> {
-  productType?: T;
   views?: T;
-  sales?: T;
   title?: T;
   description?: T;
-  layout?:
+  sales?: T;
+  name?: T;
+  color?: T;
+  pricing?:
     | T
     | {
-        richText?:
+        price?: T;
+        discount?: T;
+      };
+  sizes?:
+    | T
+    | {
+        size?: T;
+        inventory?:
           | T
           | {
-              content?: T;
-              id?: T;
-              blockName?: T;
+              sku?: T;
+              stock?: T;
             };
-      };
-  specifications?:
-    | T
-    | {
-        key?: T;
-        value?: T;
         id?: T;
       };
-  gallery?:
+  variants?:
     | T
     | {
-        image?: T;
-        content?: T;
+        name?: T;
+        color?: T;
+        status?: T;
+        sizes?:
+          | T
+          | {
+              size?: T;
+              pricing?:
+                | T
+                | {
+                    price?: T;
+                    discount?: T;
+                  };
+              inventory?:
+                | T
+                | {
+                    sku?: T;
+                    stock?: T;
+                  };
+              id?: T;
+            };
         id?: T;
       };
+  content?: T;
   status?: T;
   slug?: T;
   slugLock?: T;
@@ -1041,25 +1177,11 @@ export interface ProductsSelect<T extends boolean = true> {
   taxonomies?:
     | T
     | {
-        brands?: T;
+        gender?: T;
         category?: T;
         subCategory?: T;
         tags?: T;
       };
-  pricing?:
-    | T
-    | {
-        price?: T;
-        discount?: T;
-        total?: T;
-      };
-  inventory?:
-    | T
-    | {
-        sku?: T;
-        stock?: T;
-      };
-  variants?: T;
   meta?:
     | T
     | {
@@ -1085,26 +1207,6 @@ export interface TagsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "brands_select".
- */
-export interface BrandsSelect<T extends boolean = true> {
-  title?: T;
-  description?: T;
-  slug?: T;
-  slugLock?: T;
-  location?: T;
-  meta?:
-    | T
-    | {
-        title?: T;
-        description?: T;
-        image?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "orders_select".
  */
 export interface OrdersSelect<T extends boolean = true> {
@@ -1113,7 +1215,6 @@ export interface OrdersSelect<T extends boolean = true> {
     | T
     | {
         product?: T;
-        variant?: T;
         quantity?: T;
         price?: T;
         id?: T;
@@ -1148,38 +1249,6 @@ export interface ReviewsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "product-variants_select".
- */
-export interface ProductVariantsSelect<T extends boolean = true> {
-  name?: T;
-  product?: T;
-  status?: T;
-  price?: T;
-  options?:
-    | T
-    | {
-        option?: T;
-        value?: T;
-        id?: T;
-      };
-  inventory?:
-    | T
-    | {
-        sku?: T;
-        stock?: T;
-      };
-  gallery?:
-    | T
-    | {
-        image?: T;
-        content?: T;
-        id?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "newsletter_select".
  */
 export interface NewsletterSelect<T extends boolean = true> {
@@ -1208,10 +1277,98 @@ export interface PagesSelect<T extends boolean = true> {
   blocks?:
     | T
     | {
-        hero?: T | HeroSelect<T>;
-        modalBlock?: T | ModalBlockSelect<T>;
-        newProduct?: T | NewProductSelect<T>;
-        categoryProduct?: T | CategoryProductSelect<T>;
+        SingleProductBlock?:
+          | T
+          | {
+              layout?: T;
+              spacing?: T;
+              type?: T;
+              product?: T;
+              image?: T;
+              id?: T;
+              blockName?: T;
+            };
+        heroBlock?:
+          | T
+          | {
+              layout?: T;
+              spacing?: T;
+              aspect?: T;
+              type?: T;
+              single?:
+                | T
+                | {
+                    image?: T;
+                    checkTypeLink?: T;
+                    isblank?: T;
+                    title?: T;
+                    link?: T;
+                    localLink?: T;
+                    caption?: T;
+                  };
+              gallery?:
+                | T
+                | {
+                    image?: T;
+                    checkTypeLink?: T;
+                    isblank?: T;
+                    title?: T;
+                    link?: T;
+                    localLink?: T;
+                    caption?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        mediaBlock?:
+          | T
+          | {
+              layout?: T;
+              spacing?: T;
+              aspect?: T;
+              column?: T;
+              gallery?:
+                | T
+                | {
+                    caption?: T;
+                    image?: T;
+                    checkTypeLink?: T;
+                    isblank?: T;
+                    title?: T;
+                    link?: T;
+                    localLink?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        richTextBlock?:
+          | T
+          | {
+              layout?: T;
+              spacing?: T;
+              content?: T;
+              id?: T;
+              blockName?: T;
+            };
+        faq?:
+          | T
+          | {
+              layout?: T;
+              spacing?: T;
+              direction?: T;
+              content?: T;
+              faqList?:
+                | T
+                | {
+                    question?: T;
+                    answer?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
       };
   meta?:
     | T
@@ -1223,63 +1380,6 @@ export interface PagesSelect<T extends boolean = true> {
   folder?: T;
   updatedAt?: T;
   createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "Hero_select".
- */
-export interface HeroSelect<T extends boolean = true> {
-  gallery?:
-    | T
-    | {
-        image?: T;
-        content?: T;
-        checkTypeLink?: T;
-        isblank?: T;
-        title?: T;
-        link?: T;
-        localLink?: T;
-        id?: T;
-      };
-  id?: T;
-  blockName?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "Modal Block_select".
- */
-export interface ModalBlockSelect {
-  title?: boolean;
-  content?: boolean;
-  id?: boolean;
-  blockName?: boolean;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "New Product_select".
- */
-export interface NewProductSelect {
-  title?: boolean;
-  description?: boolean;
-  categories?: boolean;
-  layout?: boolean;
-  limit?: boolean;
-  id?: boolean;
-  blockName?: boolean;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "Category Product_select".
- */
-export interface CategoryProductSelect {
-  category?: boolean;
-  soft?: boolean;
-  layout?: boolean;
-  limit?: boolean;
-  brand?: boolean;
-  hashtags?: boolean;
-  id?: boolean;
-  blockName?: boolean;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1363,7 +1463,6 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
  */
 export interface Setting {
   id: number;
-<<<<<<< HEAD
   nav?: {
     header?: {
       logo?: (number | null) | Media;
@@ -1389,35 +1488,19 @@ export interface Setting {
             /**
              * Select an internal page or product to link to
              */
-            localLink?: (number | null) | Page;
-            /**
-             * Add nested navigation items
-             */
-            children?:
-              | {
-                  /**
-                   * Choose whether this is an internal or external link
-                   */
-                  checkTypeLink?: ('internal' | 'external') | null;
-                  /**
-                   * Check if this item opens the document in a new window or tab
-                   */
-                  isblank?: boolean | null;
-                  /**
-                   * Enter the name for the menu item
-                   */
-                  title?: string | null;
-                  /**
-                   * Enter the external URL to link to
-                   */
-                  link?: string | null;
-                  /**
-                   * Select an internal page or product to link to
-                   */
-                  localLink?: (number | null) | Page;
-                  id?: string | null;
-                }[]
-              | null;
+            localLink?:
+              | ({
+                  relationTo: 'pages';
+                  value: number | Page;
+                } | null)
+              | ({
+                  relationTo: 'posts';
+                  value: number | Post;
+                } | null)
+              | ({
+                  relationTo: 'categories';
+                  value: number | Category;
+                } | null);
             id?: string | null;
           }[]
         | null;
@@ -1446,155 +1529,31 @@ export interface Setting {
             /**
              * Select an internal page or product to link to
              */
-            localLink?: (number | null) | Page;
-            /**
-             * Add nested navigation items
-             */
-            children?:
-              | {
-                  /**
-                   * Choose whether this is an internal or external link
-                   */
-                  checkTypeLink?: ('internal' | 'external') | null;
-                  /**
-                   * Check if this item opens the document in a new window or tab
-                   */
-                  isblank?: boolean | null;
-                  /**
-                   * Enter the name for the menu item
-                   */
-                  title?: string | null;
-                  /**
-                   * Enter the external URL to link to
-                   */
-                  link?: string | null;
-                  /**
-                   * Select an internal page or product to link to
-                   */
-                  localLink?: (number | null) | Page;
-                  id?: string | null;
-                }[]
-              | null;
+            localLink?:
+              | ({
+                  relationTo: 'pages';
+                  value: number | Page;
+                } | null)
+              | ({
+                  relationTo: 'posts';
+                  value: number | Post;
+                } | null)
+              | ({
+                  relationTo: 'categories';
+                  value: number | Category;
+                } | null);
             id?: string | null;
           }[]
         | null;
     };
-=======
-  header?: {
-    logo?: (number | null) | Media;
-    navItems?:
-      | {
-          /**
-           * Choose whether this is an internal or external link
-           */
-          checkTypeLink?: ('internal' | 'external') | null;
-          /**
-           * Check if this item opens the document in a new window or tab
-           */
-          isblank?: boolean | null;
-          /**
-           * Enter the name for the menu item
-           */
-          title?: string | null;
-          /**
-           * Enter the external URL to link to
-           */
-          link?: string | null;
-          /**
-           * Select an internal page or product to link to
-           */
-          localLink?: (number | null) | Page;
-          /**
-           * Add nested navigation items
-           */
-          children?:
-            | {
-                /**
-                 * Choose whether this is an internal or external link
-                 */
-                checkTypeLink?: ('internal' | 'external') | null;
-                /**
-                 * Check if this item opens the document in a new window or tab
-                 */
-                isblank?: boolean | null;
-                /**
-                 * Enter the name for the menu item
-                 */
-                title?: string | null;
-                /**
-                 * Enter the external URL to link to
-                 */
-                link?: string | null;
-                /**
-                 * Select an internal page or product to link to
-                 */
-                localLink?: (number | null) | Page;
-                id?: string | null;
-              }[]
-            | null;
-          id?: string | null;
-        }[]
-      | null;
->>>>>>> 4544019ae85173e44fdbc8897c62b598e02bf364
   };
   announcement?: {
     transition?: ('blur' | 'slide-horizontal' | 'slide-vertical') | null;
     interval?: number | null;
     announcement?:
       | {
-<<<<<<< HEAD
           content?: string | null;
           link?: string | null;
-=======
-          /**
-           * Choose whether this is an internal or external link
-           */
-          checkTypeLink?: ('internal' | 'external') | null;
-          /**
-           * Check if this item opens the document in a new window or tab
-           */
-          isblank?: boolean | null;
-          /**
-           * Enter the name for the menu item
-           */
-          title?: string | null;
-          /**
-           * Enter the external URL to link to
-           */
-          link?: string | null;
-          /**
-           * Select an internal page or product to link to
-           */
-          localLink?: (number | null) | Page;
-          /**
-           * Add nested navigation items
-           */
-          children?:
-            | {
-                /**
-                 * Choose whether this is an internal or external link
-                 */
-                checkTypeLink?: ('internal' | 'external') | null;
-                /**
-                 * Check if this item opens the document in a new window or tab
-                 */
-                isblank?: boolean | null;
-                /**
-                 * Enter the name for the menu item
-                 */
-                title?: string | null;
-                /**
-                 * Enter the external URL to link to
-                 */
-                link?: string | null;
-                /**
-                 * Select an internal page or product to link to
-                 */
-                localLink?: (number | null) | Page;
-                id?: string | null;
-              }[]
-            | null;
->>>>>>> 4544019ae85173e44fdbc8897c62b598e02bf364
           id?: string | null;
         }[]
       | null;
@@ -1613,18 +1572,9 @@ export interface SettingsSelect<T extends boolean = true> {
         header?:
           | T
           | {
-<<<<<<< HEAD
               logo?: T;
               logoDark?: T;
               navItems?:
-=======
-              checkTypeLink?: T;
-              isblank?: T;
-              title?: T;
-              link?: T;
-              localLink?: T;
-              children?:
->>>>>>> 4544019ae85173e44fdbc8897c62b598e02bf364
                 | T
                 | {
                     checkTypeLink?: T;
@@ -1632,16 +1582,6 @@ export interface SettingsSelect<T extends boolean = true> {
                     title?: T;
                     link?: T;
                     localLink?: T;
-                    children?:
-                      | T
-                      | {
-                          checkTypeLink?: T;
-                          isblank?: T;
-                          title?: T;
-                          link?: T;
-                          localLink?: T;
-                          id?: T;
-                        };
                     id?: T;
                   };
             };
@@ -1658,16 +1598,6 @@ export interface SettingsSelect<T extends boolean = true> {
                     title?: T;
                     link?: T;
                     localLink?: T;
-                    children?:
-                      | T
-                      | {
-                          checkTypeLink?: T;
-                          isblank?: T;
-                          title?: T;
-                          link?: T;
-                          localLink?: T;
-                          id?: T;
-                        };
                     id?: T;
                   };
             };
@@ -1680,26 +1610,8 @@ export interface SettingsSelect<T extends boolean = true> {
         announcement?:
           | T
           | {
-<<<<<<< HEAD
               content?: T;
               link?: T;
-=======
-              checkTypeLink?: T;
-              isblank?: T;
-              title?: T;
-              link?: T;
-              localLink?: T;
-              children?:
-                | T
-                | {
-                    checkTypeLink?: T;
-                    isblank?: T;
-                    title?: T;
-                    link?: T;
-                    localLink?: T;
-                    id?: T;
-                  };
->>>>>>> 4544019ae85173e44fdbc8897c62b598e02bf364
               id?: T;
             };
       };

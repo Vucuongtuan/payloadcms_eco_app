@@ -1,14 +1,12 @@
 export { Categories } from "./Categories";
-export { Media } from "./Media";
-export { Products } from "./Products";
-export { Users } from "./Users";
-export { Tags } from "./Tags";
-export { SubCategories } from "./SubCategories";
-export { Brands } from "./Brands";
-export { Orders } from "./Orders";
-export { Reviews } from "./Reviews";
-export { ProductVariants } from "./ProductVariants";
-export { Newsletter } from "./Newsletter";
 export { EmailSubscribe } from "./EmailSubscribe";
+export { Media } from "./Media";
+export { Newsletter } from "./Newsletter";
+export { Orders } from "./Orders";
 export { Pages } from "./Pages";
 export { Posts } from "./Posts";
+export { Products } from "./Products";
+export { Reviews } from "./Reviews";
+export { Tags } from "./Tags";
+export { Users } from "./Users";
+

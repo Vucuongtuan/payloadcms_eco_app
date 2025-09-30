@@ -27,7 +27,7 @@ export const Newsletter:CollectionConfig={
                 vi:"Email",
                 en:"Email"
             },
-            hashMany:true,
+            hasMany:true
         }
     ]
 }

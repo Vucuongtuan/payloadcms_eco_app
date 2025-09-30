@@ -1,7 +1,6 @@
 import { CollectionConfig } from "payload";
 
 import { baseField } from "../../fields/baseField";
-import generateSlugForTitle from "../../hooks/genarateSlugForTitle";
 
 export const Tags: CollectionConfig = {
   slug: "tags",

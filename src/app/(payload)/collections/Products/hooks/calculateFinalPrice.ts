@@ -1,6 +1,6 @@
-import { BeforeValidateHook } from 'payload/types';
+import { CollectionBeforeValidateHook } from "payload";
 
-export const calculateFinalPrice: BeforeValidateHook = ({ data }) => {
+export const calculateFinalPrice: CollectionBeforeValidateHook = ({ data }) => {
   if (data && data.price) {
     const { basePrice, discount } = data.price;
     const base = Number(basePrice) || 0;

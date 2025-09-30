@@ -1,12 +1,8 @@
 import { CollectionConfig, Field } from "payload";
-import { priceField } from "../../fields/price";
-import { uploadCustomField } from "../../fields/upload";
-import { statusField } from "../../fields/status";
-import { inventoryField } from "../../fields/inventory";
-import { specificationsField } from "../../fields/specifications";
-import { contentBlocksField } from "../../fields/contentBlocks";
 import { slugField } from "../../fields/slug";
-import { galleryField } from "../../fields/gallery";
+import { statusField } from "../../fields/status";
+import { uploadCustomField } from "../../fields/upload";
+import { variants } from "../../fields/variant";
 
 export const Products: CollectionConfig = {
   slug: "products",
@@ -20,32 +16,9 @@ export const Products: CollectionConfig = {
   },
   fields: [
     {
-      name: "productType",
-      type: "radio",
-      label: { vi: "Loại sản phẩm", en: "Product Type" },
-      options: [
-        { value: "simple", label: { vi: "Sản phẩm đơn giản", en: "Simple Product" } },
-        { value: "variable", label: { vi: "Sản phẩm có biến thể", en: "Variable Product" } },
-      ],
-      defaultValue: "simple",
-      admin: {
-        layout: "horizontal",
-      },
-    },
-    {
       name: 'views',
       type: 'number',
       label: { vi: 'Lượt xem', en: 'Views' },
-      defaultValue: 0,
-      admin: {
-        readOnly: true,
-        position: 'sidebar',
-      }
-    },
-    {
-      name: 'sales',
-      type: 'number',
-      label: { vi: 'Lượt bán', en: 'Sales' },
       defaultValue: 0,
       admin: {
         readOnly: true,
@@ -57,43 +30,77 @@ export const Products: CollectionConfig = {
       type: "text",
       required: true,
       label: { vi: "Tên sản phẩm", en: "Product Name" },
+      localized:true
+    },
+    {
+      name: "description",
+      type: "textarea",
+      label: { vi: "Mô tả ngắn", en: "Short Description" },
+      localized:true
+      
+    },
+    {
+      name: 'sales',
+      type: 'number',
+      label: { vi: 'Lượt mua', en: 'Sales' },
+      defaultValue: 0,
+      admin: {
+        readOnly: true,
+        position: 'sidebar',
+      },
+
     },
     {
       type: "tabs",
       tabs: [
         {
-          label: { vi: "Nội dung chi tiết", en: "Content" },
-          fields: [
+          label:{
+            vi:"Thông tin chung",
+            en:"General"
+          },
+          fields:[
             {
-              name: "description",
-              type: "textarea",
-              label: { vi: "Mô tả ngắn", en: "Short Description" },
+
+              type:"group",
+              label:{vi:"Thông tin sản phẩm chính",en:"Main Product Info"},
+              fields:[
+                ...variants({isStatus:false,requiredPrice:true,isMain:true}),
+              ]
             },
-            contentBlocksField(),
+              {
+                name: "variants",
+                type: "array",
+                label: { vi: "Các biến thể", en: "Variants" },
+                fields:[
+                  ...variants({isStatus:true,requiredPrice:false,isMain:false}),
+                
+                 
+                ]              
+              },
           ],
+         
         },
         {
-          label: { vi: "Dữ liệu sản phẩm", en: "Product Data" },
+          label: { vi: "Mô tả chi tiết", en: "Detail" },
           fields: [
-            specificationsField(),
             {
-              ...galleryField(),
-              admin: {
-                ...galleryField().admin,
-                condition: (_, { productType }) => productType === "simple",
-              },
-            },
+              name:"content",
+              type:"richText",
+              localized:true
+
+            }
           ],
         },
       ],
     },
     // --- Sidebar --- //
     statusField(),
-    ...slugField(),
+    ...slugField("title",{},true),
     uploadCustomField({
       name: "image",
       label: { vi: "Ảnh đại diện", en: "Featured Image" },
       required: true,
+      hasMany:true
     }),
     {
       name: "taxonomies",
@@ -102,22 +109,33 @@ export const Products: CollectionConfig = {
       admin: { position: "sidebar" },
       fields: [
         {
-          name: "brands",
+          name: "gender",
           type: "relationship",
-          relationTo: "brands",
-          hasMany: true,
+          relationTo: "categories",
+          filterOptions: {
+            where: {
+              parent: { exists: false } 
+            }
+          },
+          required:true
         },
         {
           name: "category",
           type: "relationship",
           relationTo: "categories",
           required: true,
+          filterOptions: {
+            where: {
+              parent: { exists: true }
+            }
+          }
         },
         {
-          name: "subCategory",
+          name: "subCategory", 
           type: "relationship",
-          relationTo: "subcategories",
-          hasMany: true,
+          relationTo: "categories",
+          required: true,
+          filterOptions: { where: { parent: { exists: true } } },
         },
         {
           name: "tags",
@@ -127,34 +145,7 @@ export const Products: CollectionConfig = {
         },
       ],
     },
-    // Fields for Simple Products
-    {
-      ...priceField()[0],
-      admin: {
-        ...priceField()[0].admin,
-        position: "sidebar",
-        condition: (_, { productType }) => productType === "simple",
-      },
-    },
-    {
-      ...inventoryField(),
-      admin: {
-        ...inventoryField().admin,
-        position: "sidebar",
-        condition: (_, { productType }) => productType === "simple",
-      },
-    },
-    // Field for Variable Products
-    {
-      name: "variants",
-      type: "relationship",
-      relationTo: "product-variants",
-      hasMany: true,
-      label: { vi: "Các biến thể", en: "Variants" },
-      admin: {
-        position: "sidebar",
-        condition: (_, { productType }) => productType === "variable",
-      },
-    },
+   
+
   ] as Field[],
 };

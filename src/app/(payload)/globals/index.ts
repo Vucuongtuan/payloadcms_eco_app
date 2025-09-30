@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-import { GlobalConfig, Tab } from "payload";
+import { Field, GlobalConfig, Tab } from "payload";
 import { navItem } from "../fields/navItem";
 import { revalidateGlobal } from "./hook/revalidateGlobal";
 
@@ -7,37 +6,57 @@ interface MenuFieldProps {
   label: string;
   name: string;
 }
-const createMenuTab = ({ label, name }: MenuFieldProps): Tab => ({
-  label,
-  name,
+const createMenuTab = ({ label, name }: MenuFieldProps): Tab => {
+  let navItemsFields: Field[];
 
-  fields: [
-    {
-      type: "row",
-      fields: [
-        {
-          name: "logo",
-          type: "upload",
-          label: "Logo",
-          relationTo: "media",
-        },
-        {
-          name: "logoDark",
-          type: "upload",
-          label: "Logo Dark",
-          relationTo: "media",
-        },
-      ],
-    },
+  if (name === "header") {
+    const linkFields = navItem({ isNav: true }).map((field) => ({
+      ...field,
+      admin: {
+        ...(field.admin || {}),
+        condition: (_, siblingData: any) => !siblingData.isShowMega,
+      },
+    }));
 
-    {
-      name: "navItems",
-      type: "array",
-      label: "Navigation Items",
-      fields: navItem({ isNav: true }),
-    },
-  ],
-});
+    navItemsFields = [
+
+      ...linkFields as any,
+    ];
+  } else {
+    // Keep original footer implementation
+    navItemsFields = navItem({ isNav: true });
+  }
+
+  return {
+    label,
+    name,
+    fields: [
+      {
+        type: "row",
+        fields: [
+          {
+            name: "logo",
+            type: "upload",
+            label: "Logo",
+            relationTo: "media",
+          },
+          {
+            name: "logoDark",
+            type: "upload",
+            label: "Logo Dark",
+            relationTo: "media",
+          },
+        ],
+      },
+      {
+        name: "navItems",
+        type: "array",
+        label: "Navigation Items",
+        fields: navItemsFields,
+      },
+    ],
+  };
+};
 export const Settings: GlobalConfig = {
   label: "Settings",
   slug: "settings",
@@ -128,6 +147,3 @@ export const Settings: GlobalConfig = {
     },
   ],
 };
-=======
-export { Menu } from "./Menu";
->>>>>>> 4544019ae85173e44fdbc8897c62b598e02bf364

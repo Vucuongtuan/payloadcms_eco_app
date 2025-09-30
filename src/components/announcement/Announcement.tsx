@@ -7,6 +7,8 @@ import {
 import AnnounceClient from "./AnnounceClient";
 import { Setting } from "@/payload-types";
 
+import { Suspense } from "react";
+
 interface AnnouncementProps {
   lang: Lang;
 }
@@ -16,7 +18,6 @@ export async function Announcement({ lang }: AnnouncementProps) {
     lang,
     "announcement",
   );
-  console.log(q);
   if (
     !q ||
     !q.announcement ||
@@ -34,10 +35,16 @@ export async function Announcement({ lang }: AnnouncementProps) {
   const interval = "interval" in q ? q.interval : 5000;
 
   return (
-    <AnnounceClient
-      announcement={announcements}
-      transition={transition}
-      interval={interval}
-    />
+    <div
+      className={`relative bg-black text-white py-3 px-4 w-full overflow-hidden`}
+    >
+      <Suspense>
+        <AnnounceClient
+          announcement={announcements}
+          transition={transition}
+          interval={interval}
+        />
+      </Suspense>
+    </div>
   );
 }

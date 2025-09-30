@@ -1,3 +1,5 @@
+import { Logout } from "@payloadcms/ui";
+import { RenderServerComponent } from "@payloadcms/ui/elements/RenderServerComponent";
 import {
   EntityToGroup,
   EntityType,
@@ -5,12 +7,9 @@ import {
 } from "@payloadcms/ui/shared";
 import { ServerProps } from "payload";
 import { FC } from "react";
+import { NavClient } from "./client";
 import { getNavPrefs } from "./getNavPrefs";
 import { NavWrap } from "./navWrap";
-import { RenderServerComponent } from "@payloadcms/ui/elements/RenderServerComponent";
-import { Logout } from "@payloadcms/ui";
-import { NavClient } from "./client";
-import { User } from "@/payload-types";
 
 // import { NavHamburger } from "./NavHamburger";
 
@@ -67,7 +66,7 @@ export const Nav: FC<ServerProps> = async (props) => {
     i18n,
   );
 
-  const navPreferences = await getNavPrefs({ payload, user });
+  const navPreferences = await getNavPrefs({ payload });
 
   const LogoutComponent = RenderServerComponent({
     clientProps: {

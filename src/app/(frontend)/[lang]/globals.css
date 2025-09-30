@@ -1,7 +1,45 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
+
+/*// config aspect ratio*/
+@theme {
+  --aspect-ultrawide: 21 / 9;
+  --aspect-photo: 3 / 2;
+  --aspect-poster: 2 / 3;
+  --aspect-story: 9 / 16;
+  --aspect-insta: 4 / 5;
+  --aspect-retro: 4 / 3;
+  --aspect-golden: 1.618 / 1;
+  --aspect-wide: 2.3;
+
+  /* // container */
+  --max-w-screen-3xl: 1920px;
+  
+
+  /* // font */
+  --font-sans: var(--font-inter), sans-serif; 
+  --font-display: var(--font-playfair), serif;
+
+
+  /* // mt header */
+  /* --mt-header: calc(var(--header-height) + 1rem); */
+}
+
+@layer utilities {
+  .ctn {
+    @apply px-8; 
+  }
+
+  @media (min-width: 1024px) {
+    .ctn {
+      @apply px-0;
+    }
+  }
+}
+
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
@@ -42,6 +80,7 @@
 }
 
 :root {
+  @apply font-sans antialiased;
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
@@ -114,7 +153,98 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
+}
+
+h1, h2, h3, h4, h5, h6 { @apply font-display; }
+
+.swiper-pagination {
+  position: absolute !important;
+  bottom: 30px !important;
+  left: 30px !important;
+  right: auto !important;
+  width: 100px !important;
+  height: 100px !important;
+  display: flex !important;
+  gap: 8px;
+  transform: none !important;
+  background: transparent;
+  z-index: 10;
+}
+
+.swiper-custom-bullet {
+  width: 8px;
+  height: 8px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  opacity: 1;
+}
+
+.swiper-custom-bullet:hover {
+  background: rgba(255, 255, 255, 0.7);
+  transform: scale(1.2);
+}
+
+.swiper-custom-bullet-active {
+  width: 8px;
+  height: 8px;
+  background: rgba(255, 255, 255, 1) !important;
+}
+
+/* Remove default swiper pagination styles */
+.swiper-pagination-bullet {
+  background: transparent;
+}
+
+.swiper-pagination-bullet-active {
+  background: transparent;
+}
+
+/* Animation for slide content */
+.swiper-slide-active h1 {
+  animation: slideInUp 0.8s ease-out;
+}
+
+.swiper-slide-active p {
+  animation: slideInUp 0.8s ease-out 0.2s both;
+}
+
+.swiper-slide-active button {
+  animation: slideInUp 0.8s ease-out 0.4s both;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .swiper-pagination {
+    bottom: 20px !important;
+    left: 20px !important;
+    right: auto !important;
+  }
+
+  .swiper-custom-bullet,
+  .swiper-custom-bullet-active {
+    width: 6px;
+    height: 6px;
+  }
+}
+
+.swiper-custom-bullet-active {
+  opacity: 1;
+  width: 32px;
 }
