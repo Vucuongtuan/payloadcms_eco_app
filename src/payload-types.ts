@@ -71,6 +71,7 @@ export interface Config {
     media: Media;
     categories: Category;
     products: Product;
+    variants: Variant;
     tags: Tag;
     orders: Order;
     reviews: Review;
@@ -94,6 +95,7 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     products: ProductsSelect<false> | ProductsSelect<true>;
+    variants: VariantsSelect<false> | VariantsSelect<true>;
     tags: TagsSelect<false> | TagsSelect<true>;
     orders: OrdersSelect<false> | OrdersSelect<true>;
     reviews: ReviewsSelect<false> | ReviewsSelect<true>;
@@ -397,12 +399,13 @@ export interface Page {
         | {
             layout?: ('container' | 'full' | 'wide' | 'narrow') | null;
             spacing?: ('none' | 'small' | 'medium' | 'large') | null;
-            type?: ('auto' | 'manual') | null;
-            product?: (number | null) | Product;
             image?: (number | Media)[] | null;
+            gender: number | Category;
+            type: number | Category;
+            category: number | Category;
             id?: string | null;
             blockName?: string | null;
-            blockType: 'SingleProductBlock';
+            blockType: 'categoryShowcase';
           }
         | {
             layout?: ('container' | 'full' | 'wide' | 'narrow') | null;
@@ -622,110 +625,6 @@ export interface Page {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "products".
- */
-export interface Product {
-  id: number;
-  views?: number | null;
-  title: string;
-  description?: string | null;
-  sales?: number | null;
-  name?: string | null;
-  color: string;
-  /**
-   * Enter the price in VND only, other currencies will be automatically converted based on the exchange rates defined in GlobalSetting.
-   */
-  pricing: {
-    price: number;
-    discount: number;
-  };
-  sizes?:
-    | {
-        size: 'S' | 'M' | 'L' | 'XL' | 'XXL';
-        inventory?: {
-          sku?: string | null;
-          stock?: number | null;
-        };
-        id?: string | null;
-      }[]
-    | null;
-  variants?:
-    | {
-        name?: string | null;
-        color: string;
-        status?: ('draft' | 'published' | 'out-of-stock' | 'archived') | null;
-        sizes?:
-          | {
-              size: 'S' | 'M' | 'L' | 'XL' | 'XXL';
-              /**
-               * Enter the price in VND only, other currencies will be automatically converted based on the exchange rates defined in GlobalSetting.
-               */
-              pricing?: {
-                price?: number | null;
-                discount?: number | null;
-              };
-              inventory?: {
-                sku?: string | null;
-                stock?: number | null;
-              };
-              id?: string | null;
-            }[]
-          | null;
-        id?: string | null;
-      }[]
-    | null;
-  content?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  status?: ('draft' | 'published' | 'out-of-stock' | 'archived') | null;
-  slug?: string | null;
-  slugLock?: boolean | null;
-  image: (number | Media)[];
-  taxonomies: {
-    gender: number | Category;
-    category: number | Category;
-    subCategory: number | Category;
-    tags?: (number | Tag)[] | null;
-  };
-  meta?: {
-    title?: string | null;
-    description?: string | null;
-    /**
-     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
-     */
-    image?: (number | null) | Media;
-  };
-  folder?: (number | null) | FolderInterface;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "tags".
- */
-export interface Tag {
-  id: number;
-  title: string;
-  description?: string | null;
-  slug?: string | null;
-  slugLock?: boolean | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "posts".
  */
 export interface Post {
@@ -763,6 +662,232 @@ export interface Post {
      */
     image?: (number | null) | Media;
   };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products".
+ */
+export interface Product {
+  id: number;
+  views?: number | null;
+  title: string;
+  description?: string | null;
+  sales?: number | null;
+  color: string;
+  /**
+   * Enter the price in VND only, other currencies will be automatically converted based on the exchange rates defined in GlobalSetting.
+   */
+  pricing: {
+    price: number;
+    discount: number;
+  };
+  sizes?: {
+    s?: {
+      useGlobalPrice?: boolean | null;
+      /**
+       * Enter the price in VND only, other currencies will be automatically converted based on the exchange rates defined in GlobalSetting.
+       */
+      pricing?: {
+        price: number;
+        discount: number;
+      };
+      inventory?: {
+        sku?: string | null;
+        stock?: number | null;
+      };
+    };
+    M?: {
+      useGlobalPrice?: boolean | null;
+      /**
+       * Enter the price in VND only, other currencies will be automatically converted based on the exchange rates defined in GlobalSetting.
+       */
+      pricing?: {
+        price: number;
+        discount: number;
+      };
+      inventory?: {
+        sku?: string | null;
+        stock?: number | null;
+      };
+    };
+    L?: {
+      useGlobalPrice?: boolean | null;
+      /**
+       * Enter the price in VND only, other currencies will be automatically converted based on the exchange rates defined in GlobalSetting.
+       */
+      pricing?: {
+        price: number;
+        discount: number;
+      };
+      inventory?: {
+        sku?: string | null;
+        stock?: number | null;
+      };
+    };
+    xl?: {
+      useGlobalPrice?: boolean | null;
+      /**
+       * Enter the price in VND only, other currencies will be automatically converted based on the exchange rates defined in GlobalSetting.
+       */
+      pricing?: {
+        price: number;
+        discount: number;
+      };
+      inventory?: {
+        sku?: string | null;
+        stock?: number | null;
+      };
+    };
+  };
+  variants?: (number | Variant)[] | null;
+  content?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Long content of the product is an optional field if you want to display more content than the short content
+   */
+  longContent?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  status?: ('draft' | 'published' | 'out-of-stock') | null;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  image: (number | Media)[];
+  taxonomies: {
+    gender: number | Category;
+    type: number | Category;
+    category: number | Category;
+    tags?: (number | Tag)[] | null;
+  };
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+  };
+  folder?: (number | null) | FolderInterface;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "variants".
+ */
+export interface Variant {
+  id: number;
+  title: string;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  color: string;
+  sizes?: {
+    s?: {
+      useGlobalPrice?: boolean | null;
+      /**
+       * Enter the price in VND only, other currencies will be automatically converted based on the exchange rates defined in GlobalSetting.
+       */
+      pricing?: {
+        price: number;
+        discount: number;
+      };
+      inventory?: {
+        sku?: string | null;
+        stock?: number | null;
+      };
+    };
+    M?: {
+      useGlobalPrice?: boolean | null;
+      /**
+       * Enter the price in VND only, other currencies will be automatically converted based on the exchange rates defined in GlobalSetting.
+       */
+      pricing?: {
+        price: number;
+        discount: number;
+      };
+      inventory?: {
+        sku?: string | null;
+        stock?: number | null;
+      };
+    };
+    L?: {
+      useGlobalPrice?: boolean | null;
+      /**
+       * Enter the price in VND only, other currencies will be automatically converted based on the exchange rates defined in GlobalSetting.
+       */
+      pricing?: {
+        price: number;
+        discount: number;
+      };
+      inventory?: {
+        sku?: string | null;
+        stock?: number | null;
+      };
+    };
+    xl?: {
+      useGlobalPrice?: boolean | null;
+      /**
+       * Enter the price in VND only, other currencies will be automatically converted based on the exchange rates defined in GlobalSetting.
+       */
+      pricing?: {
+        price: number;
+        discount: number;
+      };
+      inventory?: {
+        sku?: string | null;
+        stock?: number | null;
+      };
+    };
+  };
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tags".
+ */
+export interface Tag {
+  id: number;
+  title: string;
+  description?: string | null;
+  slug?: string | null;
+  slugLock?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -851,6 +976,10 @@ export interface Search {
         value: number | Product;
       }
     | {
+        relationTo: 'variants';
+        value: number | Variant;
+      }
+    | {
         relationTo: 'posts';
         value: number | Post;
       };
@@ -879,6 +1008,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'products';
         value: number | Product;
+      } | null)
+    | ({
+        relationTo: 'variants';
+        value: number | Variant;
       } | null)
     | ({
         relationTo: 'tags';
@@ -1123,7 +1256,6 @@ export interface ProductsSelect<T extends boolean = true> {
   title?: T;
   description?: T;
   sales?: T;
-  name?: T;
   color?: T;
   pricing?:
     | T
@@ -1134,25 +1266,10 @@ export interface ProductsSelect<T extends boolean = true> {
   sizes?:
     | T
     | {
-        size?: T;
-        inventory?:
+        s?:
           | T
           | {
-              sku?: T;
-              stock?: T;
-            };
-        id?: T;
-      };
-  variants?:
-    | T
-    | {
-        name?: T;
-        color?: T;
-        status?: T;
-        sizes?:
-          | T
-          | {
-              size?: T;
+              useGlobalPrice?: T;
               pricing?:
                 | T
                 | {
@@ -1165,11 +1282,62 @@ export interface ProductsSelect<T extends boolean = true> {
                     sku?: T;
                     stock?: T;
                   };
-              id?: T;
             };
-        id?: T;
+        M?:
+          | T
+          | {
+              useGlobalPrice?: T;
+              pricing?:
+                | T
+                | {
+                    price?: T;
+                    discount?: T;
+                  };
+              inventory?:
+                | T
+                | {
+                    sku?: T;
+                    stock?: T;
+                  };
+            };
+        L?:
+          | T
+          | {
+              useGlobalPrice?: T;
+              pricing?:
+                | T
+                | {
+                    price?: T;
+                    discount?: T;
+                  };
+              inventory?:
+                | T
+                | {
+                    sku?: T;
+                    stock?: T;
+                  };
+            };
+        xl?:
+          | T
+          | {
+              useGlobalPrice?: T;
+              pricing?:
+                | T
+                | {
+                    price?: T;
+                    discount?: T;
+                  };
+              inventory?:
+                | T
+                | {
+                    sku?: T;
+                    stock?: T;
+                  };
+            };
       };
+  variants?: T;
   content?: T;
+  longContent?: T;
   status?: T;
   slug?: T;
   slugLock?: T;
@@ -1178,8 +1346,8 @@ export interface ProductsSelect<T extends boolean = true> {
     | T
     | {
         gender?: T;
+        type?: T;
         category?: T;
-        subCategory?: T;
         tags?: T;
       };
   meta?:
@@ -1192,6 +1360,99 @@ export interface ProductsSelect<T extends boolean = true> {
   folder?: T;
   updatedAt?: T;
   createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "variants_select".
+ */
+export interface VariantsSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  slugLock?: T;
+  color?: T;
+  sizes?:
+    | T
+    | {
+        s?:
+          | T
+          | {
+              useGlobalPrice?: T;
+              pricing?:
+                | T
+                | {
+                    price?: T;
+                    discount?: T;
+                  };
+              inventory?:
+                | T
+                | {
+                    sku?: T;
+                    stock?: T;
+                  };
+            };
+        M?:
+          | T
+          | {
+              useGlobalPrice?: T;
+              pricing?:
+                | T
+                | {
+                    price?: T;
+                    discount?: T;
+                  };
+              inventory?:
+                | T
+                | {
+                    sku?: T;
+                    stock?: T;
+                  };
+            };
+        L?:
+          | T
+          | {
+              useGlobalPrice?: T;
+              pricing?:
+                | T
+                | {
+                    price?: T;
+                    discount?: T;
+                  };
+              inventory?:
+                | T
+                | {
+                    sku?: T;
+                    stock?: T;
+                  };
+            };
+        xl?:
+          | T
+          | {
+              useGlobalPrice?: T;
+              pricing?:
+                | T
+                | {
+                    price?: T;
+                    discount?: T;
+                  };
+              inventory?:
+                | T
+                | {
+                    sku?: T;
+                    stock?: T;
+                  };
+            };
+      };
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1277,14 +1538,15 @@ export interface PagesSelect<T extends boolean = true> {
   blocks?:
     | T
     | {
-        SingleProductBlock?:
+        categoryShowcase?:
           | T
           | {
               layout?: T;
               spacing?: T;
-              type?: T;
-              product?: T;
               image?: T;
+              gender?: T;
+              type?: T;
+              category?: T;
               id?: T;
               blockName?: T;
             };

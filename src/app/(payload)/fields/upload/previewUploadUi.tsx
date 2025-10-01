@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 
 import { useFormFields } from "@payloadcms/ui";
 
@@ -10,7 +10,7 @@ export function MediaPreview(props: any) {
     url: string;
     mimeType?: string;
   }>({ url: "" });
-  const [isLoading, setIsLoading] = useState(false);
+  const [isPending,startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null);
 
   const previewFieldName = props.field.name;
@@ -25,7 +25,7 @@ export function MediaPreview(props: any) {
   const imageID = image?.value;
 
   const handleGetMediaByID = async () => {
-    setIsLoading(true);
+    startTransition(async ()=>{
     setError(null);
     try {
       const res = await fetch(`/api/media/${imageID}`);
@@ -40,9 +40,8 @@ export function MediaPreview(props: any) {
       }
     } catch (e) {
       setError("An error occurred while fetching media");
-    } finally {
-      setIsLoading(false);
-    }
+    } 
+  })
   };
 
   useEffect(() => {
@@ -56,7 +55,7 @@ export function MediaPreview(props: any) {
 
   const isVideo = mediaPreview.mimeType?.startsWith("video/");
 
-  if (isLoading) {
+  if (isPending) {
     return <p className="w-full h-[500px] animate-pulse"></p>;
   }
 

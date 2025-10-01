@@ -26,9 +26,6 @@ export async function findPageDoc(
     [`page`, lang, slug],
     {
       tags: [`page-${lang}-${slug}`],
-      ...(process.env.REVALIDATE_TIME && {
-        revalidate: parseInt(process.env.REVALIDATE_TIME),
-      }),
     },
   )();
 }

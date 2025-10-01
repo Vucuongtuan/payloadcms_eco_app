@@ -3,7 +3,7 @@ import React, { Fragment } from "react";
 import { cn } from "@/lib/utils";
 import { Page } from "@/payload-types";
 import { spacing } from "@/utils/cssVariable";
-import { SingleProduct } from "./SingleProduct/SingleProduct";
+import { CategoryShowcase } from "./CategoryShowcase";
 
 
 const blockComponents = {
@@ -11,14 +11,14 @@ const blockComponents = {
   // mediaBlock: MediaBlock,
   // faq:FAQ,
   // heroBlock:Hero
-  SingleProductBlock:SingleProduct
+  categoryShowcase:CategoryShowcase
 };
 
 export const RenderBlocks: React.FC<{
   blocks: Page["blocks"];
 }> = (props) => {
   const { blocks } = props;
-
+  
   const hasBlocks = blocks && Array.isArray(blocks) && blocks.length > 0;
   if (hasBlocks) {
     return (

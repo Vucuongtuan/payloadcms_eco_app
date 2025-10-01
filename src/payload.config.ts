@@ -19,7 +19,8 @@ import { vi } from '@payloadcms/translations/languages/vi';
 // ---
 // collections
 
-import { Categories, EmailSubscribe, Media, Newsletter, Orders, Pages, Posts, Products, Reviews, Tags, Users } from './app/(payload)/collections';
+import { FieldsOverride } from 'node_modules/@payloadcms/plugin-search/dist/types';
+import { Categories, EmailSubscribe, Media, Newsletter, Orders, Pages, Posts, Products, Reviews, Tags, Users, Variants } from './app/(payload)/collections';
 import { defaultLexical } from './app/(payload)/fields/defaultLexical';
 import { Settings } from './app/(payload)/globals';
 import { shorten, truncate } from './utils/truncateText';
@@ -42,12 +43,22 @@ const maxLengthSEO: Record<string, number> = {
   title: 60,
   description: 150
 }
-const allCollections = [Users, Media, Categories, Products, Tags, Orders, Reviews, Newsletter, EmailSubscribe, Pages, Posts];
+const allCollections = [Users, Media, Categories, Products,Variants, Tags, Orders, Reviews, Newsletter, EmailSubscribe, Pages, Posts];
 const golobalCollections = [Settings]
-const applySearchForCollection = ['categories', 'products', 'posts']
-const applySEOForCollection = ['categories', 'products', 'posts', 'pages']
+const applySearchForCollection = ['categories', 'products', 'variants', 'posts']
+const applySEOForCollection = ['categories', 'products', 'variants', 'posts', 'pages']
 
-
+const overrideSEOFields: FieldsOverride = ({ defaultFields }) => {
+  return defaultFields.map((field) => {
+    if ('name' in field && field.name) {
+      return {
+        ...field,
+        localized: false, 
+      }
+    }
+    return field
+  })
+}
 
 export default buildConfig({
   admin: {
@@ -111,6 +122,7 @@ export default buildConfig({
     seoPlugin({
       collections: applySEOForCollection,
       uploadsCollection: "media",
+      fields: overrideSEOFields,
       generateTitle: ({ doc, collectionSlug, locale }) => {
         const brandName = 'Moon co.';
         const brandTagline: Record<string, string> = {
@@ -125,7 +137,10 @@ export default buildConfig({
           const l = locale || "vi";
           return shorten(`${brandName} | ${brandTagline[l]}`, maxLengthSEO.title);
         }
-        
+        else if (collectionSlug === "products") {
+          const l = locale || "vi";
+          return shorten(`${doc.title} | ${brandName}`, maxLengthSEO.title);
+        }
         return truncate(doc.title, maxLengthSEO.title);
       },
       // generateImage:({doc ,collectionSlug})=>{

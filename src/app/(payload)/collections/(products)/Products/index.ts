@@ -1,8 +1,9 @@
 import { CollectionConfig, Field } from "payload";
-import { slugField } from "../../fields/slug";
-import { statusField } from "../../fields/status";
-import { uploadCustomField } from "../../fields/upload";
-import { variants } from "../../fields/variant";
+import { groupCategoriesField } from "../../../fields/groupCategories";
+import { slugField } from "../../../fields/slug";
+import { statusField } from "../../../fields/status";
+import { uploadCustomField } from "../../../fields/upload";
+import { variants } from "../../../fields/variant";
 
 export const Products: CollectionConfig = {
   slug: "products",
@@ -64,19 +65,21 @@ export const Products: CollectionConfig = {
               type:"group",
               label:{vi:"Thông tin sản phẩm chính",en:"Main Product Info"},
               fields:[
-                ...variants({isStatus:false,requiredPrice:true,isMain:true}),
+                ...variants({isStatus:false,requiredPrice:true,isMain:true,isName:false}),
               ]
             },
-              {
-                name: "variants",
-                type: "array",
-                label: { vi: "Các biến thể", en: "Variants" },
-                fields:[
-                  ...variants({isStatus:true,requiredPrice:false,isMain:false}),
-                
-                 
-                ]              
-              },
+            {
+              type:"group",
+              label:{vi:"Biến thể",en:"Variants"},
+              fields:[
+                {
+                  name:"variants",
+                  type:"relationship",
+                  relationTo:"variants",
+                  hasMany:true,
+                }
+              ]
+            }
           ],
          
         },
@@ -86,8 +89,18 @@ export const Products: CollectionConfig = {
             {
               name:"content",
               type:"richText",
-              localized:true
-
+              localized:true,
+            },
+            {
+              name:"longContent",
+              type:"richText",
+              localized:true,
+              admin:{
+                description:{
+                  vi:"Nội dung dài của sản phẩm là 1 trường optional nếu bạn muốn hiển thị nhiều nội dung hơn thay vì bị giới hạn bởi nội dung ngắn ",
+                  en:"Long content of the product is an optional field if you want to display more content than the short content",
+                }
+              }
             }
           ],
         },
@@ -95,7 +108,7 @@ export const Products: CollectionConfig = {
     },
     // --- Sidebar --- //
     statusField(),
-    ...slugField("title",{},true),
+    ...slugField("title",{},false),
     uploadCustomField({
       name: "image",
       label: { vi: "Ảnh đại diện", en: "Featured Image" },
@@ -108,35 +121,7 @@ export const Products: CollectionConfig = {
       label: { vi: "Phân loại", en: "Taxonomies" },
       admin: { position: "sidebar" },
       fields: [
-        {
-          name: "gender",
-          type: "relationship",
-          relationTo: "categories",
-          filterOptions: {
-            where: {
-              parent: { exists: false } 
-            }
-          },
-          required:true
-        },
-        {
-          name: "category",
-          type: "relationship",
-          relationTo: "categories",
-          required: true,
-          filterOptions: {
-            where: {
-              parent: { exists: true }
-            }
-          }
-        },
-        {
-          name: "subCategory", 
-          type: "relationship",
-          relationTo: "categories",
-          required: true,
-          filterOptions: { where: { parent: { exists: true } } },
-        },
+        ...groupCategoriesField(),
         {
           name: "tags",
           type: "relationship",
@@ -148,4 +133,7 @@ export const Products: CollectionConfig = {
    
 
   ] as Field[],
+  versions:{
+    drafts:true
+}
 };

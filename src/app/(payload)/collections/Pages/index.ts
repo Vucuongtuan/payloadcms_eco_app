@@ -1,3 +1,4 @@
+import { revalidatePath } from "next/cache";
 import { CollectionConfig } from "payload";
 import { baseField } from "../../fields/baseField";
 import { PageBlock } from "../blocks";
@@ -17,7 +18,15 @@ export const Pages: CollectionConfig = {
   },
   admin: {
     useAsTitle: "title",
-
+  },
+  hooks:{
+    beforeChange:[
+      async ({data}) => {
+        revalidatePath(`/vi`)
+        revalidatePath(`/en`)
+        console.log("revalidatePath: " ,data.slug)
+      }
+    ]
   },
   access: {
     read: () => true,

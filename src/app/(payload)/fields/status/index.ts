@@ -29,13 +29,6 @@ export const statusField = (): Field => ({
       },
       value: 'out-of-stock',
     },
-    {
-      label: {
-        vi: "Lưu trữ",
-        en: "Archived",
-      },
-      value: "archived",
-    },
   ],
   defaultValue: "draft",
   admin: {

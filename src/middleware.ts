@@ -1,14 +1,27 @@
-import createMiddleware from 'next-intl/middleware'
-import { routing } from './i18n/routing'
+import createMiddleware from 'next-intl/middleware';
+import { NextRequest, NextResponse } from 'next/server';
+import { routing } from './i18n/routing';
 
-export default createMiddleware(routing)
+// Create the next-intl middleware
+const intlMiddleware = createMiddleware(routing);
 
-// see https://next-intl-docs.vercel.app/docs/routing/middleware
-export const config = {
-    matcher: [
-        // Match all pathnames except for
-        // - … if they start with `/api`, `/_next`, `/_vercel`, or `/admin`
-        // - … the ones containing a dot (e.g. `favicon.ico`)
-        '/((?!api|_next|_vercel|admin|next|.*\\..*).*)',
-    ],
+export function middleware(request: NextRequest): NextResponse {
+  // First, let next-intl handle the routing
+  const response = intlMiddleware(request);
+
+  // Get country from Vercel's geo headers. Default to 'US' if not found.
+  const country = request.geo?.country || 'US';
+
+  // Add the country code to the response headers
+  // This makes it available in Server Components via `headers()`
+  response.headers.set('x-country', country);
+
+  return response;
 }
+
+// Config remains the same
+export const config = {
+  matcher: [
+    '/((?!api|_next|_vercel|admin|next|.*\\..*).*)',
+  ],
+};

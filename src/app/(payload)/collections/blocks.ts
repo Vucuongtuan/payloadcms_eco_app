@@ -1,9 +1,9 @@
 import { Block } from "payload";
-import { FAQ, HeroBlock, MediaBlock, RichTextBlock, SingleProductBlock } from "../blocks";
+import { CategoryShowcase, FAQ, HeroBlock, MediaBlock, RichTextBlock } from "../blocks";
 
 
 
 
 export const CategoryBlock:Block[] = [MediaBlock,RichTextBlock]
 
-export const PageBlock:Block[] = [SingleProductBlock,HeroBlock,MediaBlock,RichTextBlock,FAQ]
+export const PageBlock:Block[] = [CategoryShowcase,HeroBlock,MediaBlock,RichTextBlock,FAQ]
