@@ -1,56 +1,10 @@
-@plugin 'tailwindcss-animate';
-// @import "tailwindcss";
-/* Define the Tailwind layers in the correct order */
-@layer theme, base, components, utilities;
-
-/* Import the Tailwind theme styles */
-@import "tailwindcss/theme.css" layer(theme);
-
-/* Skip the preflight reset to avoid conflicts with Payload's admin styles */
-// @import 'tailwindcss/preflight.css' layer(base);
-
-/* Import Tailwind utilities */
-@import "tailwindcss/utilities.css" layer(utilities);
-
-@layer theme {
-  @import 'tailwindcss/theme.css';
-}
-
-@layer base {
-  .twp {
-    @import 'tailwindcss/preflight.css';
-  }
-
-  .twp.no-twp {
-    *,
-    ::after,
-    ::before,
-    ::backdrop,
-    ::file-selector-button {
-      all: revert-layer;
-    }
-  }
-}
-
-@layer components;
-.slot[data-swapy-highlighted] {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-@layer utilities {
-  @import 'tailwindcss/utilities.css';
-}
-.preview-size-small {
-  width: 100px;
-  height: 100px;
-}
-
-.preview-size-medium {
-  width: 200px;
-  height: 200px;
-}
-
-.preview-size-large {
-  width: 300px;
-  height: 300px;
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
 }

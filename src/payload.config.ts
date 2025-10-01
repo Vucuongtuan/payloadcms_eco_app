@@ -1,31 +1,32 @@
+// storage-adapter-import-placeholder
+
+import { Categories } from '@/collections/Categories';
+import { Media } from '@/collections/Media';
+import { Pages } from '@/collections/Pages';
+import { Users } from '@/collections/Users';
+import { Footer } from '@/globals/Footer';
+import { Header } from '@/globals/Header';
+import { vercelPostgresAdapter } from '@payloadcms/db-vercel-postgres';
+import {
+  BoldFeature,
+  EXPERIMENTAL_TableFeature,
+  IndentFeature,
+  ItalicFeature,
+  LinkFeature,
+  OrderedListFeature,
+  UnderlineFeature,
+  UnorderedListFeature,
+  lexicalEditor,
+} from '@payloadcms/richtext-lexical';
 import path from 'path';
 import { buildConfig } from 'payload';
-import sharp from 'sharp';
 import { fileURLToPath } from 'url';
-// ---
-// storage-adapter-import-placeholder
-import { vercelPostgresAdapter } from '@payloadcms/db-vercel-postgres';
-import { payloadCloudPlugin } from '@payloadcms/payload-cloud';
-// ---
-// plugins
-import { nestedDocsPlugin } from '@payloadcms/plugin-nested-docs';
-import { searchPlugin } from '@payloadcms/plugin-search';
-import { seoPlugin } from '@payloadcms/plugin-seo';
-// ---
+import { plugins } from './plugin';
 // i18n Translations
-import { en } from '@payloadcms/translations/languages/en';
-import { vi } from '@payloadcms/translations/languages/vi';
 
 // ---
-// collections
-
-import { FieldsOverride } from 'node_modules/@payloadcms/plugin-search/dist/types';
-import { Categories, EmailSubscribe, Media, Newsletter, Orders, Pages, Posts, Products, Reviews, Tags, Users, Variants } from './app/(payload)/collections';
-import { defaultLexical } from './app/(payload)/fields/defaultLexical';
-import { Settings } from './app/(payload)/globals';
-import { shorten, truncate } from './utils/truncateText';
-//---
-
+import { EmailSubscribe, Newsletter, Posts, Reviews, Tags } from './collections';
+// ---
 
 // Config Environment
 const configEnv = {
@@ -43,246 +44,91 @@ const maxLengthSEO: Record<string, number> = {
   title: 60,
   description: 150
 }
-const allCollections = [Users, Media, Categories, Products,Variants, Tags, Orders, Reviews, Newsletter, EmailSubscribe, Pages, Posts];
-const golobalCollections = [Settings]
+const allCollections = [Users, Media, Categories, Tags,Reviews, Newsletter, EmailSubscribe, Pages, Posts];
+const golobalCollections = []
 const applySearchForCollection = ['categories', 'products', 'variants', 'posts']
 const applySEOForCollection = ['categories', 'products', 'variants', 'posts', 'pages']
 
-const overrideSEOFields: FieldsOverride = ({ defaultFields }) => {
-  return defaultFields.map((field) => {
-    if ('name' in field && field.name) {
-      return {
-        ...field,
-        localized: false, 
-      }
-    }
-    return field
-  })
-}
-
 export default buildConfig({
   admin: {
-    user: Users.slug,
-    importMap: {
-      baseDir: path.resolve(dirname)
-    },
-
-    //Custom UI for Admin Dashboard
     components: {
-      Nav: "@/app/(payload)/components/Nav#Nav",
-      // beforeDashboard: ["@/app/(payload)/components/Reporting#Reporting"],
-      // views:{
-      //   dashboard:{
-      //     Component:"@/app/(payload)/components/Reporting#Reporting"
-      //   }
-      // }
-    }
+      // The `BeforeLogin` component renders a message that you see while logging into your admin panel.
+      // Feel free to delete this at any time. Simply remove the line below and the import `BeforeLogin` statement on line 15.
+      beforeLogin: ['@/components/BeforeLogin#BeforeLogin'],
+      // The `BeforeDashboard` component renders the 'welcome' block that you see after logging into your admin panel.
+      // Feel free to delete this at any time. Simply remove the line below and the import `BeforeDashboard` statement on line 15.
+      beforeDashboard: ['@/components/BeforeDashboard#BeforeDashboard'],
+    },
+    user: Users.slug,
   },
-  globals: golobalCollections,
   collections: allCollections,
-  // Config i18n for CMS
-  i18n: {
-    fallbackLanguage: "vi",
-    supportedLanguages: { en, vi },
-  },
-  // Config Localization Content
-  localization: {
-    locales: ['vi', 'en'],
-    defaultLocale: 'vi',
-  },
-  editor: defaultLexical(),
-  folders: {
-    debug: true, // optional
-    collectionOverrides: [
-      async ({ collection }) => {
-        return collection
-      },
-    ], // optional
-    fieldName: 'folder',
-    slug: 'payload-folders',
-
-  },
-  secret: configEnv.payloadSecret,
-  typescript: {
-    outputFile: path.resolve(dirname, "payload-types.ts")
-  },
+    // Config i18n for CMS
+    // i18n: {
+    //   fallbackLanguage: "vi",
+    //   supportedLanguages: { en, vi },
+    // },
+    // Config Localization Content
+    localization: {
+      locales: ['vi', 'en'],
+      defaultLocale: 'vi',
+    },
   db: vercelPostgresAdapter({
     pool: {
       connectionString: configEnv.postgresUrlNonPooling
     },
     
   }),
-  
-  sharp,
-  plugins: [
-    // Payload Cloud Plugin
-    payloadCloudPlugin(),
+  // db: mongooseAdapter({
+  //   url: process.env.DATABASE_URI || '',
+  // }),
+  editor: lexicalEditor({
+    features: () => {
+      return [
+        UnderlineFeature(),
+        BoldFeature(),
+        ItalicFeature(),
+        OrderedListFeature(),
+        UnorderedListFeature(),
+        LinkFeature({
+          enabledCollections: ['pages'],
+          fields: ({ defaultFields }) => {
+            const defaultFieldsWithoutUrl = defaultFields.filter((field) => {
+              if ('name' in field && field.name === 'url') return false
+              return true
+            })
 
-    // Plugin SEO Meta
-    seoPlugin({
-      collections: applySEOForCollection,
-      uploadsCollection: "media",
-      fields: overrideSEOFields,
-      generateTitle: ({ doc, collectionSlug, locale }) => {
-        const brandName = 'Moon co.';
-        const brandTagline: Record<string, string> = {
-          vi: 'Thời trang nam nữ, trẻ em - Quần áo, Giày dép, Phụ kiện',
-          en: 'Fashion for Men, Women & Kids - Clothing, Shoes, Accessories'
-        };
-
-        if (collectionSlug === "categories") {
-          const l = locale || "vi";
-          return shorten(`${doc.title} | ${brandName}`, maxLengthSEO.title);
-        } else if (collectionSlug === "pages") {
-          const l = locale || "vi";
-          return shorten(`${brandName} | ${brandTagline[l]}`, maxLengthSEO.title);
-        }
-        else if (collectionSlug === "products") {
-          const l = locale || "vi";
-          return shorten(`${doc.title} | ${brandName}`, maxLengthSEO.title);
-        }
-        return truncate(doc.title, maxLengthSEO.title);
-      },
-      // generateImage:({doc ,collectionSlug})=>{
-      //   return doc.image || `/assets/default-image.png`;
-      // },
-      generateDescription: ({ doc, collectionSlug, locale }) => {
-        const l = locale || 'vi'
-
-        const baseDescription: Record<string, string> = {
-          vi: 'Moon co. mang đến phong cách thời trang hiện đại cho nam, nữ và trẻ em với nhiều lựa chọn quần áo, giày dép và phụ kiện.',
-          en: 'Moon co. delivers modern fashion for men, women, and kids with a wide selection of clothing, shoes, and accessories.'
-        };
-        const desValue = doc.description || baseDescription[l];
-        return truncate(desValue, maxLengthSEO.description)
-      },
-      generateImage: ({ doc }) => doc.image || `/img/Logo_black.png` || null,
-      // tabbedUI:true
-    }),
-
-    // Search Plugin
-    searchPlugin({
-      collections: applySearchForCollection,
-      defaultPriorities: {
-        categories: 10,
-        products: 20
-      },
-      searchOverrides: {
-        // @ts-expect-error
-        fields: ({ defaultFields }) => defaultFields.map(field => {
-          if ((field as { name: string }).name === 'doc') {
-            return {
-              ...field,
-              relationTo: applySearchForCollection,
-              admin: {
-                ...((field as any).admin || {}),
-                sortOptions: {
-                  categories: 'title',
-                  products: 'title',
-                  brands: 'title',
-                  tags: 'title',
-                  subCategories: 'title',
+            return [
+              ...defaultFieldsWithoutUrl,
+              {
+                name: 'url',
+                type: 'text',
+                admin: {
+                  condition: ({ linkType }) => linkType !== 'internal',
                 },
+                label: ({ t }) => t('fields:enterURL'),
+                required: true,
               },
-            }
-          }
-          return field
-        })
-      },
-
-      beforeSync: ({ doc, searchDoc }:any) => {
-        return {
-          ...searchDoc,
-          title: doc?.title,
-        }
-      },
-      localize: true
-    }),
-    // Nesterd Docs
-    nestedDocsPlugin({
-      collections: ['categories'],
-      generateLabel: (_, doc) => doc.title || doc.name || '',
-      generateURL: (docs) =>
-        docs.reduce((url, doc) => `${url}/${doc.slug}`, ''),
-    }),
-    //Config vercel Blob Storage
-
-
-    // Config Stripe Plugin
-    // stripePlugin({
-    //   stripeSecretKey: configEnv.stripeSecretKey,
-    //   stripeWebhookSecret: configEnv.stripeWebhookSecret,
-    //   isTest: true,
-    //   sync: [
-    //     {
-    //       collection: 'users',
-    //       stripeResourceType: 'customers',
-    //       stripeResourceID: 'id',
-    //       payloadCollectionID: 'id',
-    //       fields: [
-    //         {
-    //           field: 'email',
-    //           stripeProperty: 'email',
-    //         },
-    //         {
-    //           field: 'name',
-    //           stripeProperty: 'name',
-    //         },
-    //       ],
-    //     },
-    //   ],
-    // }),
-
+            ]
+          },
+        }),
+        IndentFeature(),
+        EXPERIMENTAL_TableFeature(),
+      ]
+    },
+  }),
+  //email: nodemailerAdapter(),
+  endpoints: [],
+  globals: [Header, Footer],
+  plugins: [
+    ...plugins,
     // storage-adapter-placeholder
-  ]
-});
-const defaultImage = {
-  id: 6,
-  alt: "Plaholder",
-  folder: null,
-  updatedAt: "2025-09-22T09:59:40.505Z",
-  createdAt: "2025-09-22T09:59:40.505Z",
-  url: "/api/media/file/Logo_black-1.png",
-  thumbnailURL: "//Logo_black-1-240x240.avif",
-  filename: "Logo_black-1.png",
-  mimeType: "image/png",
-  filesize: 98161,
-  width: 512,
-  height: 512,
-  focalX: 50,
-  focalY: 50,
-  sizes: {
-    thumbnail: {
-      url: "/api/media/file/Logo_black-1-240x240.avif",
-      width: 240,
-      height: 240,
-      mimeType: "image/avif",
-      filesize: 879,
-      filename: "Logo_black-1-240x240.avif"
-    },
-    small: {
-      url: "/api/media/file/Logo_black-1-480x480.avif",
-      width: 480,
-      height: 480,
-      mimeType: "image/avif",
-      filesize: 1397,
-      filename: "Logo_black-1-480x480.avif"
-    },
-    medium: {
-      url: null,
-      width: null,
-      height: null,
-      mimeType: null,
-      filesize: null,
-      filename: null
-    },
-    large: {
-      url: null,
-      width: null,
-      height: null,
-      mimeType: null,
-      filesize: null,
-      filename: null
-    }
-  }
-};
+  ],
+  secret: process.env.PAYLOAD_SECRET || '',
+  typescript: {
+    outputFile: path.resolve(dirname, 'payload-types.ts'),
+  },
+  // Sharp is now an optional dependency -
+  // if you want to resize images, crop, set focal point, etc.
+  // make sure to install it and pass it to the config.
+  // sharp,
+})
