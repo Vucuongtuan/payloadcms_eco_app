@@ -47,11 +47,11 @@ export const variants = ({
                   name:"s",
                   fields:[
                     {
-                      name:"useGlobalPrice",
+                      name:"customPrice",
                       type:"checkbox",
                       defaultValue:false
                     },
-                    ...priceField({ required: requiredPrice,condition: (_, doc) => doc?.useGlobalPrice === false}),
+                    ...priceField({ required: requiredPrice,condition: (_, doc) => doc?.customPrice === true}),
                     inventoryField(),
                   ]
                 },
@@ -60,11 +60,11 @@ export const variants = ({
                   name:"M",
                   fields:[
                     {
-                      name:"useGlobalPrice",
+                      name:"customPrice",
                       type:"checkbox",
                       defaultValue:false
                     },
-                    ...priceField({ required: requiredPrice,condition: (_, doc) => doc?.useGlobalPrice === false}),
+                    ...priceField({ required: requiredPrice,condition: (_, doc) => doc?.customPrice === true}),
                     inventoryField(),
                   ]
                 },
@@ -73,11 +73,11 @@ export const variants = ({
                   name:"L",
                   fields:[
                     {
-                      name:"useGlobalPrice",
+                      name:"customPrice",
                       type:"checkbox",
                       defaultValue:false
                     },
-                    ...priceField({ required: requiredPrice,condition: (_, doc) => doc?.useGlobalPrice === false}),
+                    ...priceField({ required: requiredPrice,condition: (_, doc) => doc?.customPrice === true}),
                     inventoryField(),
                   ]
                 },
@@ -86,24 +86,24 @@ export const variants = ({
                   name:"xl",
                   fields:[
                     {
-                      name:"useGlobalPrice",
+                      name:"customPrice",
                       type:"checkbox",
                       defaultValue:false
                     },
-                    ...priceField({ required: requiredPrice,condition: (_, doc) => doc?.useGlobalPrice === false}),
+                    ...priceField({ required: requiredPrice,condition: (_, doc) => doc?.customPrice === true}),
                     inventoryField(),
                   ]
                 },
                 {
-                  label:"2XL",
+                  label:"XXL",
                   name:"xl",
                   fields:[
                     {
-                      name:"useGlobalPrice",
+                      name:"customPrice",
                       type:"checkbox",
                       defaultValue:false
                     },
-                    ...priceField({ required: requiredPrice,condition: (_, doc) => doc?.useGlobalPrice === false}),
+                    ...priceField({ required: requiredPrice,condition: (_, doc) => doc?.customPrice === true}),
                     inventoryField(),
                   ]
                 },

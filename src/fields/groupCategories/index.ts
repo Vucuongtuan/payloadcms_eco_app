@@ -1,43 +1,52 @@
 import { Field } from "payload";
 
-export const groupCategoriesField = (): Field[] => {
+export const groupCategoriesField = ({admin ={}}: {admin?: Field['admin']}): Field[] => {
   
     return [
     {
       name: "gender",
       type: "relationship",
       relationTo: "categories",
-      filterOptions: {
-        "folder.name": {
-            equals: "Main category",
+      filterOptions: () => {
+        // const level = data?.level || "level1"
+         return {
+          level: {
+            equals: 'level1',
           },
+        }
       },
       required: true,
+      ...(admin && admin)
     },
     {
       name: "type",
       type: "relationship",
       relationTo: "categories",
       required: true,
-      filterOptions: {
-        "folder.name": {
-            equals: "Sub category",
+      filterOptions: () => {
+        // const level = data?.level || "level1"
+         return {
+          level: {
+            equals: 'level2',
           },
+        }
       },
-      admin: {
-      },
+      ...(admin && admin)
     },
     {
       name: "category",
       type: "relationship",
       relationTo: "categories",
       required: true,
-      filterOptions: {
-        "folder.name": {
-            equals: "Product category",
+      filterOptions: () => {
+        // const level = data?.level || "level1"
+         return {
+          level: {
+            equals: 'level3',
           },
+        }
       },
-     
+      ...(admin && admin)
     },
   ];
 };

@@ -81,6 +81,7 @@ export interface Config {
     'email-subscribe': EmailSubscribe;
     pages: Page;
     posts: Post;
+    variantsProduct: VariantsProduct;
     search: Search;
     addresses: Address;
     variants: Variant;
@@ -90,6 +91,7 @@ export interface Config {
     carts: Cart;
     orders: Order;
     transactions: Transaction;
+    'payload-jobs': PayloadJob;
     'payload-folders': FolderInterface;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -104,11 +106,8 @@ export interface Config {
     variantTypes: {
       options: 'variantOptions';
     };
-    products: {
-      variants: 'variants';
-    };
     'payload-folders': {
-      documentsAndFolders: 'payload-folders' | 'categories';
+      documentsAndFolders: 'payload-folders' | 'media' | 'categories';
     };
   };
   collectionsSelect: {
@@ -121,6 +120,7 @@ export interface Config {
     'email-subscribe': EmailSubscribeSelect<false> | EmailSubscribeSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
     posts: PostsSelect<false> | PostsSelect<true>;
+    variantsProduct: VariantsProductSelect<false> | VariantsProductSelect<true>;
     search: SearchSelect<false> | SearchSelect<true>;
     addresses: AddressesSelect<false> | AddressesSelect<true>;
     variants: VariantsSelect<false> | VariantsSelect<true>;
@@ -130,6 +130,7 @@ export interface Config {
     carts: CartsSelect<false> | CartsSelect<true>;
     orders: OrdersSelect<false> | OrdersSelect<true>;
     transactions: TransactionsSelect<false> | TransactionsSelect<true>;
+    'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
     'payload-folders': PayloadFoldersSelect<false> | PayloadFoldersSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -151,7 +152,13 @@ export interface Config {
     collection: 'users';
   };
   jobs: {
-    tasks: unknown;
+    tasks: {
+      schedulePublish: TaskSchedulePublish;
+      inline: {
+        input: unknown;
+        output: unknown;
+      };
+    };
     workflows: unknown;
   };
   /**
@@ -273,7 +280,74 @@ export interface Order {
 export interface Product {
   id: number;
   title: string;
-  description?: {
+  description?: string | null;
+  color: string;
+  /**
+   * Enter the price in VND only, other currencies will be automatically converted based on the exchange rates defined in GlobalSetting.
+   */
+  pricing: {
+    price: string;
+    discount: number;
+  };
+  sizes?: {
+    s?: {
+      customPrice?: boolean | null;
+      /**
+       * Enter the price in VND only, other currencies will be automatically converted based on the exchange rates defined in GlobalSetting.
+       */
+      pricing?: {
+        price: string;
+        discount: number;
+      };
+      inventory?: {
+        sku?: string | null;
+        stock?: number | null;
+      };
+    };
+    M?: {
+      customPrice?: boolean | null;
+      /**
+       * Enter the price in VND only, other currencies will be automatically converted based on the exchange rates defined in GlobalSetting.
+       */
+      pricing?: {
+        price: string;
+        discount: number;
+      };
+      inventory?: {
+        sku?: string | null;
+        stock?: number | null;
+      };
+    };
+    L?: {
+      customPrice?: boolean | null;
+      /**
+       * Enter the price in VND only, other currencies will be automatically converted based on the exchange rates defined in GlobalSetting.
+       */
+      pricing?: {
+        price: string;
+        discount: number;
+      };
+      inventory?: {
+        sku?: string | null;
+        stock?: number | null;
+      };
+    };
+    xl?: {
+      customPrice?: boolean | null;
+      /**
+       * Enter the price in VND only, other currencies will be automatically converted based on the exchange rates defined in GlobalSetting.
+       */
+      pricing?: {
+        price: string;
+        discount: number;
+      };
+      inventory?: {
+        sku?: string | null;
+        stock?: number | null;
+      };
+    };
+  };
+  content?: {
     root: {
       type: string;
       children: {
@@ -288,24 +362,8 @@ export interface Product {
     };
     [k: string]: unknown;
   } | null;
-  gallery?:
-    | {
-        image: number | Media;
-        variantOption?: (number | null) | VariantOption;
-        id?: string | null;
-      }[]
-    | null;
-  layout?: (CallToActionBlock | ContentBlock | MediaBlock)[] | null;
-  inventory?: number | null;
-  enableVariants?: boolean | null;
-  variantTypes?: (number | VariantType)[] | null;
-  variants?: {
-    docs?: (number | Variant)[];
-    hasNextPage?: boolean;
-    totalDocs?: number;
-  };
-  priceInUSDEnabled?: boolean | null;
-  priceInUSD?: number | null;
+  sections?: (CallToActionBlock | ContentBlock | MediaBlock)[] | null;
+  variantsOption?: (number | VariantsProduct)[] | null;
   relatedProducts?: (number | Product)[] | null;
   meta?: {
     title?: string | null;
@@ -315,81 +373,19 @@ export interface Product {
     image?: (number | null) | Media;
     description?: string | null;
   };
-  categories?: (number | Category)[] | null;
   slug: string;
   slugLock?: boolean | null;
-  updatedAt: string;
-  createdAt: string;
-  deletedAt?: string | null;
-  _status?: ('draft' | 'published') | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
- */
-export interface Media {
-  id: number;
-  alt: string;
-  caption?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "variantOptions".
- */
-export interface VariantOption {
-  id: number;
-  _variantOptions_options_order?: string | null;
-  variantType: number | VariantType;
-  label: string;
-  /**
-   * should be defaulted or dynamic based on label
-   */
-  value: string;
-  updatedAt: string;
-  createdAt: string;
-  deletedAt?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "variantTypes".
- */
-export interface VariantType {
-  id: number;
-  label: string;
-  name: string;
-  options?: {
-    docs?: (number | VariantOption)[];
-    hasNextPage?: boolean;
-    totalDocs?: number;
+  sales?: number | null;
+  taxonomies: {
+    gender: number | Category;
+    type: number | Category;
+    category: number | Category;
+    tags?: (number | Tag)[] | null;
   };
   updatedAt: string;
   createdAt: string;
   deletedAt?: string | null;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -501,6 +497,121 @@ export interface Page {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media".
+ */
+export interface Media {
+  id: number;
+  alt: string;
+  folder?: (number | null) | FolderInterface;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+  sizes?: {
+    thumbnail?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    small?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    medium?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    large?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+  };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-folders".
+ */
+export interface FolderInterface {
+  id: number;
+  name: string;
+  folder?: (number | null) | FolderInterface;
+  documentsAndFolders?: {
+    docs?: (
+      | {
+          relationTo?: 'payload-folders';
+          value: number | FolderInterface;
+        }
+      | {
+          relationTo?: 'media';
+          value: number | Media;
+        }
+      | {
+          relationTo?: 'categories';
+          value: number | Category;
+        }
+    )[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  folderType?: ('media' | 'categories')[] | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "categories".
+ */
+export interface Category {
+  id: number;
+  title: string;
+  description?: string | null;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  level: 'level1' | 'level2' | 'level3';
+  blocks?: {
+    direction?: ('top' | 'bottom') | null;
+  };
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+  };
+  parent?: (number | null) | Category;
+  breadcrumbs?:
+    | {
+        doc?: (number | null) | Category;
+        url?: string | null;
+        label?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  folder?: (number | null) | FolderInterface;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "ContentBlock".
  */
 export interface ContentBlock {
@@ -590,62 +701,6 @@ export interface ArchiveBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "categories".
- */
-export interface Category {
-  id: number;
-  title: string;
-  description?: string | null;
-  slug?: string | null;
-  slugLock?: boolean | null;
-  blocks?: {
-    direction?: ('top' | 'bottom') | null;
-  };
-  meta?: {
-    title?: string | null;
-    description?: string | null;
-  };
-  parent?: (number | null) | Category;
-  breadcrumbs?:
-    | {
-        doc?: (number | null) | Category;
-        url?: string | null;
-        label?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  folder?: (number | null) | FolderInterface;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "payload-folders".
- */
-export interface FolderInterface {
-  id: number;
-  name: string;
-  folder?: (number | null) | FolderInterface;
-  documentsAndFolders?: {
-    docs?: (
-      | {
-          relationTo?: 'payload-folders';
-          value: number | FolderInterface;
-        }
-      | {
-          relationTo?: 'categories';
-          value: number | Category;
-        }
-    )[];
-    hasNextPage?: boolean;
-    totalDocs?: number;
-  };
-  folderType?: 'categories'[] | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "CarouselBlock".
  */
 export interface CarouselBlock {
@@ -713,6 +768,91 @@ export interface BannerBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "variantsProduct".
+ */
+export interface VariantsProduct {
+  id: number;
+  title: string;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  color: string;
+  sizes?: {
+    s?: {
+      customPrice?: boolean | null;
+      /**
+       * Enter the price in VND only, other currencies will be automatically converted based on the exchange rates defined in GlobalSetting.
+       */
+      pricing?: {
+        price: string;
+        discount: number;
+      };
+      inventory?: {
+        sku?: string | null;
+        stock?: number | null;
+      };
+    };
+    M?: {
+      customPrice?: boolean | null;
+      /**
+       * Enter the price in VND only, other currencies will be automatically converted based on the exchange rates defined in GlobalSetting.
+       */
+      pricing?: {
+        price: string;
+        discount: number;
+      };
+      inventory?: {
+        sku?: string | null;
+        stock?: number | null;
+      };
+    };
+    L?: {
+      customPrice?: boolean | null;
+      /**
+       * Enter the price in VND only, other currencies will be automatically converted based on the exchange rates defined in GlobalSetting.
+       */
+      pricing?: {
+        price: string;
+        discount: number;
+      };
+      inventory?: {
+        sku?: string | null;
+        stock?: number | null;
+      };
+    };
+    xl?: {
+      customPrice?: boolean | null;
+      /**
+       * Enter the price in VND only, other currencies will be automatically converted based on the exchange rates defined in GlobalSetting.
+       */
+      pricing?: {
+        price: string;
+        discount: number;
+      };
+      inventory?: {
+        sku?: string | null;
+        stock?: number | null;
+      };
+    };
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tags".
+ */
+export interface Tag {
+  id: number;
+  title: string;
+  description?: string | null;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "variants".
  */
 export interface Variant {
@@ -730,6 +870,40 @@ export interface Variant {
   createdAt: string;
   deletedAt?: string | null;
   _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "variantOptions".
+ */
+export interface VariantOption {
+  id: number;
+  _variantOptions_options_order?: string | null;
+  variantType: number | VariantType;
+  label: string;
+  /**
+   * should be defaulted or dynamic based on label
+   */
+  value: string;
+  updatedAt: string;
+  createdAt: string;
+  deletedAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "variantTypes".
+ */
+export interface VariantType {
+  id: number;
+  label: string;
+  name: string;
+  options?: {
+    docs?: (number | VariantOption)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  updatedAt: string;
+  createdAt: string;
+  deletedAt?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -853,19 +1027,6 @@ export interface Address {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "tags".
- */
-export interface Tag {
-  id: number;
-  title: string;
-  description?: string | null;
-  slug?: string | null;
-  slugLock?: boolean | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "reviews".
  */
 export interface Review {
@@ -968,6 +1129,98 @@ export interface Search {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-jobs".
+ */
+export interface PayloadJob {
+  id: number;
+  /**
+   * Input data provided to the job
+   */
+  input?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  taskStatus?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  completedAt?: string | null;
+  totalTried?: number | null;
+  /**
+   * If hasError is true this job will not be retried
+   */
+  hasError?: boolean | null;
+  /**
+   * If hasError is true, this is the error that caused it
+   */
+  error?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  /**
+   * Task execution log
+   */
+  log?:
+    | {
+        executedAt: string;
+        completedAt: string;
+        taskSlug: 'inline' | 'schedulePublish';
+        taskID: string;
+        input?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
+        output?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
+        state: 'failed' | 'succeeded';
+        error?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  taskSlug?: ('inline' | 'schedulePublish') | null;
+  queue?: string | null;
+  waitUntil?: string | null;
+  processing?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
@@ -1010,6 +1263,10 @@ export interface PayloadLockedDocument {
         value: number | Post;
       } | null)
     | ({
+        relationTo: 'variantsProduct';
+        value: number | VariantsProduct;
+      } | null)
+    | ({
         relationTo: 'search';
         value: number | Search;
       } | null)
@@ -1044,6 +1301,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'transactions';
         value: number | Transaction;
+      } | null)
+    | ({
+        relationTo: 'payload-jobs';
+        value: number | PayloadJob;
       } | null)
     | ({
         relationTo: 'payload-folders';
@@ -1124,7 +1385,7 @@ export interface UsersSelect<T extends boolean = true> {
  */
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
-  caption?: T;
+  folder?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -1136,6 +1397,50 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+  sizes?:
+    | T
+    | {
+        thumbnail?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        small?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        medium?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        large?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+      };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1146,6 +1451,7 @@ export interface CategoriesSelect<T extends boolean = true> {
   description?: T;
   slug?: T;
   slugLock?: T;
+  level?: T;
   blocks?:
     | T
     | {
@@ -1394,6 +1700,91 @@ export interface PostsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "variantsProduct_select".
+ */
+export interface VariantsProductSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  slugLock?: T;
+  color?: T;
+  sizes?:
+    | T
+    | {
+        s?:
+          | T
+          | {
+              customPrice?: T;
+              pricing?:
+                | T
+                | {
+                    price?: T;
+                    discount?: T;
+                  };
+              inventory?:
+                | T
+                | {
+                    sku?: T;
+                    stock?: T;
+                  };
+            };
+        M?:
+          | T
+          | {
+              customPrice?: T;
+              pricing?:
+                | T
+                | {
+                    price?: T;
+                    discount?: T;
+                  };
+              inventory?:
+                | T
+                | {
+                    sku?: T;
+                    stock?: T;
+                  };
+            };
+        L?:
+          | T
+          | {
+              customPrice?: T;
+              pricing?:
+                | T
+                | {
+                    price?: T;
+                    discount?: T;
+                  };
+              inventory?:
+                | T
+                | {
+                    sku?: T;
+                    stock?: T;
+                  };
+            };
+        xl?:
+          | T
+          | {
+              customPrice?: T;
+              pricing?:
+                | T
+                | {
+                    price?: T;
+                    discount?: T;
+                  };
+              inventory?:
+                | T
+                | {
+                    sku?: T;
+                    stock?: T;
+                  };
+            };
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "search_select".
  */
 export interface SearchSelect<T extends boolean = true> {
@@ -1471,26 +1862,94 @@ export interface VariantOptionsSelect<T extends boolean = true> {
 export interface ProductsSelect<T extends boolean = true> {
   title?: T;
   description?: T;
-  gallery?:
+  color?: T;
+  pricing?:
     | T
     | {
-        image?: T;
-        variantOption?: T;
-        id?: T;
+        price?: T;
+        discount?: T;
       };
-  layout?:
+  sizes?:
+    | T
+    | {
+        s?:
+          | T
+          | {
+              customPrice?: T;
+              pricing?:
+                | T
+                | {
+                    price?: T;
+                    discount?: T;
+                  };
+              inventory?:
+                | T
+                | {
+                    sku?: T;
+                    stock?: T;
+                  };
+            };
+        M?:
+          | T
+          | {
+              customPrice?: T;
+              pricing?:
+                | T
+                | {
+                    price?: T;
+                    discount?: T;
+                  };
+              inventory?:
+                | T
+                | {
+                    sku?: T;
+                    stock?: T;
+                  };
+            };
+        L?:
+          | T
+          | {
+              customPrice?: T;
+              pricing?:
+                | T
+                | {
+                    price?: T;
+                    discount?: T;
+                  };
+              inventory?:
+                | T
+                | {
+                    sku?: T;
+                    stock?: T;
+                  };
+            };
+        xl?:
+          | T
+          | {
+              customPrice?: T;
+              pricing?:
+                | T
+                | {
+                    price?: T;
+                    discount?: T;
+                  };
+              inventory?:
+                | T
+                | {
+                    sku?: T;
+                    stock?: T;
+                  };
+            };
+      };
+  content?: T;
+  sections?:
     | T
     | {
         cta?: T | CallToActionBlockSelect<T>;
         content?: T | ContentBlockSelect<T>;
         mediaBlock?: T | MediaBlockSelect<T>;
       };
-  inventory?: T;
-  enableVariants?: T;
-  variantTypes?: T;
-  variants?: T;
-  priceInUSDEnabled?: T;
-  priceInUSD?: T;
+  variantsOption?: T;
   relatedProducts?: T;
   meta?:
     | T
@@ -1499,9 +1958,17 @@ export interface ProductsSelect<T extends boolean = true> {
         image?: T;
         description?: T;
       };
-  categories?: T;
   slug?: T;
   slugLock?: T;
+  sales?: T;
+  taxonomies?:
+    | T
+    | {
+        gender?: T;
+        type?: T;
+        category?: T;
+        tags?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   deletedAt?: T;
@@ -1600,6 +2067,37 @@ export interface TransactionsSelect<T extends boolean = true> {
   cart?: T;
   amount?: T;
   currency?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-jobs_select".
+ */
+export interface PayloadJobsSelect<T extends boolean = true> {
+  input?: T;
+  taskStatus?: T;
+  completedAt?: T;
+  totalTried?: T;
+  hasError?: T;
+  error?: T;
+  log?:
+    | T
+    | {
+        executedAt?: T;
+        completedAt?: T;
+        taskSlug?: T;
+        taskID?: T;
+        input?: T;
+        output?: T;
+        state?: T;
+        error?: T;
+        id?: T;
+      };
+  taskSlug?: T;
+  queue?: T;
+  waitUntil?: T;
+  processing?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1740,6 +2238,23 @@ export interface FooterSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TaskSchedulePublish".
+ */
+export interface TaskSchedulePublish {
+  input: {
+    type?: ('publish' | 'unpublish') | null;
+    locale?: string | null;
+    doc?: {
+      relationTo: 'products';
+      value: number | Product;
+    } | null;
+    global?: string | null;
+    user?: (number | null) | User;
+  };
+  output?: unknown;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

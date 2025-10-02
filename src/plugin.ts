@@ -11,8 +11,9 @@ import { nestedDocsPlugin } from '@payloadcms/plugin-nested-docs';
 import { searchPlugin } from '@payloadcms/plugin-search';
 import { seoPlugin } from '@payloadcms/plugin-seo';
 import { GenerateDescription, GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types';
+import { FieldsOverride } from 'node_modules/@payloadcms/plugin-ecommerce/dist/types';
 import { Plugin } from 'payload';
-import { ProductsCollection } from './collections/Products';
+import { ProductsCollection } from './collections';
 
 
 const generateTitle: GenerateTitle<any> = ({ doc }) => {
@@ -41,13 +42,25 @@ const generateDescription: GenerateDescription<any> = ({ doc }) => {
 const applySearchForCollection = ['categories', 'products', 'variants', 'posts']
 const applySEOForCollection = ['categories', 'products', 'variants', 'posts', 'pages']
 
-
+const overrideSEOFields: FieldsOverride = ({ defaultFields }) => {
+  return defaultFields.map((field) => {
+    if ('name' in field && field.name) {
+      return {
+        ...field,
+        localized: false, 
+      }
+    }
+    return field
+  })
+}
 export const plugins: Plugin[] = [
   seoPlugin({
     collections: applySEOForCollection,
     generateTitle,
     generateURL,
     generateDescription,
+    fields:overrideSEOFields,
+    generateImage:({doc}) => doc.image,
   }),
   searchPlugin({
     collections: applySearchForCollection,
@@ -116,5 +129,6 @@ export const plugins: Plugin[] = [
           products: {
             productsCollectionOverride: ProductsCollection,
           },
+        
         }),
   ]

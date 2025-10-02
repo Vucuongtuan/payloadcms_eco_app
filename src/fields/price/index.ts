@@ -13,9 +13,13 @@ export const priceField: PriceField = ({required = false,condition}) => {
       vi: "Giá",
       en: "Price",
     },
-    type: "number",
+    type: "text",
     required: required,
-    min: 0,
+    admin:{
+      components:{
+        Field:"@/fields/price/priceFormatVND#PriceFormatVND"
+      }
+    },
   };
 
   const discount: Field = {

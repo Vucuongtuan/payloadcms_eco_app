@@ -1,6 +1,6 @@
+import { baseField } from "@/fields/baseField";
 import { CollectionConfig } from "payload";
 
-import { baseField } from "../../fields/baseField";
 
 export const Categories: CollectionConfig = {
   slug: "categories",
@@ -23,6 +23,7 @@ export const Categories: CollectionConfig = {
       vi: "Danh Mục",
       en: "Categories",
     },
+
   },
   access: {
     read: () => true,
@@ -38,6 +39,17 @@ export const Categories: CollectionConfig = {
   },
   fields: [
     ...baseField,
+    {
+      name:"level",
+      type:"select",
+      options:[
+        {label:"Level 1",value:"level1"},
+        {label:"Level 2",value:"level2"},
+        {label:"Level 3",value:"level3"},
+      ],
+      defaultValue:"level3",
+      required:true
+    },
     {
       type:"group",
       name:"blocks",

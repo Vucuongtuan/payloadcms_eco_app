@@ -22,5 +22,5 @@ export const baseField: Field[] = [
     type: "text",
     localized: true,
   },
-  ...slugField(),
+  ...slugField("title",{},false),
 ];

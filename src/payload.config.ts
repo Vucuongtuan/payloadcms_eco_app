@@ -1,6 +1,6 @@
 // storage-adapter-import-placeholder
 
-import { Categories } from '@/collections/Categories';
+import { Categories } from '@/collections/(ecommerce)/Categories';
 import { Media } from '@/collections/Media';
 import { Pages } from '@/collections/Pages';
 import { Users } from '@/collections/Users';
@@ -26,6 +26,7 @@ import { plugins } from './plugin';
 
 // ---
 import { EmailSubscribe, Newsletter, Posts, Reviews, Tags } from './collections';
+import { Variants } from './collections/(ecommerce)/Variants';
 // ---
 
 // Config Environment
@@ -44,7 +45,7 @@ const maxLengthSEO: Record<string, number> = {
   title: 60,
   description: 150
 }
-const allCollections = [Users, Media, Categories, Tags,Reviews, Newsletter, EmailSubscribe, Pages, Posts];
+const allCollections = [Users, Media, Categories, Tags,Reviews, Newsletter, EmailSubscribe, Pages, Posts,Variants];
 const golobalCollections = []
 const applySearchForCollection = ['categories', 'products', 'variants', 'posts']
 const applySEOForCollection = ['categories', 'products', 'variants', 'posts', 'pages']
