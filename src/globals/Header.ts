@@ -9,12 +9,40 @@ export const Header: GlobalConfig = {
   },
   fields: [
     {
+      name:"logo",
+      type:"relationship",
+      relationTo:"media",
+    },
+    {
       name: 'navItems',
       type: 'array',
       fields: [
         link({
           appearances: false,
+          localeLabel:true
         }),
+        {
+          name:"child",
+          type:"array",
+          fields:[
+            link({
+              appearances: false,
+              categoryLevel:'level2',
+              localeLabel:true
+            }),
+            {
+              name:"subChild",
+              type:"array",
+              fields:[
+                link({
+                  appearances: false,
+                  categoryLevel:"level3",
+                  localeLabel:true
+                })
+              ]
+            }
+          ]
+        }
       ],
       maxRows: 6,
     },

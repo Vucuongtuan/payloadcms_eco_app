@@ -1,4 +1,3 @@
-import { CallToAction } from '@/blocks/CallToAction/config'
 import { Content } from '@/blocks/Content/config'
 import { MediaBlock } from '@/blocks/MediaBlock/config'
 import { groupCategoriesField } from '@/fields/groupCategories'
@@ -61,8 +60,6 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
     {
       type: 'tabs',
       tabs: [
-       
-        
         {
           fields: [
             // ...defaultCollection.fields,
@@ -75,6 +72,12 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
                 
               ]
             },
+            {
+              name:"gallery",
+              type:"upload",
+              hasMany:true,
+              relationTo:"media",
+            }
             // {
             //   type:"group",
             //   label:{vi:"Biến thể",en:"Variants"},
@@ -121,7 +124,7 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
             {
               name: 'sections',
               type: 'blocks',
-              blocks: [CallToAction, Content, MediaBlock],
+              blocks: [ Content, MediaBlock],
             },
           ],
           label: 'Content',
@@ -186,7 +189,7 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
         },
       ],
     },
-    ...slugField('title', {
+    ...slugField('title','', {
       slugOverrides: {
         required: true,
       },

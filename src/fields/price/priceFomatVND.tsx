@@ -1,9 +1,9 @@
 "use client"
 
-
-import { TextField, useField, useForm } from "@payloadcms/ui"
+import { FieldLabel, TextInput, useField, useForm } from "@payloadcms/ui"
 import { TextFieldClientProps } from "payload"
-
+import React from "react"
+import './style.scss'
 
 export const PriceFormatVND = ({ path, field }: TextFieldClientProps) => {
   const { value, setValue } = useField<string>({
@@ -31,15 +31,33 @@ export const PriceFormatVND = ({ path, field }: TextFieldClientProps) => {
     })
   }
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (
+      !/[0-9]/.test(e.key) &&
+      !["Backspace", "Delete", "ArrowLeft", "ArrowRight", "Tab"].includes(e.key)
+    ) {
+      e.preventDefault()
+    }
+  }
+
   return (
-    <TextField
-      path={path || field.name}
-    //   label={field.label || "Price (VND)"}
-      value={value || ""}
-      onChange={handleChange}
-      inputProps={{
-        inputMode: "numeric", 
-      }}
-    />
+    <div
+    style={{ "--field-width":  "100%" } as React.CSSProperties}
+  >
+    <FieldLabel htmlFor={`field-${path}`} required={field.required} label={field.label as string} />
+  
+    <div className="price-input-wrapper">
+      <div className="price-prefix">
+        <span>VND</span>
+      </div>
+      <TextInput
+        path={path || field.name}
+        value={value || ""}
+        onChange={handleChange}
+        onKeyDown={handleKeyDown}
+      />
+    </div>
+  </div>
+  
   )
 }

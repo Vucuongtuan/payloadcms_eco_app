@@ -2,23 +2,10 @@ import type { CollectionConfig } from 'payload'
 
 import { adminOnly } from '@/access/adminOnly'
 import { adminOrPublishedStatus } from '@/access/adminOrPublishedStatus'
-import { Archive } from '@/blocks/ArchiveBlock/config'
-import { Banner } from '@/blocks/Banner/config'
-import { CallToAction } from '@/blocks/CallToAction/config'
-import { Carousel } from '@/blocks/Carousel/config'
 import { Content } from '@/blocks/Content/config'
 import { MediaBlock } from '@/blocks/MediaBlock/config'
-import { ThreeItemGrid } from '@/blocks/ThreeItemGrid/config'
-import { hero } from '@/fields/hero'
 import { slugField } from '@/fields/slug'
 import { generatePreviewPath } from '@/utilities/generatePreviewPath'
-import {
-  MetaDescriptionField,
-  MetaImageField,
-  MetaTitleField,
-  OverviewField,
-  PreviewField,
-} from '@payloadcms/plugin-seo/fields'
 import { revalidateDelete, revalidatePage } from './hooks/revalidatePage'
 
 export const Pages: CollectionConfig = {
@@ -56,6 +43,7 @@ export const Pages: CollectionConfig = {
       name: 'title',
       type: 'text',
       required: true,
+      localized:true
     },
     {
       name: 'publishedOn',
@@ -80,59 +68,51 @@ export const Pages: CollectionConfig = {
     {
       type: 'tabs',
       tabs: [
-        {
-          fields: [hero],
-          label: 'Hero',
-        },
+   
         {
           fields: [
             {
-              name: 'layout',
+              name: 'sections',
               type: 'blocks',
               blocks: [
-                CallToAction,
                 Content,
                 MediaBlock,
-                Archive,
-                Carousel,
-                ThreeItemGrid,
-                Banner,
               ],
               required: true,
             },
           ],
-          label: 'Content',
+          label: 'Layout',
         },
-        {
-          name: 'meta',
-          label: 'SEO',
-          fields: [
-            OverviewField({
-              titlePath: 'meta.title',
-              descriptionPath: 'meta.description',
-              imagePath: 'meta.image',
-            }),
-            MetaTitleField({
-              hasGenerateFn: true,
-            }),
-            MetaImageField({
-              relationTo: 'media',
-            }),
+        // {
+        //   name: 'meta',
+        //   label: 'SEO',
+        //   fields: [
+        //     OverviewField({
+        //       titlePath: 'meta.title',
+        //       descriptionPath: 'meta.description',
+        //       imagePath: 'meta.image',
+        //     }),
+        //     MetaTitleField({
+        //       hasGenerateFn: true,
+        //     }),
+        //     MetaImageField({
+        //       relationTo: 'media',
+        //     }),
 
-            MetaDescriptionField({}),
-            PreviewField({
-              // if the `generateUrl` function is configured
-              hasGenerateFn: true,
+        //     MetaDescriptionField({}),
+        //     PreviewField({
+        //       // if the `generateUrl` function is configured
+        //       hasGenerateFn: true,
 
-              // field paths to match the target field for data
-              titlePath: 'meta.title',
-              descriptionPath: 'meta.description',
-            }),
-          ],
-        },
+        //       // field paths to match the target field for data
+        //       titlePath: 'meta.title',
+        //       descriptionPath: 'meta.description',
+        //     }),
+        //   ],
+        // },
       ],
     },
-    ...slugField('title', {
+    ...slugField('title', '',{
       slugOverrides: {
         required: true,
       },

@@ -1,4 +1,5 @@
 import { baseField } from "@/fields/baseField";
+import { slugField } from "@/fields/slug";
 import { CollectionConfig } from "payload";
 
 
@@ -31,7 +32,7 @@ export const Categories: CollectionConfig = {
     update: () => true,
     delete: () => true,
   },
-  // defaultSort: "title",
+  defaultSort: "slug",
   // defaultPopulate: ["title", "description", "slug"],
   // defaultPopulate: ["title", "description", "slug"],
   hooks: {
@@ -39,6 +40,8 @@ export const Categories: CollectionConfig = {
   },
   fields: [
     ...baseField,
+     ...slugField("title",'type',{},false),
+
     {
       name:"level",
       type:"select",

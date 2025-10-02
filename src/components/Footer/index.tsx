@@ -1,16 +1,17 @@
 import type { Footer } from '@/payload-types'
 
 import { FooterMenu } from '@/components/Footer/menu'
-import { ThemeSelector } from '@/providers/Theme/ThemeSelector'
-import { getCachedGlobal } from '@/utilities/getGlobals'
-import Link from 'next/link'
-import React, { Suspense } from 'react'
 import { LogoIcon } from '@/components/icons/logo'
-
+import { ThemeSelector } from '@/providers/Theme/ThemeSelector'
+import { findGlobal } from '@/service/layout'
+import { Lang } from '@/types'
+import Link from 'next/link'
+import { Suspense } from 'react'
 const { COMPANY_NAME, SITE_NAME } = process.env
 
-export async function Footer() {
-  const footer: Footer = await getCachedGlobal('footer', 1)()
+export async function Footer({lang}: {lang: Lang}) {
+  const footer = await findGlobal<Footer>(lang,'footer')
+  if (!footer) return null
   const menu = footer.navItems || []
   const currentYear = new Date().getFullYear()
   const copyrightDate = 2023 + (currentYear > 2023 ? `-${currentYear}` : '')

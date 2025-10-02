@@ -7,9 +7,9 @@ import { adminOrPublishedStatus } from '@/access/adminOrPublishedStatus';
 import { customerOnlyFieldAccess } from '@/access/customerOnlyFieldAccess';
 import { getServerSideURL } from '@/utilities/getURL';
 import { ecommercePlugin } from '@payloadcms/plugin-ecommerce';
-import { nestedDocsPlugin } from '@payloadcms/plugin-nested-docs';
 import { searchPlugin } from '@payloadcms/plugin-search';
 import { seoPlugin } from '@payloadcms/plugin-seo';
+import { MetaImageField } from '@payloadcms/plugin-seo/fields';
 import { GenerateDescription, GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types';
 import { FieldsOverride } from 'node_modules/@payloadcms/plugin-ecommerce/dist/types';
 import { Plugin } from 'payload';
@@ -43,7 +43,8 @@ const applySearchForCollection = ['categories', 'products', 'variants', 'posts']
 const applySEOForCollection = ['categories', 'products', 'variants', 'posts', 'pages']
 
 const overrideSEOFields: FieldsOverride = ({ defaultFields }) => {
-  return defaultFields.map((field) => {
+  console.log(defaultFields)
+  const override =  defaultFields.map((field) => {
     if ('name' in field && field.name) {
       return {
         ...field,
@@ -52,6 +53,12 @@ const overrideSEOFields: FieldsOverride = ({ defaultFields }) => {
     }
     return field
   })
+  return [
+    ...override,
+    MetaImageField({
+      relationTo: 'media',
+    }),
+  ]
 }
 export const plugins: Plugin[] = [
   seoPlugin({
@@ -99,12 +106,12 @@ export const plugins: Plugin[] = [
       localize: true
     }),
        // Nesterd Docs
-       nestedDocsPlugin({
-        collections: ['categories'],
-        generateLabel: (_, doc) => doc.title || doc.name || '' as any,
-        generateURL: (docs) =>
-          docs.reduce((url, doc) => `${url}/${doc.slug}`, ''),
-      }),
+      //  nestedDocsPlugin({
+      //   collections: ['categories'],
+      //   generateLabel: (_, doc) => doc.title || doc.name || '' as any,
+      //   generateURL: (docs) =>
+      //     docs.reduce((url, doc) => `${url}/${doc.slug}`, ''),
+      // }),
       // Ecommerce
       ecommercePlugin({
           access: {

@@ -1,6 +1,6 @@
-import type { Field } from 'payload'
+import type { Field, Where } from 'payload';
 
-import { deepMerge } from '@/utilities/deepMerge'
+import { deepMerge } from '@/utilities/deepMerge';
 
 export type LinkAppearances = 'default' | 'outline'
 
@@ -19,9 +19,11 @@ type LinkType = (options?: {
   appearances?: LinkAppearances[] | false
   disableLabel?: boolean
   overrides?: Record<string, unknown>
+  categoryLevel?: 'level1' | 'level2' | 'level3'
+  localeLabel?: boolean
 }) => Field
 
-export const link: LinkType = ({ appearances, disableLabel = false, overrides = {} } = {}) => {
+export const link: LinkType = ({ appearances, disableLabel = false, overrides = {} ,categoryLevel = 'level1',localeLabel = false} = {}) => {
   const linkResult: Field = {
     name: 'link',
     type: 'group',
@@ -76,8 +78,19 @@ export const link: LinkType = ({ appearances, disableLabel = false, overrides = 
       },
       label: 'Document to link to',
       maxDepth: 1,
-      relationTo: ['pages'],
+      relationTo: ['pages','categories','products'],
       required: true,
+      filterOptions: ({ relationTo }) : Where | boolean => {
+        if (relationTo === 'categories') {
+          return {
+            level: {
+              equals: categoryLevel,  
+            },
+          }
+        }
+        return true 
+      },
+      
     },
     {
       name: 'url',
@@ -111,6 +124,7 @@ export const link: LinkType = ({ appearances, disableLabel = false, overrides = 
           },
           label: 'Label',
           required: true,
+          ...(localeLabel && {localized:true})
         },
       ],
     })

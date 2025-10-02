@@ -16,12 +16,14 @@ import "./style.scss";
 
 type SlugComponentProps = {
   fieldToUse: string;
+  typeToUse?:string;
   checkboxFieldPath: string;
 } & TextFieldClientProps;
 
 export const SlugComponent: React.FC<SlugComponentProps> = ({
   field,
   fieldToUse,
+  typeToUse,
   checkboxFieldPath: checkboxFieldPathFromProps,
   path,
   readOnly: readOnlyFromProps,
@@ -31,8 +33,7 @@ export const SlugComponent: React.FC<SlugComponentProps> = ({
   const checkboxFieldPath = path?.includes(".")
     ? `${path}.${checkboxFieldPathFromProps}`
     : checkboxFieldPathFromProps;
-
-  const { value, setValue } = useField<string>({ path: path || field.name });
+    const { value, setValue } = useField<string>({ path: path || field.name });
 
   const { dispatchFields, getDataByPath } = useForm();
 
@@ -45,11 +46,13 @@ export const SlugComponent: React.FC<SlugComponentProps> = ({
       e.preventDefault();
 
       const targetFieldValue = getDataByPath(fieldToUse) as string;
-
       if (targetFieldValue) {
         const formattedSlug = formatSlug(targetFieldValue);
 
-        if (value !== formattedSlug) setValue(formattedSlug);
+        if (value !== formattedSlug) {
+         
+          return setValue(formattedSlug);
+        }
       } else {
         if (value !== "") setValue("");
       }
@@ -73,7 +76,7 @@ export const SlugComponent: React.FC<SlugComponentProps> = ({
   return (
     <div className="field-type slug-field-component">
       <div className="label-wrapper">
-        <FieldLabel htmlFor={`field-${path}`} label={label} />
+        <FieldLabel htmlFor={`field-${path}`} required={field.required || true} label={label} />
         {!isLocked && (
           <Button
             className="lock-button"

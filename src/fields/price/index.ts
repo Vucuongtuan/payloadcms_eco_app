@@ -17,7 +17,7 @@ export const priceField: PriceField = ({required = false,condition}) => {
     required: required,
     admin:{
       components:{
-        Field:"@/fields/price/priceFormatVND#PriceFormatVND"
+        Field:"@/fields/price/priceFomatVND#PriceFormatVND"
       }
     },
   };

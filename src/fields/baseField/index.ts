@@ -1,5 +1,4 @@
 import { Field } from "payload";
-import { slugField } from "../../fields/slug";
 
 export const baseField: Field[] = [
   {
@@ -22,5 +21,4 @@ export const baseField: Field[] = [
     type: "text",
     localized: true,
   },
-  ...slugField("title",{},false),
 ];

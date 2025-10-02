@@ -1,5 +1,6 @@
 import { CollectionConfig } from "payload";
 
+import { slugField } from "@/fields/slug";
 import { baseField } from "../../fields/baseField";
 
 export const Tags: CollectionConfig = {
@@ -20,7 +21,7 @@ export const Tags: CollectionConfig = {
     update: () => true,
     delete: () => true,
   },
-  // defaultSort: "title",
+  // defaultSort: "slug",
   // defaultPopulate: ["title", "description", "slug"],
   // defaultPopulate: ["title", "description", "slug"],
   hooks: {
@@ -28,7 +29,7 @@ export const Tags: CollectionConfig = {
   },
   fields: [
     ...baseField,
-
+    ...slugField("title",'type',{},false),
     // {
     //   name: "breadcrumbs",
     //   type: "ui",

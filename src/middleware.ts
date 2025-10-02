@@ -15,7 +15,7 @@ export function middleware(request: NextRequest): NextResponse {
   // Add the country code to the response headers
   // This makes it available in Server Components via `headers()`
   response.headers.set('x-country', country);
-
+   console.log({country,response,request})
   return response;
 }
 

@@ -5,7 +5,6 @@ import React from 'react'
 
 import { HeaderThemeProvider } from './HeaderTheme'
 import { ThemeProvider } from './Theme'
-import { SonnerProvider } from '@/providers/Sonner'
 
 export const Providers: React.FC<{
   children: React.ReactNode
@@ -14,7 +13,6 @@ export const Providers: React.FC<{
     <ThemeProvider>
       <AuthProvider>
         <HeaderThemeProvider>
-          <SonnerProvider />
           <EcommerceProvider
             enableVariants={true}
             api={{
@@ -25,7 +23,7 @@ export const Providers: React.FC<{
                     slug: true,
                     title: true,
                     gallery: true,
-                    inventory: true,
+                    sizes: true,
                   },
                   variants: {
                     title: true,

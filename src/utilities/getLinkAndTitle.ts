@@ -1,27 +1,46 @@
-type LinkType = "external" | "internal";
+// utilities/nav.ts
+import { Category, Page, Product } from "@/payload-types";
 
-function resolveLink(
-  type: LinkType | undefined,
-  external?: string,
-  internal?: { slug: string },
-) {
-  if (type === "external") return external ?? "#";
-  if (type === "internal") return internal ? `/${internal.slug}` : "#";
-  return "#";
+type Reference =
+  | { relationTo: "pages"; value: number | Page }
+  | { relationTo: "categories"; value: number | Category }
+  | { relationTo: "products"; value: number | Product }
+
+interface LinkItem {
+  type?: "reference" | "custom" | null
+  newTab?: boolean | null
+  reference?: Reference | null
+  url?: string | null
+  label: string
 }
 
-export const getLink = (doc: any, cta?: boolean) => {
-  const target = cta ? doc.cta : doc;
-  return resolveLink(target?.checkTypeLink, target?.link, target?.localLink);
-};
+// build href từ link
+export function resolveLink(linkItem: { link: LinkItem }) {
+  const { type, url, reference } = linkItem.link
 
-export const getTitle = (doc: any, cta?: boolean) => {
-  const target = cta ? doc.cta : doc;
-  if (target?.checkTypeLink === "external") {
-    return target?.title || target?.url || "";
+  if (type === "custom") {
+    return url ?? "#"
   }
-  if (target?.checkTypeLink === "internal") {
-    return target?.localLink?.value?.title || "";
+
+  if (type === "reference" && reference) {
+    const { relationTo, value } = reference
+    if (!value) return "#"
+
+    if (relationTo === "pages" && typeof value !== "number") {
+      return `/${value.slug}`
+    }
+    if (relationTo === "categories" && typeof value !== "number") {
+      return `/category/${value.slug}`
+    }
+    if (relationTo === "products" && typeof value !== "number") {
+      return `/product/${value.slug}`
+    }
   }
-  return "";
-};
+
+  return "#"
+}
+
+// lấy title từ link
+export function resolveTitle(linkItem: { link: LinkItem }) {
+  return linkItem.link.label || ""
+}
