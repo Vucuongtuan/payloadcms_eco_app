@@ -1,4 +1,4 @@
-import type { Field, Where } from 'payload';
+import { type Field, type Where } from 'payload';
 
 import { deepMerge } from '@/utilities/deepMerge';
 
