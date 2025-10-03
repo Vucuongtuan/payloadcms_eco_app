@@ -30,6 +30,11 @@ const nextConfig = {
         protocol: "https",
         hostname: "gnjdysar8zpiiswk.public.blob.vercel-storage.com",
       },
+      {
+        protocol: "http",
+        hostname: "localhost",
+        port: "3000",
+      }
     ],
   },
   //
@@ -37,7 +42,7 @@ const nextConfig = {
     // viewTransition: true,
     // reactCompiler: true,
     // ppr: "incremental",
-    inlineCss: true,
+    // inlineCss: true,
   },
   // webpack: (webpackConfig) => {
   //   webpackConfig.resolve.extensionAlias = {
