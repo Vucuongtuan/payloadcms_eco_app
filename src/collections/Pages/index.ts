@@ -124,8 +124,8 @@ export const Pages: CollectionConfig = {
   },
   versions: {
     drafts: {
-      autosave: true,
+      autosave: false,
+      schedulePublish:true
     },
-    maxPerDoc: 50,
   },
 }
