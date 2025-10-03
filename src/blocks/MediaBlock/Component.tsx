@@ -1,65 +1,97 @@
-import type { StaticImageData } from 'next/image'
 
+import type { MediaBlock as MediaBlockProps } from '@/payload-types'
 import { cn } from '@/utilities/cn'
 import React from 'react'
-import { RichText } from '@/components/RichText'
-import type { MediaBlock as MediaBlockProps } from '@/payload-types'
 
+import { CMSLink } from '@/components/Link'
+import { RichText } from '@/components/RichText'
+import { layoutCtn } from '@/utilities/cssVariable'
 import { Media } from '../../components/Media'
 
-export const MediaBlock: React.FC<
-  MediaBlockProps & {
-    id?: string | number
-    breakout?: boolean
-    captionClassName?: string
-    className?: string
-    enableGutter?: boolean
-    imgClassName?: string
-    staticImage?: StaticImageData
-    disableInnerContainer?: boolean
+export const MediaBlock: React.FC<MediaBlockProps> = ({
+  media,
+  layout,
+  template,
+  columns,
+  cta,
+  aspect,
+  background
+}) => {
+  const baseClasses = layoutCtn(layout || 'container')
+  const aspectClasses = aspect && aspect !== 'auto' && `aspect-${aspect}`
+
+  // Template: image-only
+  if (template === 'image-only') {
+    return (
+      <div className={cn(baseClasses, 'aspect-wide')}>
+        <Media
+          imgClassName="w-full object-cover"
+          fClassName={`relative ${aspectClasses}`}
+          fill
+          resource={media}
+        />
+      </div>
+    )
   }
-> = (props) => {
-  const {
-    captionClassName,
-    className,
-    enableGutter = true,
-    imgClassName,
-    media,
-    staticImage,
-    disableInnerContainer,
-  } = props
 
-  let caption
-  if (media && typeof media === 'object') caption = media.caption
+  // Template: column layout
+  if (template === 'column') {
+    return (
+      <div className={cn(baseClasses, 'grid grid-cols-1 lg:grid-cols-2 gap-6', aspectClasses,
+      )}  style={{backgroundColor: `${background}`}}>
+        <div className={cn(columns === 'image-first' && 'lg:order-2',
 
-  return (
-    <div
-      className={cn(
-        '',
-        {
-          container: enableGutter,
-        },
-        className,
-      )}
-    >
-      <Media
-        imgClassName={cn('border border-border rounded-[0.8rem]', imgClassName)}
-        resource={media}
-        src={staticImage}
-      />
-      {caption && (
-        <div
-          className={cn(
-            'mt-6',
-            {
-              container: !disableInnerContainer,
-            },
-            captionClassName,
-          )}
-        >
-          <RichText data={caption} enableGutter={false} />
+        )}>
+          <Media
+             className="h-full"
+            imgClassName="border border-border h-full"
+            resource={media}
+          />
         </div>
-      )}
-    </div>
-  )
+          <div className={cn(
+            columns === 'image-first' && 'lg:order-1',
+            'flex justify-center items-center'
+            
+            )}>
+           <div className="w-full px-12">
+           {cta?.content && <RichText data={cta.content} className="max-w-full p-0 prose-h2:text-gray-500 prose-h2:text-xl prose-p:text-2xl" />}
+           {cta?.link && cta?.link.label && <CMSLink  className="bg-transparent border-black border-[1px] px-4 py-4 text-black rounded-sm hover:bg-transparent text-lg" {...cta.link}/>}
+           </div>
+          </div>
+      </div>
+    )
+  }
+
+  // Template: image-center & image-bottom-left
+  if (template === 'image-center' || template === 'image-bottom-left') {
+    return (
+      <div className={cn(baseClasses, 'relative flex', aspectClasses)}>
+        <Media imgClassName="object-cover" fill resource={media} />
+        <div
+          className={cn('absolute inset-0', {
+            'bg-black/40': template === 'image-center',
+            'bg-gradient-to-t from-black/80 to-transparent': template === 'image-bottom-left',
+          })}
+        />
+        <div
+          className={cn('relative w-full flex flex-col text-white', {
+            'items-center justify-center text-center': template === 'image-center',
+            'items-start justify-end text-left': template === 'image-bottom-left',
+          })}
+        >
+          <div className="max-w-2xl p-8">
+            {cta?.content && <RichText data={cta.content} className="text-white prose-h2:text-white prose-h2:text-xl prose-p:text-2xl p-0" />}
+            {cta?.link && cta?.link.label && (
+              <CMSLink
+                className=" bg-transparent border-white border-[1px] px-6 py-3 text-white rounded-sm hover:bg-white hover:text-black transition-colors duration-300 text-lg"
+                {...cta.link}
+              />
+            )}
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  return null
 }

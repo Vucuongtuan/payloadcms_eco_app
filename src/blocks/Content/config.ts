@@ -1,13 +1,9 @@
 import type { Block, Field } from 'payload'
 
-import {
-  FixedToolbarFeature,
-  HeadingFeature,
-  InlineToolbarFeature,
-  lexicalEditor,
-} from '@payloadcms/richtext-lexical'
 
-import { link } from '@/fields/link'
+import { defaultLexical } from '@/fields/defaultLexical'
+import { layout } from '@/fields/layout'
+import { spacingField } from '@/fields/spacingField'
 
 const columnFields: Field[] = [
   {
@@ -36,35 +32,26 @@ const columnFields: Field[] = [
   {
     name: 'richText',
     type: 'richText',
-    editor: lexicalEditor({
-      features: ({ rootFeatures }) => {
-        return [
-          ...rootFeatures,
-          HeadingFeature({ enabledHeadingSizes: ['h2', 'h3', 'h4'] }),
-          FixedToolbarFeature(),
-          InlineToolbarFeature(),
-        ]
-      },
+    editor: defaultLexical({
+      headingSizes: ['h2', 'h3', 'h4'],
+      enableHeading: true,
+      enableTextState: true,
+      enableLink: true,
+      enableTable: true,
     }),
     label: false,
   },
-  {
-    name: 'enableLink',
-    type: 'checkbox',
-  },
-  link({
-    overrides: {
-      admin: {
-        condition: (_: unknown, { enableLink }: { enableLink?: boolean }) => Boolean(enableLink),
-      },
-    },
-  }),
+ 
 ]
 
 export const Content: Block = {
   slug: 'content',
   interfaceName: 'ContentBlock',
   fields: [
+     layout,
+        ...spacingField({
+          localized:true
+        }),
     {
       name: 'columns',
       type: 'array',
@@ -72,6 +59,7 @@ export const Content: Block = {
         initCollapsed: true,
       },
       fields: columnFields,
+      maxRows:3
     },
   ],
 }
