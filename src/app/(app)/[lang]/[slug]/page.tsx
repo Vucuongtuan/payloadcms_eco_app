@@ -22,7 +22,7 @@ export default async function PageTemplate({ params }: PageProps) {
   }
   return (
     <>
-      <RenderBlocks blocks={(doc as Page).layout} />
+      <RenderBlocks blocks={(doc as Page).sections} />
     </>
   );
 }

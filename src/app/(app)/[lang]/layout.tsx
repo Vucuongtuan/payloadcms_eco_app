@@ -1,7 +1,6 @@
 
 import { AdminBar } from '@/components/AdminBar'
 import { Footer } from '@/components/Footer'
-import { Header } from '@/components/Header'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
 import { routing } from '@/i18n/routing'
 import { Providers } from '@/providers'
@@ -46,7 +45,6 @@ export default async function RootLayout(props: {
   let msg;
   try {
     msg = await getMessages({ locale: lang });
-    console.log(msg);
   } catch (error) {
     console.error("Error fetching messages:", error);
     return <>Error loading messages</>;
@@ -68,7 +66,7 @@ export default async function RootLayout(props: {
           <AdminBar />
           <LivePreviewListener />
 
-          <Header lang={lang}/>
+          {/* <Header lang={lang}/> */}
           <main className="min-h-[1000px]">{children}</main>
           <Footer lang={lang} />
         </Providers>

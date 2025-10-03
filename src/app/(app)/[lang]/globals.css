@@ -40,7 +40,37 @@
   /* // font */
   --font-sans: var(--font-inter), sans-serif; 
   --font-display: var(--font-playfair), serif;
+  
 
+  /* Primary Colors */
+  --color-primary: #f5f0eb;
+  --color-primary-dark: #e8ddd5;
+  --color-primary-light: #faf7f4;
+  
+  /* Secondary Colors */
+  --color-secondary: #efeff2;
+  --color-secondary-dark: #e1e1e6;
+  --color-secondary-light: #f7f7f9;
+  
+  /* Semantic Colors */
+  --color-success: #22c55e;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+  --color-info: #3b82f6;
+  
+  /* Text Colors */
+  --color-text-primary: #1f2937;
+  --color-text-secondary: #6b7280;
+  --color-text-muted: #9ca3af;
+  
+  /* Background Colors */
+  --color-bg-primary: var(--color-primary);
+  --color-bg-secondary: var(--color-secondary);
+  --color-bg-white: #ffffff;
+  
+  /* Border Colors */
+  --color-border: #d1d5db;
+  --color-border-light: #e5e7eb;
 
 }
 

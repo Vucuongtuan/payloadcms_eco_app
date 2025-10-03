@@ -9,13 +9,9 @@ export function middleware(request: NextRequest): NextResponse {
   // First, let next-intl handle the routing
   const response = intlMiddleware(request);
 
-  // Get country from Vercel's geo headers. Default to 'US' if not found.
   const country = request.geo?.country || 'US';
 
-  // Add the country code to the response headers
-  // This makes it available in Server Components via `headers()`
   response.headers.set('x-country', country);
-   console.log({country,response,request})
   return response;
 }
 
