@@ -1,4 +1,5 @@
 import type { CollectionConfig } from "payload";
+import { generateBlurImage } from "./hooks/generateBlurImage";
 import { MediaDoc } from "./types";
 
 export const Media: CollectionConfig = {
@@ -17,13 +18,27 @@ export const Media: CollectionConfig = {
   access: {
     read: () => true,
   },
-  hooks: {},
+  hooks: {
+    beforeChange:[
+      generateBlurImage
+    ]
+  },
   fields: [
     {
       name: "alt",
       type: "text",
-      required: true,
     },
+    {
+      name: "caption",
+      type: "text",
+    },
+    {
+      name:"blurData",
+      type:"textarea",
+      admin:{
+        readOnly:true
+      }
+    }
   ],
   upload: {
     skipSafeFetch: true,
@@ -60,7 +75,7 @@ export const Media: CollectionConfig = {
       {
         name: "thumbnail",
         formatOptions: {
-          format: "avif",
+          format: "webp",
         },
         height: undefined,
         width: 240,
@@ -68,7 +83,7 @@ export const Media: CollectionConfig = {
       {
         name: "small",
         formatOptions: {
-          format: "avif",
+          format: "webp",
         },
         height: undefined,
         width: 480,
@@ -76,7 +91,7 @@ export const Media: CollectionConfig = {
       {
         name: "medium",
         formatOptions: {
-          format: "avif",
+          format: "webp",
         },
         height: undefined,
         width: 1200,
@@ -84,7 +99,7 @@ export const Media: CollectionConfig = {
       {
         name: "large",
         formatOptions: {
-          format: "avif",
+          format: "webp",
         },
         height: undefined,
         width: 1600,
