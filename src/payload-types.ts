@@ -394,7 +394,9 @@ export interface Product {
  */
 export interface Media {
   id: number;
-  alt: string;
+  alt?: string | null;
+  caption?: string | null;
+  blurData?: string | null;
   folder?: (number | null) | FolderInterface;
   updatedAt: string;
   createdAt: string;
@@ -489,9 +491,6 @@ export interface Category {
   meta?: {
     title?: string | null;
     description?: string | null;
-    /**
-     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
-     */
     image?: (number | null) | Media;
   };
   folder?: (number | null) | FolderInterface;
@@ -503,6 +502,8 @@ export interface Category {
  * via the `definition` "ContentBlock".
  */
 export interface ContentBlock {
+  layout?: ('container' | 'full' | 'wide' | 'narrow') | null;
+  spacing?: ('none' | 'small' | 'medium' | 'large') | null;
   columns?:
     | {
         size?: ('oneThird' | 'half' | 'twoThirds' | 'full') | null;
@@ -521,36 +522,70 @@ export interface ContentBlock {
           };
           [k: string]: unknown;
         } | null;
-        enableLink?: boolean | null;
-        link?: {
-          type?: ('reference' | 'custom') | null;
-          newTab?: boolean | null;
-          reference?:
-            | ({
-                relationTo: 'pages';
-                value: number | Page;
-              } | null)
-            | ({
-                relationTo: 'categories';
-                value: number | Category;
-              } | null)
-            | ({
-                relationTo: 'products';
-                value: number | Product;
-              } | null);
-          url?: string | null;
-          label: string;
-          /**
-           * Choose how the link should be rendered.
-           */
-          appearance?: ('default' | 'outline') | null;
-        };
         id?: string | null;
       }[]
     | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'content';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MediaBlock".
+ */
+export interface MediaBlock {
+  media: number | Media;
+  template?: ('image-only' | 'image-center' | 'image-bottom-left' | 'column') | null;
+  columns?: ('text-first' | 'image-first') | null;
+  background?: string | null;
+  cta?: {
+    content?: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+    link: {
+      type?: ('reference' | 'custom') | null;
+      newTab?: boolean | null;
+      reference?:
+        | ({
+            relationTo: 'pages';
+            value: number | Page;
+          } | null)
+        | ({
+            relationTo: 'categories';
+            value: number | Category;
+          } | null)
+        | ({
+            relationTo: 'products';
+            value: number | Product;
+          } | null);
+      url?: string | null;
+      label: string;
+      /**
+       * Choose how the link should be rendered.
+       */
+      appearance?: ('default' | 'outline') | null;
+    };
+  };
+  layout?: ('container' | 'full' | 'wide' | 'narrow') | null;
+  spacing?: ('none' | 'small' | 'medium' | 'large') | null;
+  aspect?:
+    | ('auto' | 'ultrawide' | 'photo' | 'poster' | 'story' | 'insta' | 'retro' | 'video' | 'square' | 'wide')
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'mediaBlock';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -566,24 +601,11 @@ export interface Page {
   meta?: {
     title?: string | null;
     description?: string | null;
-    /**
-     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
-     */
     image?: (number | null) | Media;
   };
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "MediaBlock".
- */
-export interface MediaBlock {
-  media: number | Media;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'mediaBlock';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -912,9 +934,6 @@ export interface Post {
   meta?: {
     title?: string | null;
     description?: string | null;
-    /**
-     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
-     */
     image?: (number | null) | Media;
   };
   updatedAt: string;
@@ -946,6 +965,10 @@ export interface Search {
     | {
         relationTo: 'posts';
         value: number | Post;
+      }
+    | {
+        relationTo: 'pages';
+        value: number | Page;
       };
   updatedAt: string;
   createdAt: string;
@@ -1208,6 +1231,8 @@ export interface UsersSelect<T extends boolean = true> {
  */
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
+  caption?: T;
+  blurData?: T;
   folder?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -1365,22 +1390,13 @@ export interface PagesSelect<T extends boolean = true> {
  * via the `definition` "ContentBlock_select".
  */
 export interface ContentBlockSelect<T extends boolean = true> {
+  layout?: T;
+  spacing?: T;
   columns?:
     | T
     | {
         size?: T;
         richText?: T;
-        enableLink?: T;
-        link?:
-          | T
-          | {
-              type?: T;
-              newTab?: T;
-              reference?: T;
-              url?: T;
-              label?: T;
-              appearance?: T;
-            };
         id?: T;
       };
   id?: T;
@@ -1392,6 +1408,27 @@ export interface ContentBlockSelect<T extends boolean = true> {
  */
 export interface MediaBlockSelect<T extends boolean = true> {
   media?: T;
+  template?: T;
+  columns?: T;
+  background?: T;
+  cta?:
+    | T
+    | {
+        content?: T;
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              url?: T;
+              label?: T;
+              appearance?: T;
+            };
+      };
+  layout?: T;
+  spacing?: T;
+  aspect?: T;
   id?: T;
   blockName?: T;
 }
@@ -2061,10 +2098,15 @@ export interface TaskSchedulePublish {
   input: {
     type?: ('publish' | 'unpublish') | null;
     locale?: string | null;
-    doc?: {
-      relationTo: 'products';
-      value: number | Product;
-    } | null;
+    doc?:
+      | ({
+          relationTo: 'pages';
+          value: number | Page;
+        } | null)
+      | ({
+          relationTo: 'products';
+          value: number | Product;
+        } | null);
     global?: string | null;
     user?: (number | null) | User;
   };

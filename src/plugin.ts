@@ -9,7 +9,6 @@ import { getServerSideURL } from '@/utilities/getURL';
 import { ecommercePlugin } from '@payloadcms/plugin-ecommerce';
 import { searchPlugin } from '@payloadcms/plugin-search';
 import { seoPlugin } from '@payloadcms/plugin-seo';
-import { MetaImageField } from '@payloadcms/plugin-seo/fields';
 import { GenerateDescription, GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types';
 import { FieldsOverride } from 'node_modules/@payloadcms/plugin-ecommerce/dist/types';
 import { Plugin } from 'payload';
@@ -39,11 +38,12 @@ const generateDescription: GenerateDescription<any> = ({ doc }) => {
 }
 
 
-const applySearchForCollection = ['categories', 'products', 'variants', 'posts']
+const applySearchForCollection = ['categories', 'products', 'variants', 'posts','pages']
 const applySEOForCollection = ['categories', 'products', 'variants', 'posts', 'pages']
 
+
+// override field for seo plugin disable localized
 const overrideSEOFields: FieldsOverride = ({ defaultFields }) => {
-  console.log(defaultFields)
   const override =  defaultFields.map((field) => {
     if ('name' in field && field.name) {
       return {
@@ -53,12 +53,16 @@ const overrideSEOFields: FieldsOverride = ({ defaultFields }) => {
     }
     return field
   })
-  return [
-    ...override,
-    MetaImageField({
-      relationTo: 'media',
-    }),
-  ]
+  override.splice(3, 0, {
+    name: 'image',
+    type: 'upload',
+    relationTo: 'media',
+    label: 'SEO Image',
+    required: false,
+    localized: false,
+  })
+  return override
+ 
 }
 export const plugins: Plugin[] = [
   seoPlugin({

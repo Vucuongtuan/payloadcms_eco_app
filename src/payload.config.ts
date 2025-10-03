@@ -7,19 +7,9 @@ import { Users } from '@/collections/Users';
 import { Footer } from '@/globals/Footer';
 import { Header } from '@/globals/Header';
 import { vercelPostgresAdapter } from '@payloadcms/db-vercel-postgres';
-import {
-  BoldFeature,
-  EXPERIMENTAL_TableFeature,
-  IndentFeature,
-  ItalicFeature,
-  LinkFeature,
-  OrderedListFeature,
-  UnderlineFeature,
-  UnorderedListFeature,
-  lexicalEditor,
-} from '@payloadcms/richtext-lexical';
 import path from 'path';
 import { buildConfig } from 'payload';
+import sharp from 'sharp';
 import { fileURLToPath } from 'url';
 import { plugins } from './plugin';
 // i18n Translations
@@ -27,6 +17,7 @@ import { plugins } from './plugin';
 // ---
 import { EmailSubscribe, Newsletter, Posts, Reviews, Tags } from './collections';
 import { Variants } from './collections/(ecommerce)/Variants';
+import { defaultLexical } from './fields/defaultLexical';
 // ---
 
 // Config Environment
@@ -63,6 +54,7 @@ export default buildConfig({
     user: Users.slug,
   },
   collections: allCollections,
+  sharp,
     // Config i18n for CMS
     // i18n: {
     //   fallbackLanguage: "vi",
@@ -82,40 +74,13 @@ export default buildConfig({
   // db: mongooseAdapter({
   //   url: process.env.DATABASE_URI || '',
   // }),
-  editor: lexicalEditor({
-    features: () => {
-      return [
-        UnderlineFeature(),
-        BoldFeature(),
-        ItalicFeature(),
-        OrderedListFeature(),
-        UnorderedListFeature(),
-        LinkFeature({
-          enabledCollections: ['pages'],
-          fields: ({ defaultFields }) => {
-            const defaultFieldsWithoutUrl = defaultFields.filter((field) => {
-              if ('name' in field && field.name === 'url') return false
-              return true
-            })
-
-            return [
-              ...defaultFieldsWithoutUrl,
-              {
-                name: 'url',
-                type: 'text',
-                admin: {
-                  condition: ({ linkType }) => linkType !== 'internal',
-                },
-                label: ({ t }) => t('fields:enterURL'),
-                required: true,
-              },
-            ]
-          },
-        }),
-        IndentFeature(),
-        EXPERIMENTAL_TableFeature(),
-      ]
-    },
+  editor: defaultLexical({
+    headingSizes: ['h1','h2', 'h3', 'h4','h5','h6'],
+    enableHeading:true,
+    enableTextState:true,
+    enableLink:true,
+    enableTable:true,
+    
   }),
   //email: nodemailerAdapter(),
   endpoints: [],
