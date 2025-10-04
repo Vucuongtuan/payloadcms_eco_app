@@ -44,3 +44,14 @@ export function resolveLink(linkItem: { link: LinkItem }) {
 export function resolveTitle(linkItem: { link: LinkItem }) {
   return linkItem.link.label || ""
 }
+export const getLinkProps = (itemLink:any) => {
+  const {type,reference,url,newTab} = itemLink
+  const href =
+    type === 'reference' && typeof reference?.value === 'object' && reference.value.slug
+      ? `${reference?.relationTo !== 'pages' ? `/${reference?.relationTo}` : ''}/${reference.value.slug}`
+      : url
+
+  if (!href) return null
+  const newTabProps = newTab ? { rel: 'noopener noreferrer', target: '_blank' } : {}
+  return { href, newTabProps }
+}

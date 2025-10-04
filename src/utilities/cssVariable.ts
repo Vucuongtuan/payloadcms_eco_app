@@ -48,6 +48,34 @@ export const columnCl = (type:ColumnProps): string => {
 }
 
 
+type AspectProps = 'auto' | 'ultrawide' | 'photo' | 'poster' | 'story' | 'insta' | 'retro' | 'video' | 'square' | 'wide'
+export const aspectConfig = (type:AspectProps): string => {
+    switch (type) {
+    case 'auto':
+        return 'aspect-auto';
+    case 'ultrawide':
+        return 'aspect-ultrawide';
+    case 'photo':
+        return 'aspect-photo';
+    case 'poster':
+        return 'aspect-poster';
+    case 'story':
+        return 'aspect-story';
+    case 'insta':
+        return 'aspect-insta';
+    case 'retro':
+        return 'aspect-retro';
+    case 'video':
+        return 'aspect-video';
+    case 'square':
+        return 'aspect-square';
+    case 'wide':
+        return 'aspect-wide';
+    default:
+        return '';
+    }
+}
+
 export const cssVariables = {
     breakpoints: {
       "3xl": 1920,

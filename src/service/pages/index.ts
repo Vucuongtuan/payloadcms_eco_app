@@ -13,14 +13,19 @@ export async function findPageDoc(
         return payload.find({
           collection: "pages",
           where: {
-            slug: slug === "" ? "home" : slug,
-            status: "published",
+            slug: {
+              equals: slug
+            },
+            _status: {
+              equals: "published"
+            }
           },
           limit: 1,
           locale: lang,
         });
       });
       if (err) throw err;
+      console.log({result:result.docs[0],slug})
       return result.docs[0] as Page;
     },
     [`page`, lang, slug],
