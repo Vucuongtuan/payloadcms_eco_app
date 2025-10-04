@@ -12,5 +12,4 @@ export const layout: Field = {
         { label: "Narrow container", value: "narrow" },
     ],
     defaultValue: "container",
-    localized: true
 }

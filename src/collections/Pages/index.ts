@@ -2,6 +2,8 @@ import type { CollectionConfig } from 'payload'
 
 import { adminOnly } from '@/access/adminOnly'
 import { adminOrPublishedStatus } from '@/access/adminOrPublishedStatus'
+import { Carousel } from '@/blocks/Carousel/config'
+import { ColumnMedia } from '@/blocks/ColumnMedia/config'
 import { Content } from '@/blocks/Content/config'
 import { MediaBlock } from '@/blocks/MediaBlock/config'
 import { slugField } from '@/fields/slug'
@@ -77,8 +79,9 @@ export const Pages: CollectionConfig = {
               blocks: [
                 Content,
                 MediaBlock,
+                Carousel,
+                ColumnMedia
               ],
-              required: true,
             },
           ],
           label: 'Layout',
@@ -116,7 +119,16 @@ export const Pages: CollectionConfig = {
       slugOverrides: {
         required: true,
       },
-    }),
+      
+    },false),
+    {
+      name:"isTopLevel",
+      type:'checkbox',
+      defaultValue:true,
+      admin:{
+        position:'sidebar',
+      }
+    }
   ],
   hooks: {
     afterChange: [revalidatePage],

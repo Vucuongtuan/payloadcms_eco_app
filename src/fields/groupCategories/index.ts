@@ -4,41 +4,27 @@ export const groupCategoriesField = ({admin ={}}: {admin?: Field['admin']}): Fie
   
     return [
     {
-      name: "gender",
-      type: "relationship",
-      relationTo: "categories",
-      filterOptions: () => {
-        // const level = data?.level || "level1"
-         return {
-          level: {
-            equals: 'level1',
-          },
-        }
-      },
-      required: true,
-      ...(admin && admin)
-    },
-    {
-      name: "type",
-      type: "relationship",
-      relationTo: "categories",
-      required: true,
-      filterOptions: () => {
-        // const level = data?.level || "level1"
-         return {
-          level: {
-            equals: 'level2',
-          },
-        }
-      },
-      ...(admin && admin)
-    },
-    {
       name: "category",
       type: "relationship",
       relationTo: "categories",
       required: true,
       filterOptions: () => {
+        // const level = data?.level || "level1"
+         return {
+          parent:{
+            equals: null,
+          }
+        }
+      },
+      ...(admin && admin)
+    },
+    {
+      name: "subCategory",
+      type: "relationship",
+      relationTo: "categories",
+      required: true,
+      filterOptions: ({siblingData,data,blockData}) => {
+        console.log({siblingData,data,blockData})
         // const level = data?.level || "level1"
          return {
           level: {
