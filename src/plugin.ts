@@ -7,13 +7,13 @@ import { adminOrPublishedStatus } from '@/access/adminOrPublishedStatus';
 import { customerOnlyFieldAccess } from '@/access/customerOnlyFieldAccess';
 import { getServerSideURL } from '@/utilities/getURL';
 import { ecommercePlugin } from '@payloadcms/plugin-ecommerce';
+import { nestedDocsPlugin } from '@payloadcms/plugin-nested-docs';
 import { searchPlugin } from '@payloadcms/plugin-search';
 import { seoPlugin } from '@payloadcms/plugin-seo';
 import { GenerateDescription, GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types';
 import { FieldsOverride } from 'node_modules/@payloadcms/plugin-ecommerce/dist/types';
 import { Plugin } from 'payload';
 import { ProductsCollection } from './collections';
-
 
 const generateTitle: GenerateTitle<any> = ({ doc }) => {
     const brandName = 'Moon co.';
@@ -110,12 +110,12 @@ export const plugins: Plugin[] = [
       localize: true
     }),
        // Nesterd Docs
-      //  nestedDocsPlugin({
-      //   collections: ['categories'],
-      //   generateLabel: (_, doc) => doc.title || doc.name || '' as any,
-      //   generateURL: (docs) =>
-      //     docs.reduce((url, doc) => `${url}/${doc.slug}`, ''),
-      // }),
+       nestedDocsPlugin({
+        collections: ['categories'],
+        generateLabel: (_, doc) => doc.title || doc.name || '' as any,
+        generateURL: (docs) =>
+          docs.reduce((url, doc) => `${url}/${doc.slug}`, ''),
+      }),
       // Ecommerce
       ecommercePlugin({
           access: {

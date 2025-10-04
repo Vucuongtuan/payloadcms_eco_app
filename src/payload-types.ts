@@ -378,9 +378,8 @@ export interface Product {
   slugLock?: boolean | null;
   sales?: number | null;
   taxonomies: {
-    gender: number | Category;
-    type: number | Category;
     category: number | Category;
+    subCategory: number | Category;
     tags?: (number | Tag)[] | null;
   };
   updatedAt: string;
@@ -484,15 +483,20 @@ export interface Category {
   description?: string | null;
   slug?: string | null;
   slugLock?: boolean | null;
-  level: 'level1' | 'level2' | 'level3';
-  blocks?: {
-    direction?: ('top' | 'bottom') | null;
-  };
   meta?: {
     title?: string | null;
     description?: string | null;
     image?: (number | null) | Media;
   };
+  parent?: (number | null) | Category;
+  breadcrumbs?:
+    | {
+        doc?: (number | null) | Category;
+        url?: string | null;
+        label?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   folder?: (number | null) | FolderInterface;
   updatedAt: string;
   createdAt: string;
@@ -595,9 +599,56 @@ export interface Page {
   id: number;
   title: string;
   publishedOn?: string | null;
-  sections: (ContentBlock | MediaBlock)[];
+  sections?:
+    | (
+        | ContentBlock
+        | MediaBlock
+        | Carousel
+        | {
+            items?:
+              | {
+                  media?: (number | null) | Media;
+                  link: {
+                    type?: ('reference' | 'custom') | null;
+                    newTab?: boolean | null;
+                    reference?:
+                      | ({
+                          relationTo: 'pages';
+                          value: number | Page;
+                        } | null)
+                      | ({
+                          relationTo: 'categories';
+                          value: number | Category;
+                        } | null)
+                      | ({
+                          relationTo: 'products';
+                          value: number | Product;
+                        } | null);
+                    url?: string | null;
+                    label: string;
+                    /**
+                     * Choose how the link should be rendered.
+                     */
+                    appearance?: ('default' | 'outline') | null;
+                  };
+                  id?: string | null;
+                }[]
+              | null;
+            layout?: ('container' | 'full' | 'wide' | 'narrow') | null;
+            spacing?: ('none' | 'small' | 'medium' | 'large') | null;
+            aspect?:
+              | ('auto' | 'ultrawide' | 'photo' | 'poster' | 'story' | 'insta' | 'retro' | 'video' | 'square' | 'wide')
+              | null;
+            columns?: number | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'columnMedia';
+          }
+      )[]
+    | null;
   slug: string;
   slugLock?: boolean | null;
+  isTopLevel?: boolean | null;
   meta?: {
     title?: string | null;
     description?: string | null;
@@ -606,6 +657,61 @@ export interface Page {
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "Carousel".
+ */
+export interface Carousel {
+  duration: number;
+  gallery?:
+    | {
+        media: number | Media;
+        content?: {
+          root: {
+            type: string;
+            children: {
+              type: any;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
+        link?: {
+          type?: ('reference' | 'custom') | null;
+          newTab?: boolean | null;
+          reference?:
+            | ({
+                relationTo: 'pages';
+                value: number | Page;
+              } | null)
+            | ({
+                relationTo: 'categories';
+                value: number | Category;
+              } | null)
+            | ({
+                relationTo: 'products';
+                value: number | Product;
+              } | null);
+          url?: string | null;
+          /**
+           * Choose how the link should be rendered.
+           */
+          appearance?: ('default' | 'outline') | null;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  layout?: ('container' | 'full' | 'wide' | 'narrow') | null;
+  spacing?: ('none' | 'small' | 'medium' | 'large') | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'carousel';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1299,18 +1405,21 @@ export interface CategoriesSelect<T extends boolean = true> {
   description?: T;
   slug?: T;
   slugLock?: T;
-  level?: T;
-  blocks?:
-    | T
-    | {
-        direction?: T;
-      };
   meta?:
     | T
     | {
         title?: T;
         description?: T;
         image?: T;
+      };
+  parent?: T;
+  breadcrumbs?:
+    | T
+    | {
+        doc?: T;
+        url?: T;
+        label?: T;
+        id?: T;
       };
   folder?: T;
   updatedAt?: T;
@@ -1371,9 +1480,37 @@ export interface PagesSelect<T extends boolean = true> {
     | {
         content?: T | ContentBlockSelect<T>;
         mediaBlock?: T | MediaBlockSelect<T>;
+        carousel?: T | CarouselSelect<T>;
+        columnMedia?:
+          | T
+          | {
+              items?:
+                | T
+                | {
+                    media?: T;
+                    link?:
+                      | T
+                      | {
+                          type?: T;
+                          newTab?: T;
+                          reference?: T;
+                          url?: T;
+                          label?: T;
+                          appearance?: T;
+                        };
+                    id?: T;
+                  };
+              layout?: T;
+              spacing?: T;
+              aspect?: T;
+              columns?: T;
+              id?: T;
+              blockName?: T;
+            };
       };
   slug?: T;
   slugLock?: T;
+  isTopLevel?: T;
   meta?:
     | T
     | {
@@ -1429,6 +1566,33 @@ export interface MediaBlockSelect<T extends boolean = true> {
   layout?: T;
   spacing?: T;
   aspect?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "Carousel_select".
+ */
+export interface CarouselSelect<T extends boolean = true> {
+  duration?: T;
+  gallery?:
+    | T
+    | {
+        media?: T;
+        content?: T;
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              url?: T;
+              appearance?: T;
+            };
+        id?: T;
+      };
+  layout?: T;
+  spacing?: T;
   id?: T;
   blockName?: T;
 }
@@ -1719,9 +1883,8 @@ export interface ProductsSelect<T extends boolean = true> {
   taxonomies?:
     | T
     | {
-        gender?: T;
-        type?: T;
         category?: T;
+        subCategory?: T;
         tags?: T;
       };
   updatedAt?: T;

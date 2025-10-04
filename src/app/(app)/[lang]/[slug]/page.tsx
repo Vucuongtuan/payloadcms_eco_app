@@ -15,11 +15,13 @@ interface PageProps {
 
 export default async function PageTemplate({ params }: PageProps) {
   const { lang, slug = "" } = await params;
-  const doc = await findPageDoc(lang, slug);
+  const isHomepage = slug === "";
+  const doc = await findPageDoc(lang, isHomepage ? "home" : slug);
 
   if (!doc) {
     return notFound();
   }
+  console.log({doc})
   return (
     <>
       <RenderBlocks blocks={(doc as Page).sections} />
