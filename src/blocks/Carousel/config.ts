@@ -1,4 +1,6 @@
+import { layout } from "@/fields/layout";
 import { link } from "@/fields/link";
+import { spacingField } from "@/fields/spacingField";
 import { Block } from "payload";
 
 
@@ -9,30 +11,56 @@ export const Carousel:Block = {
     interfaceName:"Carousel",
     fields:[
         {
-            name:"duration",
-            type:"number",
-            defaultValue:10000,
-            required:true,
-        },
-        {
-            type:"array",
-            name:"gallery",
-            fields:[
+            type:"tabs",
+            tabs:[
                 {
-                    name:"media",
-                    type:"upload",
-                    relationTo:"media",
-                    required:true,
-                    localized:true
+                    label:{
+                        en:"General",
+                        vi:"Chung"
+                    },
+                    fields:[
+                        {
+                            name:"duration",
+                            type:"number",
+                            defaultValue:10000,
+                            required:true,
+                        },
+                        {
+                            type:"array",
+                            name:"gallery",
+                            fields:[
+                                {
+                                    name:"media",
+                                    type:"upload",
+                                    relationTo:"media",
+                                    required:true,
+                                    localized:true
+                                },
+                                {
+                                    name:"content",
+                                    type:"richText",
+                                    localized:true
+                                },
+                                link({disableLabel:true,categoryLevel:"level3"})
+                            ]
+                        }
+                    ]
                 },
                 {
-                    name:"content",
-                    type:"richText",
-                    localized:true
-                },
-                link({disableLabel:true})
+                    label:{
+                        en:"Config",
+                        vi:"Cấu hình"
+                    },
+                    fields:[
+                        layout,
+                        ...spacingField({
+                            localized:false
+                        })
+                    ]
+                }
             ]
         }
+      
        
     ]
 }

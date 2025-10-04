@@ -43,8 +43,8 @@ export const MediaBlock: React.FC<MediaBlockProps> = ({
 
         )}>
           <Media
-             className="h-full"
-            imgClassName="border border-border h-full"
+             className="h-full w-full"
+            imgClassName="border border-border h-full w-full"
             resource={media}
           />
         </div>
