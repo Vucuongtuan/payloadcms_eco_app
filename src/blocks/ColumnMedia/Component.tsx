@@ -2,7 +2,6 @@ import { Media } from "@/components/Media"
 import { cn } from "@/lib/utils"
 import { Media as MediaType } from "@/payload-types"
 import { aspectConfig, layoutCtn } from "@/utilities/cssVariable"
-import { getLinkProps } from "@/utilities/getLinkAndTitle"
 import Link from "next/link"
 
 
@@ -12,8 +11,6 @@ import Link from "next/link"
 export const ColumnMedia = ({
 layout,items,columns,aspect
 }:any) => {
-    
-
     const gridColumns = () => {
         let gridClass = ''
         switch (columns) {
@@ -35,18 +32,18 @@ layout,items,columns,aspect
         return `grid ${gridClass}`
     }
     if(!items) return null
-
-
 return (
     <div className={cn(
         layoutCtn(layout || 'container'),
         gridColumns(),
     )}>
         {items.map((item:{media:MediaType,link:any},idx:number)=>(
-           <div
+           <Link
+           href={item.link?.url || '#'}
+           {...item.link?.newTabProps}
            key={idx}
            className={cn(
-             `size-full relative`,
+             `size-full relative group`,
              aspectConfig(aspect)
            )}
          >
@@ -56,25 +53,14 @@ return (
              fClassName="relative"
              fill
            />
-         
-         {item.link && (() => {
-  const linkProps = getLinkProps(item.link)
-  if (!linkProps) return null
-  return (
-    <Link
-      href={linkProps.href}
-      {...linkProps.newTabProps}
-      className="absolute inset-x-0 bottom-0 flex flex-col justify-end"
-    >
-      <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/50 via-black/50 to-transparent" />
-      <div className="relative z-10 p-4 text-white">
-        {item.link.label}
-      </div>
-    </Link>
-  )
-})()}
-
-         </div>
+          
+          <div className="absolute  h-full w-full bottom-0 flex flex-col justify-end ">
+            {/* <div className="absolute inset-0 bottom-0 h-1/3 bg-gradient-to-t from-black/50 via-black/50 to-transparent" /> */}
+            <div className="relative z-10 p-4 text-lg lg:text-2xl text-white group-hover:bg-[var(--color-primary)]">
+              {item.link.label}
+            </div>
+          </div>
+         </Link>
          
         ))}
     </div>
