@@ -1,6 +1,6 @@
 import { layout } from "@/fields/layout";
 import { link } from "@/fields/link";
-import { spacingField } from "@/fields/spacingField";
+import { aspectField, spacingField } from "@/fields/spacingField";
 import { Block } from "payload";
 
 
@@ -55,7 +55,10 @@ export const Carousel:Block = {
                         layout,
                         ...spacingField({
                             localized:false
-                        })
+                        }),
+                        ...aspectField({
+                            localized:false
+                        }),
                     ]
                 }
             ]

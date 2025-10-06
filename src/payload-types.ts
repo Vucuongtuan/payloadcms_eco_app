@@ -709,6 +709,9 @@ export interface Carousel {
     | null;
   layout?: ('container' | 'full' | 'wide' | 'narrow') | null;
   spacing?: ('none' | 'small' | 'medium' | 'large') | null;
+  aspect?:
+    | ('auto' | 'ultrawide' | 'photo' | 'poster' | 'story' | 'insta' | 'retro' | 'video' | 'square' | 'wide')
+    | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'carousel';
@@ -1593,6 +1596,7 @@ export interface CarouselSelect<T extends boolean = true> {
       };
   layout?: T;
   spacing?: T;
+  aspect?: T;
   id?: T;
   blockName?: T;
 }

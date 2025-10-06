@@ -7,12 +7,13 @@ import { cn } from '@/lib/utils'
 import { spacing } from '@/utilities/cssVariable'
 import type { Page } from '../payload-types'
 import { ColumnMedia } from './ColumnMedia/Component'
+import { CarouselBlock } from './Carousel/Components'
 
 const blockComponents = {
   content: ContentBlock,
   mediaBlock: MediaBlock,
   columnMedia: ColumnMedia,
-  // carousel: Carousel,
+  carousel: CarouselBlock,
 }
 export const RenderBlocks: React.FC<{
   blocks: Page['sections']
