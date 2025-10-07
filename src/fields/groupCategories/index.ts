@@ -9,11 +9,11 @@ export const groupCategoriesField = ({admin ={}}: {admin?: Field['admin']}): Fie
       relationTo: "categories",
       required: true,
       filterOptions: () => {
-        // const level = data?.level || "level1"
-         return {
-          parent:{
-            equals: null,
-          }
+        return {
+          or: [
+            { parent: { equals: null } },
+            { parent: { exists: false } },
+          ],
         }
       },
       ...(admin && admin)
@@ -23,16 +23,17 @@ export const groupCategoriesField = ({admin ={}}: {admin?: Field['admin']}): Fie
       type: "relationship",
       relationTo: "categories",
       required: true,
-      filterOptions: ({siblingData,data,blockData}) => {
-        console.log({siblingData,data,blockData})
-        // const level = data?.level || "level1"
-         return {
-          level: {
-            equals: 'level3',
-          },
+      filterOptions: ({ siblingData }:any) => {
+        return {
+          parent: { equals: siblingData.category },
         }
       },
-      ...(admin && admin)
+      admin: {
+        condition: (_,siblingData:any) => {
+          return !!siblingData?.category
+        },
+      },
+     
     },
   ];
 };

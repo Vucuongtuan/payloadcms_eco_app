@@ -16,14 +16,12 @@ import "./style.scss";
 
 type SlugComponentProps = {
   fieldToUse: string;
-  typeToUse?:string;
   checkboxFieldPath: string;
 } & TextFieldClientProps;
 
 export const SlugComponent: React.FC<SlugComponentProps> = ({
   field,
   fieldToUse,
-  typeToUse,
   checkboxFieldPath: checkboxFieldPathFromProps,
   path,
   readOnly: readOnlyFromProps,

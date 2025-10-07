@@ -40,7 +40,8 @@ export const Categories: CollectionConfig = {
   },
   fields: [
     ...baseField,
-     ...slugField("title",'type',{},false),
+     ...slugField("title",{},false),
+    
     // {
     //   name: "breadcrumbs",
     //   type: "ui",

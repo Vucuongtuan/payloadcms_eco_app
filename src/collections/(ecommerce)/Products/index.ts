@@ -2,8 +2,10 @@ import { Content } from '@/blocks/Content/config'
 import { MediaBlock } from '@/blocks/MediaBlock/config'
 import { groupCategoriesField } from '@/fields/groupCategories'
 import { slugField } from '@/fields/slug'
+import { uploadCustomField } from '@/fields/upload'
 import { variants } from '@/fields/variant'
 import { generatePreviewPath } from '@/utilities/generatePreviewPath'
+import { statusField } from '@payloadcms/plugin-ecommerce'
 import { CollectionOverride } from '@payloadcms/plugin-ecommerce/types'
 import {
   MetaDescriptionField,
@@ -171,12 +173,23 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
             }),
             MetaTitleField({
               hasGenerateFn: true,
+              overrides:{
+                localized:false
+              }
+            }),
+            MetaDescriptionField({
+              hasGenerateFn: true,
+              overrides:{
+                localized:false
+              }
             }),
             MetaImageField({
               relationTo: 'media',
+              overrides:{
+                localized:false
+              }
             }),
 
-            MetaDescriptionField({}),
             PreviewField({
               // if the `generateUrl` function is configured
               hasGenerateFn: true,
@@ -189,7 +202,7 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
         },
       ],
     },
-    ...slugField('title','', {
+    ...slugField('title', {
       slugOverrides: {
         required: true,
       },
@@ -205,6 +218,38 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
       },
 
     },
+     statusField({
+      overrides:{
+        name:"statusProduct",
+        options: [
+          {
+            label:{
+              vi:"Còn hàng",
+              en:"In Stock"
+            },
+            value:"in-stock"
+          },
+          {
+            label: {
+              vi: 'Hết hàng',
+              en: 'Out of Stock',
+            },
+            value: 'out-of-stock',
+          },
+          {
+            label:{
+              vi:"Đặt trước",
+              en:"Pre-order"
+            },
+            value:"pre-order"
+          }
+        ],
+        defaultValue:"in-stock",
+        admin:{
+          position:"sidebar"
+        }
+      }
+     }),
         {
           name: "taxonomies",
           type: "group",
@@ -223,7 +268,18 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
               hasMany: true,
             },
           ],
-        },  
+        }, 
+        uploadCustomField({
+          name:"thumbnail",
+          label:"Thumbnail",
+          hasMany:true,
+          admin:{
+            position:"sidebar"
+          },
+          required:true,
+          minRows:1,
+          maxRows:2
+        })
   ],
   versions:{
     drafts: {

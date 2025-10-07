@@ -8,16 +8,14 @@ type Overrides = {
 
 type Slug = (
   fieldToUse?: string,
-  typeToUse?: string,
   overrides?: Overrides,
   localized?: boolean,
 ) => [TextField, CheckboxField];
 
 export const slugField: Slug = (
   fieldToUse = "title",
-  typeToUse,
   overrides = {},
-  localized = true,
+  localized = false,
 ) => {
   const { slugOverrides, checkboxOverrides } = overrides;
 
@@ -50,7 +48,6 @@ export const slugField: Slug = (
           path: "@/fields/slug/slugComponent#SlugComponent",
           clientProps: {
             fieldToUse,
-            typeToUse,
             checkboxFieldPath: checkBoxField.name,
           },
         },

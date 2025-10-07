@@ -115,7 +115,7 @@ export const Pages: CollectionConfig = {
         // },
       ],
     },
-    ...slugField('title', '',{
+    ...slugField('title',{
       slugOverrides: {
         required: true,
       },

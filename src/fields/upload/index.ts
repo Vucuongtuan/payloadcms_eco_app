@@ -8,7 +8,9 @@ interface ImageWithPreviewProps {
   admin?: Field["admin"];
   required?: boolean;
   hasMany?:boolean;
-  localized?:boolean
+  localized?:boolean;
+  minRows?:number
+  maxRows?:number
 }
 type UploadCustomFieldProps = (props: ImageWithPreviewProps) => RowField;
 

@@ -1,7 +1,7 @@
 import { Field } from "payload";
 
 export const statusField = (): Field => ({
-  name: "status",
+  name: "_status",
   type: "select",
   label: {
     vi: "Trạng thái",
@@ -29,6 +29,13 @@ export const statusField = (): Field => ({
       },
       value: 'out-of-stock',
     },
+    {
+      label:{
+        vi:"Đặt trước",
+        en:"Pre-order"
+      },
+      value:"pre-order"
+    }
   ],
   defaultValue: "draft",
   admin: {

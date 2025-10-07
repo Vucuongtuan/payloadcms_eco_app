@@ -52,7 +52,7 @@ export const variants = ({
                       defaultValue:false
                     },
                     ...priceField({ required: requiredPrice,condition: (_, doc) => doc?.customPrice === true}),
-                    inventoryField(),
+                    inventoryField({size:"S"}),
                   ]
                 },
                 {
@@ -65,7 +65,7 @@ export const variants = ({
                       defaultValue:false
                     },
                     ...priceField({ required: requiredPrice,condition: (_, doc) => doc?.customPrice === true}),
-                    inventoryField(),
+                    inventoryField({size:"M"}),
                   ]
                 },
                 {
@@ -78,7 +78,7 @@ export const variants = ({
                       defaultValue:false
                     },
                     ...priceField({ required: requiredPrice,condition: (_, doc) => doc?.customPrice === true}),
-                    inventoryField(),
+                    inventoryField({size:"L"}),
                   ]
                 },
                 {
@@ -91,12 +91,12 @@ export const variants = ({
                       defaultValue:false
                     },
                     ...priceField({ required: requiredPrice,condition: (_, doc) => doc?.customPrice === true}),
-                    inventoryField(),
+                    inventoryField({size:"XL"}),
                   ]
                 },
                 {
                   label:"XXL",
-                  name:"xl",
+                  name:"xxl",
                   fields:[
                     {
                       name:"customPrice",
@@ -104,7 +104,7 @@ export const variants = ({
                       defaultValue:false
                     },
                     ...priceField({ required: requiredPrice,condition: (_, doc) => doc?.customPrice === true}),
-                    inventoryField(),
+                    inventoryField({size:"XXL"}),
                   ]
                 },
               ]

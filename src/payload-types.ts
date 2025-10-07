@@ -300,6 +300,9 @@ export interface Product {
         discount: number;
       };
       inventory?: {
+        /**
+         * Auto generate SKU
+         */
         sku?: string | null;
         stock?: number | null;
       };
@@ -314,6 +317,9 @@ export interface Product {
         discount: number;
       };
       inventory?: {
+        /**
+         * Auto generate SKU
+         */
         sku?: string | null;
         stock?: number | null;
       };
@@ -328,6 +334,9 @@ export interface Product {
         discount: number;
       };
       inventory?: {
+        /**
+         * Auto generate SKU
+         */
         sku?: string | null;
         stock?: number | null;
       };
@@ -342,6 +351,26 @@ export interface Product {
         discount: number;
       };
       inventory?: {
+        /**
+         * Auto generate SKU
+         */
+        sku?: string | null;
+        stock?: number | null;
+      };
+    };
+    xxl?: {
+      customPrice?: boolean | null;
+      /**
+       * Enter the price in VND only, other currencies will be automatically converted based on the exchange rates defined in GlobalSetting.
+       */
+      pricing?: {
+        price: string;
+        discount: number;
+      };
+      inventory?: {
+        /**
+         * Auto generate SKU
+         */
         sku?: string | null;
         stock?: number | null;
       };
@@ -368,20 +397,22 @@ export interface Product {
   relatedProducts?: (number | Product)[] | null;
   meta?: {
     title?: string | null;
+    description?: string | null;
     /**
      * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
      */
     image?: (number | null) | Media;
-    description?: string | null;
   };
   slug: string;
   slugLock?: boolean | null;
   sales?: number | null;
+  statusProduct: 'in-stock' | 'out-of-stock' | 'pre-order';
   taxonomies: {
     category: number | Category;
-    subCategory: number | Category;
+    subCategory?: (number | null) | Category;
     tags?: (number | Tag)[] | null;
   };
+  thumbnail: (number | Media)[];
   updatedAt: string;
   createdAt: string;
   deletedAt?: string | null;
@@ -723,6 +754,7 @@ export interface Carousel {
 export interface VariantsProduct {
   id: number;
   title: string;
+  titleVN: string;
   slug?: string | null;
   slugLock?: boolean | null;
   color: string;
@@ -737,6 +769,9 @@ export interface VariantsProduct {
         discount: number;
       };
       inventory?: {
+        /**
+         * Auto generate SKU
+         */
         sku?: string | null;
         stock?: number | null;
       };
@@ -751,6 +786,9 @@ export interface VariantsProduct {
         discount: number;
       };
       inventory?: {
+        /**
+         * Auto generate SKU
+         */
         sku?: string | null;
         stock?: number | null;
       };
@@ -765,6 +803,9 @@ export interface VariantsProduct {
         discount: number;
       };
       inventory?: {
+        /**
+         * Auto generate SKU
+         */
         sku?: string | null;
         stock?: number | null;
       };
@@ -779,11 +820,33 @@ export interface VariantsProduct {
         discount: number;
       };
       inventory?: {
+        /**
+         * Auto generate SKU
+         */
+        sku?: string | null;
+        stock?: number | null;
+      };
+    };
+    xxl?: {
+      customPrice?: boolean | null;
+      /**
+       * Enter the price in VND only, other currencies will be automatically converted based on the exchange rates defined in GlobalSetting.
+       */
+      pricing?: {
+        price: string;
+        discount: number;
+      };
+      inventory?: {
+        /**
+         * Auto generate SKU
+         */
         sku?: string | null;
         stock?: number | null;
       };
     };
   };
+  gallery?: (number | Media)[] | null;
+  thumbnail?: (number | Media)[] | null;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -1627,6 +1690,7 @@ export interface PostsSelect<T extends boolean = true> {
  */
 export interface VariantsProductSelect<T extends boolean = true> {
   title?: T;
+  titleVN?: T;
   slug?: T;
   slugLock?: T;
   color?: T;
@@ -1701,7 +1765,26 @@ export interface VariantsProductSelect<T extends boolean = true> {
                     stock?: T;
                   };
             };
+        xxl?:
+          | T
+          | {
+              customPrice?: T;
+              pricing?:
+                | T
+                | {
+                    price?: T;
+                    discount?: T;
+                  };
+              inventory?:
+                | T
+                | {
+                    sku?: T;
+                    stock?: T;
+                  };
+            };
       };
+  gallery?: T;
+  thumbnail?: T;
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
@@ -1863,6 +1946,23 @@ export interface ProductsSelect<T extends boolean = true> {
                     stock?: T;
                   };
             };
+        xxl?:
+          | T
+          | {
+              customPrice?: T;
+              pricing?:
+                | T
+                | {
+                    price?: T;
+                    discount?: T;
+                  };
+              inventory?:
+                | T
+                | {
+                    sku?: T;
+                    stock?: T;
+                  };
+            };
       };
   gallery?: T;
   content?: T;
@@ -1878,12 +1978,13 @@ export interface ProductsSelect<T extends boolean = true> {
     | T
     | {
         title?: T;
-        image?: T;
         description?: T;
+        image?: T;
       };
   slug?: T;
   slugLock?: T;
   sales?: T;
+  statusProduct?: T;
   taxonomies?:
     | T
     | {
@@ -1891,6 +1992,7 @@ export interface ProductsSelect<T extends boolean = true> {
         subCategory?: T;
         tags?: T;
       };
+  thumbnail?: T;
   updatedAt?: T;
   createdAt?: T;
   deletedAt?: T;
