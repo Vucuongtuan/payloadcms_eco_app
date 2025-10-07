@@ -35,7 +35,7 @@
 
   /* // container */
   --max-w-screen-3xl: 1920px;
-  
+  --bg-red-low: #f0807d;
 
   /* // font */
   --font-sans: var(--font-inter), sans-serif; 
@@ -73,7 +73,11 @@
   --color-border-light: #e5e7eb;
 
 }
-
+@layer utilities{
+  .max-w-screen-3xl {
+    max-width: var(--max-w-screen-3xl);
+  }
+}
 @utility container {
   margin-inline: auto;
   padding-inline: 2rem;
@@ -85,39 +89,7 @@
  
 }
 
-[data-theme='dark'] {
-  --background: hsla(0, 0%, 4%);
-  --foreground: hsl(210 40% 98%);
 
-  --card: hsl(0, 0%, 8%);
-  --card-foreground: hsl(210 40% 98%);
-
-  --popover: hsl(222.2 84% 4.9%);
-  --popover-foreground: hsl(210 40% 98%);
-
-  --primary: var(--color-primary);
-  --primary-foreground: hsl(0, 0%, 6%);
-
-  --secondary: var(--color-secondary);
-  --secondary-foreground: hsl(210 40% 98%);
-
-  --muted: hsl(217.2 32.6% 17.5%);
-  --muted-foreground: hsl(215 20.2% 65.1%);
-
-  --accent: hsla(197, 100%, 58%);
-  --accent-foreground: hsl(210 40% 98%);
-
-  --destructive: hsl(0 62.8% 30.6%);
-  --destructive-foreground: hsl(210 40% 98%);
-
-  --border: hsla(0, 0%, 100%, 0.1);
-  --input: hsla(0, 0%, 100%, 0.1);
-  --ring: hsl(212.7 26.8% 83.9%);
-
-  --success: hsl(196 100% 14%);
-  --warning: hsl(34 51% 25%);
-  --error: hsl(10 39% 43%);
-}
 
 @theme inline {
   --color-background: var(--background);

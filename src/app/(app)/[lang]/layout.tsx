@@ -63,12 +63,12 @@ export default async function RootLayout(props: {
       <body>
          <NextIntlClientProvider messages={msg}>
         <Providers>
-          <AdminBar />
-          <LivePreviewListener />
+            <AdminBar />
+            <LivePreviewListener />
 
-          {/* <Header lang={lang}/> */}
-          <main className="min-h-[1000px]">{children}</main>
-          <Footer lang={lang} />
+            {/* <Header lang={lang}/> */}
+            <main className={'mt-17 min-h-[800px]'}>{children}</main>
+            <Footer lang={lang} />
         </Providers>
         </NextIntlClientProvider>
       </body>

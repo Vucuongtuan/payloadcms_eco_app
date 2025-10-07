@@ -14,7 +14,6 @@ import { GenerateDescription, GenerateTitle, GenerateURL } from '@payloadcms/plu
 import { FieldsOverride } from 'node_modules/@payloadcms/plugin-ecommerce/dist/types';
 import { Plugin } from 'payload';
 import { ProductsCollection } from './collections';
-
 const generateTitle: GenerateTitle<any> = ({ doc }) => {
     const brandName = 'Moon co.';
     // const brandTagline: Record<string, string> = {
@@ -113,8 +112,10 @@ export const plugins: Plugin[] = [
        nestedDocsPlugin({
         collections: ['categories'],
         generateLabel: (_, doc) => doc.title || doc.name || '' as any,
-        generateURL: (docs) =>
-          docs.reduce((url, doc) => `${url}/${doc.slug}`, ''),
+        generateURL: (docs) =>{
+         return docs.reduce((url, doc) => `${url}/${doc.slug}`, '');
+        },
+        
       }),
       // Ecommerce
       ecommercePlugin({

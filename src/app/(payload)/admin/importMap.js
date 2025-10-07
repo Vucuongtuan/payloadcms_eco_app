@@ -34,6 +34,7 @@ import { FixedToolbarFeatureClient as FixedToolbarFeatureClient_e70f5e05f09f93e0
 import { ColorPicker as ColorPicker_12a7b8a465a2f45e01600f1f3deea364 } from '@/fields/color/ColorPicker'
 import { MediaPreview as MediaPreview_d3262f8caba4f7a9603d8c64e5f8ed81 } from '@/fields/upload/previewUploadUi'
 import { PriceFormatVND as PriceFormatVND_64ece875bfea53d0913b640931c5bdd5 } from '@/fields/price/priceFomatVND'
+import { AutoGenComponent as AutoGenComponent_ae04a174432af6f639a454dcd582ed67 } from '@/fields/autoGenSKU/autoGenComponents'
 import { LinkToDoc as LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
 import { ReindexButton as ReindexButton_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
 import { VariantOptionsSelector as VariantOptionsSelector_b91672ccd6e8b071c11142ab941fedfb } from '@payloadcms/plugin-ecommerce/rsc'
@@ -81,6 +82,7 @@ export const importMap = {
   "@/fields/color/ColorPicker#ColorPicker": ColorPicker_12a7b8a465a2f45e01600f1f3deea364,
   "@/fields/upload/previewUploadUi#MediaPreview": MediaPreview_d3262f8caba4f7a9603d8c64e5f8ed81,
   "@/fields/price/priceFomatVND#PriceFormatVND": PriceFormatVND_64ece875bfea53d0913b640931c5bdd5,
+  "@/fields/autoGenSKU/autoGenComponents#AutoGenComponent": AutoGenComponent_ae04a174432af6f639a454dcd582ed67,
   "@payloadcms/plugin-search/client#LinkToDoc": LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634,
   "@payloadcms/plugin-search/client#ReindexButton": ReindexButton_aead06e4cbf6b2620c5c51c9ab283634,
   "@payloadcms/plugin-ecommerce/rsc#VariantOptionsSelector": VariantOptionsSelector_b91672ccd6e8b071c11142ab941fedfb,
