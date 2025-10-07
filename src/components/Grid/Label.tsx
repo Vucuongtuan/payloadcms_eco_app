@@ -1,7 +1,7 @@
 import clsx from 'clsx'
 import React from 'react'
 
-import { Price } from '@/components/Price'
+import { Price } from '@/components/ProductList/Price'
 
 type Props = {
   amount: number

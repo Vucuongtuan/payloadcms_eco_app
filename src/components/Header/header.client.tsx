@@ -2,7 +2,6 @@
 
 import { Header } from "@/payload-types";
 import { AuthButtons } from "./AuthButtons";
-import { Logo } from "./Logo";
 import { MegaDropdown } from "./MegaDropdown";
 import { MobileMenuButton } from "./MobileMenuButton";
 import { MobileMenuOverlay } from "./MobileMenuOverlay";
@@ -33,22 +32,22 @@ export default function HeaderClient({ navData }: HeaderClientProps) {
           isScrolled ? "h-10" : "h-17"
         }`}
       >
-        <Logo />
-        <Navigation 
-          navData={navData} 
-          onMenuItemHover={handleMenuItemHover}
-          onMenuLeave={handleMenuLeave}
-        />
+        {/* <Logo /> */}
+        <div className="flex-1" onMouseLeave={handleMenuLeave}>
+          <Navigation 
+            navData={navData} 
+            onMenuItemHover={handleMenuItemHover}
+          />
+          <MegaDropdown
+            isOpen={megaDropdownOpen}
+            activeItem={activeItem}
+            onMouseEnter={handleDropdownEnter}
+            onMouseLeave={handleDropdownLeave}
+          />
+        </div>
         <AuthButtons />
         <MobileMenuButton isOpen={isOpen} onClick={toggleMenu} />
       </div>
-
-      <MegaDropdown
-        isOpen={megaDropdownOpen}
-        activeItem={activeItem}
-        onMouseEnter={handleDropdownEnter}
-        onMouseLeave={handleDropdownLeave}
-      />
 
       <MobileMenuOverlay
         isOpen={isOpen}

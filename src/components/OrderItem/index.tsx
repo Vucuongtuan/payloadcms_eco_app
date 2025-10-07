@@ -1,5 +1,5 @@
 import { OrderStatus } from '@/components/OrderStatus'
-import { Price } from '@/components/Price'
+import { Price } from '@/components/ProductList/Price'
 import { Button } from '@/components/ui/button'
 import { Order } from '@/payload-types'
 import { formatDateTime } from '@/utilities/formatDateTime'

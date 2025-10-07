@@ -8,22 +8,19 @@ import { memo } from "react";
 interface NavigationProps {
   navData: Header['navItems'];
   onMenuItemHover: (itemId: string) => void;
-  onMenuLeave: () => void;
 }
 
 export const Navigation = memo(function Navigation({ 
   navData, 
-  onMenuItemHover, 
-  onMenuLeave 
-}: NavigationProps) {
+  onMenuItemHover
+}: Omit<NavigationProps, 'onMenuLeave'>) {
   return (
     <nav 
       className="flex-1 hidden md:flex md:items-center md:space-x-8"
-      onMouseLeave={onMenuLeave}
     >
       {navData?.map((link) => {
         if (!link) return null;
-        const hasChildren = link.child?.length > 0;
+        const hasChildren = link.child &&  link.child?.length > 0;
         
         return (
           <Link
@@ -32,7 +29,7 @@ export const Navigation = memo(function Navigation({
             className={`text-sm lg:text-base font-medium transition-colors duration-200 hover:text-gray-600 ${
               hasChildren ? 'cursor-pointer' : ''
             }`}
-            onMouseEnter={() => onMenuItemHover(link.id)}
+            onMouseEnter={() => onMenuItemHover(link.id as string)}
           >
             {resolveTitle(link)}
             {hasChildren && (

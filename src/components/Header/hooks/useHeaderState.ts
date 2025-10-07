@@ -2,18 +2,22 @@
 
 import { Header } from "@/payload-types";
 import { useWindowScroll } from "@uidotdev/usehooks";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 
 export function useHeaderState(navData: Header['navItems']) {
   const [isOpen, setIsOpen] = useState(false);
   const [{ y }] = useWindowScroll();
   const [megaDropdownOpen, setMegaDropdownOpen] = useState(false);
   const [activeMenuItem, setActiveMenuItem] = useState<string | null>(null);
+  const timeoutRef = useRef<NodeJS.Timeout>();
 
   const toggleMenu = useCallback(() => setIsOpen(prev => !prev), []);
   const isScrolled = (y ?? 0) > 50;
 
-  const handleMenuItemHover = useCallback((itemId: string) => {
+  const handleMenuEnter = useCallback((itemId: string) => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
     const item = navData?.find(item => item.id === itemId);
     if (item?.child?.length) {
       setActiveMenuItem(itemId);
@@ -22,20 +26,16 @@ export function useHeaderState(navData: Header['navItems']) {
   }, [navData]);
 
   const handleMenuLeave = useCallback(() => {
-    // Delay để tránh flicker khi di chuyển chuột
-    setTimeout(() => {
-      setActiveMenuItem(null);
+    timeoutRef.current = setTimeout(() => {
       setMegaDropdownOpen(false);
+      setActiveMenuItem(null);
     }, 150);
   }, []);
 
   const handleDropdownEnter = useCallback(() => {
-    setMegaDropdownOpen(true);
-  }, []);
-
-  const handleDropdownLeave = useCallback(() => {
-    setActiveMenuItem(null);
-    setMegaDropdownOpen(false);
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
   }, []);
 
   const activeItem = activeMenuItem ? navData?.find(item => item.id === activeMenuItem) : null;
@@ -44,12 +44,11 @@ export function useHeaderState(navData: Header['navItems']) {
     isOpen,
     isScrolled,
     megaDropdownOpen,
-    activeMenuItem,
     activeItem,
     toggleMenu,
-    handleMenuItemHover,
+    handleMenuItemHover: handleMenuEnter,
     handleMenuLeave,
     handleDropdownEnter,
-    handleDropdownLeave,
+    handleDropdownLeave: handleMenuLeave,
   };
 }

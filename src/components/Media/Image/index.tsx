@@ -14,7 +14,11 @@ const { breakpoints } = cssVariables
 
 const defaultblurImage = "iVBORw0KGgoAAAANSUhEUgAAACAAAAASBAMAAADI5sFhAAAAKlBMVEXWzNzZ0OD37eXW1OHRyNbU0d7b4OfW3OTW2eLf1eXr5uvi4+vy6ujIwctyquTEAAAA3klEQVQY0yXQoQ7CMBAG4GvCA3BZELPTuGbJcBO1JEuWvkIR+BY/sT4Boa9Q0AjqkKQS23fhrvzu/9rcNYWOs/88T0uP2IYAe4b8ebpFAwvkmlgBAA8QX68Y451gAjWKFowx55SSIdgoRXBZnbPGnC4EG74hKd4752WdEWgyYiMHv/QEgrZQBOJu7vU0Aa9VahzpKmqOPFyhlCMZEXfvLUEpBFuhZ+mdPRN8vwSo52G19CQG7jvprUkpRig8AVGultojZ1C8oqk953fuqLbYDKtJj3f9GhAhhBuf/3v3A8XYZf1jUclIAAAAAElFTkSuQmCC"
 
-export const Image: React.FC<MediaProps> = (props) => {
+interface ImageProps extends MediaProps {
+  onMouseEnter:() => void
+  onMouseLeave:() => void
+}
+export const Image: React.FC<ImageProps> = (props) => {
   const {
     alt: altFromProps,
     fill,
@@ -27,6 +31,8 @@ export const Image: React.FC<MediaProps> = (props) => {
     size: sizeFromProps,
     src: srcFromProps,
     width: widthFromProps,
+    onMouseEnter,
+    onMouseLeave
   } = props
 
   const [isLoading, setIsLoading] = React.useState(true)
@@ -92,6 +98,8 @@ export const Image: React.FC<MediaProps> = (props) => {
       sizes={sizes}
       src={src}
       width={!fill ? width || widthFromProps : undefined}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
     />
    </>
   )
