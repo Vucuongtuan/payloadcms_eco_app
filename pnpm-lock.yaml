@@ -82,10 +82,13 @@ importers:
         version: 1.2.3(@types/react@19.1.16)(react@19.1.1)
       '@shefing/color-picker':
         specifier: ^1.0.2
-        version: 1.0.2(@babel/core@7.28.4)(@playwright/test@1.54.1)(@types/react-dom@19.1.9(@types/react@19.1.16))(@types/react@19.1.16)(babel-plugin-react-compiler@19.1.0-rc.2)(monaco-editor@0.53.0)(payload@3.58.0(bufferutil@4.0.9)(graphql@16.11.0)(typescript@5.7.3)(utf-8-validate@6.0.5))(postcss@8.5.6)(sass@1.77.4)(tailwindcss@4.1.13)(typescript@5.7.3)
+        version: 1.0.2(@babel/core@7.28.4)(@playwright/test@1.54.1)(@types/react-dom@19.1.9(@types/react@19.1.16))(@types/react@19.1.16)(babel-plugin-react-compiler@19.1.0-rc.2)(monaco-editor@0.53.0)(payload@3.58.0(bufferutil@4.0.9)(graphql@16.11.0)(typescript@5.7.3)(utf-8-validate@6.0.5))(postcss@8.5.6)(sass@1.77.4)(tailwindcss@4.1.14)(typescript@5.7.3)
       '@tailwindcss/postcss':
         specifier: ^4.1.13
         version: 4.1.13
+      '@tanstack/react-query':
+        specifier: ^5.90.2
+        version: 5.90.2(react@19.1.1)
       '@typescript-eslint/parser':
         specifier: ^8.45.0
         version: 8.45.0(eslint@9.36.0(jiti@2.6.0))(typescript@5.7.3)
@@ -195,18 +198,21 @@ importers:
         specifier: ^3.3.1
         version: 3.3.1
       tailwindcss:
-        specifier: ^4.1.13
-        version: 4.1.13
+        specifier: ^4.1.14
+        version: 4.1.14
       tailwindcss-animate:
         specifier: ^1.0.7
-        version: 1.0.7(tailwindcss@4.1.13)
+        version: 1.0.7(tailwindcss@4.1.14)
     devDependencies:
       '@playwright/test':
         specifier: 1.54.1
         version: 1.54.1
       '@tailwindcss/typography':
         specifier: ^0.5.19
-        version: 0.5.19(tailwindcss@4.1.13)
+        version: 0.5.19(tailwindcss@4.1.14)
+      '@tanstack/eslint-plugin-query':
+        specifier: ^5.91.0
+        version: 5.91.0(eslint@9.36.0(jiti@2.6.0))(typescript@5.7.3)
       '@testing-library/react':
         specifier: 16.3.0
         version: 16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.1.9(@types/react@19.1.16))(@types/react@19.1.16)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
@@ -2857,6 +2863,19 @@ packages:
     resolution: {integrity: sha512-w31dd8HOx3k9vPtcQh5QHP9GwKcgbMp87j58qi6xgiBnFFtKEAgCWnDw4qUT8aHwkCp8bKvb/KGKWWHedP0AAg==}
     peerDependencies:
       tailwindcss: '>=3.0.0 || insiders || >=4.0.0-alpha.20 || >=4.0.0-beta.1'
+
+  '@tanstack/eslint-plugin-query@5.91.0':
+    resolution: {integrity: sha512-Kn6yWyRe3dIPf7NqyDMhcsTBz2Oh8jPSOpBdlnLQhGBJ6iTMBFYA4B1UreGJ/WdfzQskSMh5imcyWF+wqa/Q5g==}
+    peerDependencies:
+      eslint: ^8.57.0 || ^9.0.0
+
+  '@tanstack/query-core@5.90.2':
+    resolution: {integrity: sha512-k/TcR3YalnzibscALLwxeiLUub6jN5EDLwKDiO7q5f4ICEoptJ+n9+7vcEFy5/x/i6Q+Lb/tXrsKCggf5uQJXQ==}
+
+  '@tanstack/react-query@5.90.2':
+    resolution: {integrity: sha512-CLABiR+h5PYfOWr/z+vWFt5VsOA2ekQeRQBFSKlcoW6Ndx/f8rfyVmq4LbgOM4GG2qtxAxjLYLOpCNTYm4uKzw==}
+    peerDependencies:
+      react: ^18 || ^19
 
   '@testing-library/dom@10.4.1':
     resolution: {integrity: sha512-o4PXJQidqJl82ckFaXUeoAW+XysPLauYI43Abki5hABd853iMhitooc6znOnczgbTYmEP6U6/y1ZyKAIsvMKGg==}
@@ -5870,6 +5889,9 @@ packages:
 
   tailwindcss@4.1.13:
     resolution: {integrity: sha512-i+zidfmTqtwquj4hMEwdjshYYgMbOrPzb9a0M3ZgNa0JMoZeFC6bxZvO8yr8ozS6ix2SDz0+mvryPeBs2TFE+w==}
+
+  tailwindcss@4.1.14:
+    resolution: {integrity: sha512-b7pCxjGO98LnxVkKjaZSDeNuljC4ueKUddjENJOADtubtdo8llTaJy7HwBMeLNSSo2N5QIAgklslK1+Ir8r6CA==}
 
   tapable@2.2.3:
     resolution: {integrity: sha512-ZL6DDuAlRlLGghwcfmSn9sK3Hr6ArtyudlSAiCqQ6IfE+b+HHbydbYDIG15IfS5do+7XQQBdBiubF/cV2dnDzg==}
@@ -9327,7 +9349,7 @@ snapshots:
 
   '@schummar/icu-type-parser@1.21.5': {}
 
-  '@shefing/color-picker@1.0.2(@babel/core@7.28.4)(@playwright/test@1.54.1)(@types/react-dom@19.1.9(@types/react@19.1.16))(@types/react@19.1.16)(babel-plugin-react-compiler@19.1.0-rc.2)(monaco-editor@0.53.0)(payload@3.58.0(bufferutil@4.0.9)(graphql@16.11.0)(typescript@5.7.3)(utf-8-validate@6.0.5))(postcss@8.5.6)(sass@1.77.4)(tailwindcss@4.1.13)(typescript@5.7.3)':
+  '@shefing/color-picker@1.0.2(@babel/core@7.28.4)(@playwright/test@1.54.1)(@types/react-dom@19.1.9(@types/react@19.1.16))(@types/react@19.1.16)(babel-plugin-react-compiler@19.1.0-rc.2)(monaco-editor@0.53.0)(payload@3.58.0(bufferutil@4.0.9)(graphql@16.11.0)(typescript@5.7.3)(utf-8-validate@6.0.5))(postcss@8.5.6)(sass@1.77.4)(tailwindcss@4.1.14)(typescript@5.7.3)':
     dependencies:
       '@payloadcms/ui': 3.58.0(@types/react@19.1.16)(monaco-editor@0.53.0)(next@15.0.4(@babel/core@7.28.4)(@playwright/test@1.54.1)(babel-plugin-react-compiler@19.1.0-rc.2)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(sass@1.77.4))(payload@3.58.0(bufferutil@4.0.9)(graphql@16.11.0)(typescript@5.7.3)(utf-8-validate@6.0.5))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.7.3)
       '@radix-ui/react-dialog': 1.1.15(@types/react-dom@19.1.9(@types/react@19.1.16))(@types/react@19.1.16)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -9341,8 +9363,8 @@ snapshots:
       react: 19.0.0
       react-dom: 19.0.0(react@19.0.0)
       tailwind-merge: 2.6.0
-      tailwindcss-animate: 1.0.7(tailwindcss@4.1.13)
-      tailwindcss-scoped-preflight: 3.4.12(postcss@8.5.6)(tailwindcss@4.1.13)
+      tailwindcss-animate: 1.0.7(tailwindcss@4.1.14)
+      tailwindcss-scoped-preflight: 3.4.12(postcss@8.5.6)(tailwindcss@4.1.14)
     transitivePeerDependencies:
       - '@babel/core'
       - '@opentelemetry/api'
@@ -9779,10 +9801,25 @@ snapshots:
       postcss: 8.5.6
       tailwindcss: 4.1.13
 
-  '@tailwindcss/typography@0.5.19(tailwindcss@4.1.13)':
+  '@tailwindcss/typography@0.5.19(tailwindcss@4.1.14)':
     dependencies:
       postcss-selector-parser: 6.0.10
-      tailwindcss: 4.1.13
+      tailwindcss: 4.1.14
+
+  '@tanstack/eslint-plugin-query@5.91.0(eslint@9.36.0(jiti@2.6.0))(typescript@5.7.3)':
+    dependencies:
+      '@typescript-eslint/utils': 8.45.0(eslint@9.36.0(jiti@2.6.0))(typescript@5.7.3)
+      eslint: 9.36.0(jiti@2.6.0)
+    transitivePeerDependencies:
+      - supports-color
+      - typescript
+
+  '@tanstack/query-core@5.90.2': {}
+
+  '@tanstack/react-query@5.90.2(react@19.1.1)':
+    dependencies:
+      '@tanstack/query-core': 5.90.2
+      react: 19.1.1
 
   '@testing-library/dom@10.4.1':
     dependencies:
@@ -13283,16 +13320,18 @@ snapshots:
 
   tailwind-merge@3.3.1: {}
 
-  tailwindcss-animate@1.0.7(tailwindcss@4.1.13):
+  tailwindcss-animate@1.0.7(tailwindcss@4.1.14):
     dependencies:
-      tailwindcss: 4.1.13
+      tailwindcss: 4.1.14
 
-  tailwindcss-scoped-preflight@3.4.12(postcss@8.5.6)(tailwindcss@4.1.13):
+  tailwindcss-scoped-preflight@3.4.12(postcss@8.5.6)(tailwindcss@4.1.14):
     dependencies:
       postcss: 8.5.6
-      tailwindcss: 4.1.13
+      tailwindcss: 4.1.14
 
   tailwindcss@4.1.13: {}
+
+  tailwindcss@4.1.14: {}
 
   tapable@2.2.3: {}
 

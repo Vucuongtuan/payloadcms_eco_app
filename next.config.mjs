@@ -42,7 +42,7 @@ const nextConfig = {
     // viewTransition: true,
     // reactCompiler: true,
     // ppr: "incremental",
-    // inlineCss: true,
+    inlineCss: true,
   },
   // webpack: (webpackConfig) => {
   //   webpackConfig.resolve.extensionAlias = {
