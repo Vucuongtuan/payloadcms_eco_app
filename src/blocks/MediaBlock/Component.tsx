@@ -50,7 +50,7 @@ export const MediaBlock: React.FC<MediaBlockProps> = ({
         </div>
           <div className={cn(
             columns === 'image-first' && 'lg:order-1',
-            'flex justify-center items-center'
+            'flex justify-center items-center max-lg:pb-8'
             
             )}>
            <div className="w-full px-12">
