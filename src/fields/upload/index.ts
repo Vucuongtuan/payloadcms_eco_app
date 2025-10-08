@@ -7,10 +7,11 @@ interface ImageWithPreviewProps {
   label?: { en?: string; vi?: string } | string;
   admin?: Field["admin"];
   required?: boolean;
-  hasMany?:boolean;
-  localized?:boolean;
-  minRows?:number
-  maxRows?:number
+  hasMany?: boolean;
+  localized?: boolean;
+  minRows?: number;
+  maxRows?: number;
+  isGallery?: boolean;
 }
 type UploadCustomFieldProps = (props: ImageWithPreviewProps) => RowField;
 
@@ -20,6 +21,7 @@ export const uploadCustomField: UploadCustomFieldProps = ({
   admin,
   hasMany = false,
   localized = false,
+  isGallery = false,
   ...props
 }) => {
   return {
@@ -36,7 +38,8 @@ export const uploadCustomField: UploadCustomFieldProps = ({
         ...props,
       },
       PreviewCustomField({
-        name
+        name,
+        isGallery,
       }),
     ],
     admin: {

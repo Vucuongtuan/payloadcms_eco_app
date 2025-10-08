@@ -31,16 +31,20 @@ const nextConfig = {
         hostname: "gnjdysar8zpiiswk.public.blob.vercel-storage.com",
       },
       {
+        protocol: "https",
+        hostname: "placehold.co",
+      },
+      {
         protocol: "http",
         hostname: "localhost",
         port: "3000",
-      }
+      },
     ],
   },
   //
   experimental: {
     // viewTransition: true,
-    // reactCompiler: true,
+    reactCompiler: true,
     // ppr: "incremental",
     inlineCss: true,
   },

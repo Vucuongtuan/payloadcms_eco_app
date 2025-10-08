@@ -37,7 +37,7 @@ const maxLengthSEO: Record<string, number> = {
   description: 150
 }
 const allCollections = [Users, Media, Categories, Tags,Reviews, Newsletter, EmailSubscribe, Pages, Posts,Variants];
-const golobalCollections = []
+const golobalCollections = [Header, Footer]
 const applySearchForCollection = ['categories', 'products', 'variants', 'posts']
 const applySEOForCollection = ['categories', 'products', 'variants', 'posts', 'pages']
 
@@ -84,7 +84,7 @@ export default buildConfig({
   }),
   //email: nodemailerAdapter(),
   endpoints: [],
-  globals: [Header, Footer],
+  globals: golobalCollections,
   plugins: [
     ...plugins,
     // storage-adapter-placeholder

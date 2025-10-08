@@ -755,6 +755,13 @@ export interface VariantsProduct {
   id: number;
   title: string;
   titleVN: string;
+  /**
+   * Enter the price in VND only, other currencies will be automatically converted based on the exchange rates defined in GlobalSetting.
+   */
+  pricing: {
+    price: string;
+    discount: number;
+  };
   slug?: string | null;
   slugLock?: boolean | null;
   color: string;
@@ -1691,6 +1698,12 @@ export interface PostsSelect<T extends boolean = true> {
 export interface VariantsProductSelect<T extends boolean = true> {
   title?: T;
   titleVN?: T;
+  pricing?:
+    | T
+    | {
+        price?: T;
+        discount?: T;
+      };
   slug?: T;
   slugLock?: T;
   color?: T;

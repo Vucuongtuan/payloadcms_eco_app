@@ -2,9 +2,13 @@ import { Field } from "payload";
 
 interface PreviewImageProps {
   readonly name: string;
+  readonly isGallery?: boolean;
 }
 
-export const PreviewCustomField = ({ name }: PreviewImageProps): Field => {
+export const PreviewCustomField = ({
+  name,
+  isGallery,
+}: PreviewImageProps): Field => {
   const previewImageFieldName = "preview-" + name;
 
   const previewImageField: Field = {
@@ -12,7 +16,12 @@ export const PreviewCustomField = ({ name }: PreviewImageProps): Field => {
     type: "ui",
     admin: {
       components: {
-        Field: "@/fields/upload/previewUploadUi#MediaPreview",
+        Field: {
+          path: "@/fields/upload/previewUploadUi#MediaPreview",
+          clientProps: {
+            isGallery,
+          },
+        },
       },
     },
   };

@@ -1,43 +1,45 @@
-import { Content } from '@/blocks/Content/config'
-import { MediaBlock } from '@/blocks/MediaBlock/config'
-import { groupCategoriesField } from '@/fields/groupCategories'
-import { slugField } from '@/fields/slug'
-import { uploadCustomField } from '@/fields/upload'
-import { variants } from '@/fields/variant'
-import { generatePreviewPath } from '@/utilities/generatePreviewPath'
-import { statusField } from '@payloadcms/plugin-ecommerce'
-import { CollectionOverride } from '@payloadcms/plugin-ecommerce/types'
+import { Content } from "@/blocks/Content/config";
+import { MediaBlock } from "@/blocks/MediaBlock/config";
+import { groupCategoriesField } from "@/fields/groupCategories";
+import { slugField } from "@/fields/slug";
+import { uploadCustomField } from "@/fields/upload";
+import { variants } from "@/fields/variant";
+import { generatePreviewPath } from "@/utilities/generatePreviewPath";
+import { statusField } from "@payloadcms/plugin-ecommerce";
+import { CollectionOverride } from "@payloadcms/plugin-ecommerce/types";
 import {
   MetaDescriptionField,
   MetaImageField,
   MetaTitleField,
   OverviewField,
   PreviewField,
-} from '@payloadcms/plugin-seo/fields'
+} from "@payloadcms/plugin-seo/fields";
 
-export const ProductsCollection: CollectionOverride = ({ defaultCollection }) => ({
+export const ProductsCollection: CollectionOverride = ({
+  defaultCollection,
+}) => ({
   ...defaultCollection,
   admin: {
     ...defaultCollection?.admin,
-    defaultColumns: ['title', '_status'],
+    defaultColumns: ["title", "_status"],
     livePreview: {
       url: ({ data, req }) => {
         const path = generatePreviewPath({
-          slug: typeof data?.slug === 'string' ? data.slug : '',
-          collection: 'products',
+          slug: typeof data?.slug === "string" ? data.slug : "",
+          collection: "products",
           req,
-        })
+        });
 
-        return path
+        return path;
       },
     },
     preview: (data, { req }) =>
       generatePreviewPath({
-        slug: typeof data?.slug === 'string' ? data.slug : '',
-        collection: 'products',
+        slug: typeof data?.slug === "string" ? data.slug : "",
+        collection: "products",
         req,
       }),
-    useAsTitle: 'title',
+    useAsTitle: "title",
   },
   defaultPopulate: {
     ...defaultCollection?.defaultPopulate,
@@ -51,35 +53,46 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
     meta: true,
   },
   fields: [
-    { name: 'title', type: 'text', required: true ,localized:true},
+    { name: "title", type: "text", required: true, localized: true },
     {
       name: "description",
       type: "textarea",
       label: { vi: "Mô tả ngắn", en: "Short Description" },
-      localized:true
-      
+      localized: true,
     },
     {
-      type: 'tabs',
+      type: "tabs",
       tabs: [
         {
           fields: [
             // ...defaultCollection.fields,
             {
-        
-              type:"group",
-              label:{vi:"Thông tin sản phẩm chính",en:"Main Product Info"},
-              fields:[
-                ...variants({isStatus:false,requiredPrice:true,isMain:true,isName:false}),
-                
-              ]
+              type: "group",
+              label: {
+                vi: "Thông tin sản phẩm chính",
+                en: "Main Product Info",
+              },
+              fields: [
+                ...variants({
+                  isStatus: false,
+                  requiredPrice: true,
+                  isMain: true,
+                  isName: false,
+                }),
+              ],
             },
-            {
-              name:"gallery",
-              type:"upload",
-              hasMany:true,
-              relationTo:"media",
-            }
+            // {
+            //   name:"gallery",
+            //   type:"upload",
+            //   hasMany:true,
+            //   relationTo:"media",
+            // }
+            uploadCustomField({
+              name: "gallery",
+              label: "Gallery",
+              hasMany: true,
+              isGallery: true,
+            }),
             // {
             //   type:"group",
             //   label:{vi:"Biến thể",en:"Variants"},
@@ -113,81 +126,80 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
             //   relationTo: 'products',
             // },
           ],
-          label: 'Details',
+          label: "Details",
         },
         {
           fields: [
-           
             {
-              name:"content",
-              type:"richText",
-              localized:true,
+              name: "content",
+              type: "richText",
+              localized: true,
             },
             {
-              name: 'sections',
-              type: 'blocks',
-              blocks: [ Content, MediaBlock],
+              name: "sections",
+              type: "blocks",
+              blocks: [Content, MediaBlock],
             },
           ],
-          label: 'Content',
+          label: "Content",
         },
         {
-          label:"Variants and Related",
-          fields:[
+          label: "Variants and Related",
+          fields: [
             {
-              name:"variantsOption",
-              type:"relationship",
-              relationTo:"variantsProduct",
-              hasMany:true,
+              name: "variantsOption",
+              type: "relationship",
+              relationTo: "variantsProduct",
+              hasMany: true,
             },
             {
-              name: 'relatedProducts',
-              type: 'relationship',
+              name: "relatedProducts",
+              type: "relationship",
               filterOptions: ({ id }) => {
                 if (id) {
                   return {
                     id: {
                       not_in: [id],
                     },
-                  }
+                  };
                 }
                 return {
                   id: {
                     exists: true,
                   },
-                }
+                };
               },
               hasMany: true,
-              relationTo: 'products',
+              relationTo: "products",
             },
-          ]
+          ],
         },
         {
-          name: 'meta',
-          label: 'SEO',
+          name: "meta",
+          label: "SEO",
           fields: [
             OverviewField({
-              titlePath: 'meta.title',
-              descriptionPath: 'meta.description',
-              imagePath: 'meta.image',
+              titlePath: "meta.title",
+              descriptionPath: "meta.description",
+              imagePath: "meta.image",
             }),
             MetaTitleField({
               hasGenerateFn: true,
-              overrides:{
-                localized:false
-              }
+              overrides: {
+                localized: false,
+              },
             }),
             MetaDescriptionField({
               hasGenerateFn: true,
-              overrides:{
-                localized:false
-              }
+              overrides: {
+                localized: false,
+              },
             }),
             MetaImageField({
-              relationTo: 'media',
-              overrides:{
-                localized:false
-              }
+              relationTo: "media",
+              overrides: {
+                localized: false,
+              },
             }),
 
             PreviewField({
@@ -195,96 +207,95 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
               hasGenerateFn: true,
 
               // field paths to match the target field for data
-              titlePath: 'meta.title',
-              descriptionPath: 'meta.description',
+              titlePath: "meta.title",
+              descriptionPath: "meta.description",
             }),
           ],
         },
       ],
     },
-    ...slugField('title', {
+    ...slugField("title", {
       slugOverrides: {
         required: true,
       },
     }),
     {
-      name: 'sales',
-      type: 'number',
-      label: { vi: 'Lượt mua', en: 'Sales' },
+      name: "sales",
+      type: "number",
+      label: { vi: "Lượt mua", en: "Sales" },
       defaultValue: 0,
       admin: {
         readOnly: true,
-        position: 'sidebar',
+        position: "sidebar",
       },
-
     },
-     statusField({
-      overrides:{
-        name:"statusProduct",
+    statusField({
+      overrides: {
+        name: "statusProduct",
         options: [
           {
-            label:{
-              vi:"Còn hàng",
-              en:"In Stock"
+            label: {
+              vi: "Còn hàng",
+              en: "In Stock",
             },
-            value:"in-stock"
+            value: "in-stock",
           },
           {
             label: {
-              vi: 'Hết hàng',
-              en: 'Out of Stock',
+              vi: "Hết hàng",
+              en: "Out of Stock",
             },
-            value: 'out-of-stock',
+            value: "out-of-stock",
           },
           {
-            label:{
-              vi:"Đặt trước",
-              en:"Pre-order"
+            label: {
+              vi: "Đặt trước",
+              en: "Pre-order",
             },
-            value:"pre-order"
-          }
-        ],
-        defaultValue:"in-stock",
-        admin:{
-          position:"sidebar"
-        }
-      }
-     }),
-        {
-          name: "taxonomies",
-          type: "group",
-          label: { vi: "Phân loại", en: "Taxonomies" },
-          admin: { position: "sidebar" },
-          fields: [
-            ...groupCategoriesField(
-              {admin:{
-              position:"sidebar"
-            }}
-          ),
-            {
-              name: "tags",
-              type: "relationship",
-              relationTo: "tags",
-              hasMany: true,
-            },
-          ],
-        }, 
-        uploadCustomField({
-          name:"thumbnail",
-          label:"Thumbnail",
-          hasMany:true,
-          admin:{
-            position:"sidebar"
+            value: "pre-order",
           },
-          required:true,
-          minRows:1,
-          maxRows:2
-        })
-  ],
-  versions:{
-    drafts: {
-      autosave:false,
-      schedulePublish:true
+        ],
+        defaultValue: "in-stock",
+        admin: {
+          position: "sidebar",
+        },
+      },
+    }),
+    {
+      name: "taxonomies",
+      type: "group",
+      label: { vi: "Phân loại", en: "Taxonomies" },
+      admin: { position: "sidebar" },
+      fields: [
+        ...groupCategoriesField({
+          admin: {
+            position: "sidebar",
+          },
+        }),
+        {
+          name: "tags",
+          type: "relationship",
+          relationTo: "tags",
+          hasMany: true,
+        },
+      ],
     },
-  }
-})
+    uploadCustomField({
+      name: "thumbnail",
+      label: "Thumbnail",
+      hasMany: true,
+      admin: {
+        position: "sidebar",
+      },
+      required: true,
+      minRows: 1,
+      maxRows: 2,
+    }),
+  ],
+  versions: {
+    drafts: {
+      autosave: false,
+      schedulePublish: true,
+    },
+  },
+});

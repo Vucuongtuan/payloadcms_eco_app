@@ -1,4 +1,4 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
 @plugin "@tailwindcss/typography";
 @plugin "tailwindcss-animate";
@@ -32,48 +32,48 @@
   --aspect-retro: 4 / 3;
   --aspect-golden: 1.618 / 1;
   --aspect-wide: 2.3;
+  --aspect-card: 3/4;
+  --aspect-figcard: 3/4;
 
   /* // container */
   --max-w-screen-3xl: 1920px;
   --bg-red-low: #f0807d;
 
   /* // font */
-  --font-sans: var(--font-inter), sans-serif; 
+  --font-sans: var(--font-inter), sans-serif;
   --font-display: var(--font-playfair), serif;
-  
 
   /* Primary Colors */
   --color-primary: #f5f0eb;
   --color-primary-dark: #e8ddd5;
   --color-primary-light: #faf7f4;
-  
+
   /* Secondary Colors */
   --color-secondary: #efeff2;
   --color-secondary-dark: #e1e1e6;
   --color-secondary-light: #f7f7f9;
-  
+
   /* Semantic Colors */
   --color-success: #22c55e;
   --color-warning: #f59e0b;
   --color-error: #ef4444;
   --color-info: #3b82f6;
-  
+
   /* Text Colors */
   --color-text-primary: #1f2937;
   --color-text-secondary: #6b7280;
   --color-text-muted: #9ca3af;
-  
+
   /* Background Colors */
   --color-bg-primary: var(--color-primary);
   --color-bg-secondary: var(--color-secondary);
   --color-bg-white: #ffffff;
-  
+
   /* Border Colors */
   --color-border: #d1d5db;
   --color-border-light: #e5e7eb;
-
 }
-@layer utilities{
+@layer utilities {
   .max-w-screen-3xl {
     max-width: var(--max-w-screen-3xl);
   }
@@ -86,10 +86,7 @@
 
 :root {
   @apply font-sans antialiased;
- 
 }
-
-
 
 @theme inline {
   --color-background: var(--background);
@@ -128,7 +125,14 @@
     font-weight: auto;
   }
 }
-h1, h2, h3, h4, h5, h6 { @apply font-display; }
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  @apply font-display;
+}
 
 @layer base {
   * {
@@ -144,8 +148,8 @@ html {
   @apply font-sans;
 }
 
-html[data-theme='dark'],
-html[data-theme='light'] {
+html[data-theme="dark"],
+html[data-theme="light"] {
   opacity: initial;
 }
 

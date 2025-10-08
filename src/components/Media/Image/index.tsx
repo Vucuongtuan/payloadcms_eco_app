@@ -69,6 +69,11 @@ export const Image: React.FC<ImageProps> = (props) => {
         .map(([, value]) => `(max-width: ${value}px) ${value}px`)
         .join(', ')
 
+
+        const w = !fill ? width || widthFromProps : 600;
+const h = !fill ? height || heightFromProps : 400;
+
+
   return (
    <>
      {isLoading && (
@@ -96,7 +101,8 @@ export const Image: React.FC<ImageProps> = (props) => {
       priority={priority}
       quality={85}
       sizes={sizes}
-      src={src}
+      // src={src}
+      src={`https://placehold.co/${w}x${h}`}
       width={!fill ? width || widthFromProps : undefined}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}

@@ -27,13 +27,13 @@ export function resolveLink(linkItem: { link: LinkItem }) {
     if (!value) return "#"
 
     if (relationTo === "pages" && typeof value !== "number") {
-      return `/${value.slug}`
+      return value.isTopLevel ?  `/${value.slug}` : `/pages/${value.slug}`
     }
     if (relationTo === "categories" && typeof value !== "number") {
-      return `/category/${value.slug}`
+      return `/collection/${value.slug}`
     }
     if (relationTo === "products" && typeof value !== "number") {
-      return `/product/${value.slug}`
+      return `/${value.slug}`
     }
   }
 
