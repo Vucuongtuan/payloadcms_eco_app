@@ -4,7 +4,6 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 /// dev
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 ///-----
@@ -20,6 +19,8 @@ const nextConfig = {
         loaders: ["@svgr/webpack"],
         as: "*.js",
       },
+
+      //
     },
   },
 
@@ -41,12 +42,18 @@ const nextConfig = {
       },
     ],
   },
-  //
+  // Use React Compiler
+  reactCompiler: true,
+
+  //  Experimental Beta
   experimental: {
     // viewTransition: true,
-    reactCompiler: true,
     // ppr: "incremental",
     inlineCss: true,
+
+    // turbopackFileSystemCacheForDev: true,
+    // no supports production nextjs latest version
+    // cacheComponents: true, // next@canary
   },
   // webpack: (webpackConfig) => {
   //   webpackConfig.resolve.extensionAlias = {
