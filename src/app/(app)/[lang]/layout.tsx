@@ -1,5 +1,5 @@
-import { Footer } from "@/components/Footer";
-import { LivePreviewListener } from "@/components/LivePreviewListener";
+import { LivePreviewListener } from "@/components/(dashboard)/LivePreviewListener";
+import { Footer } from "@/components/(layout)/Footer";
 import { routing } from "@/i18n/routing";
 import { Providers } from "@/providers";
 import { Lang } from "@/types";

@@ -17,7 +17,10 @@ import { plugins } from './plugin';
 // ---
 import { EmailSubscribe, Newsletter, Posts, Reviews, Tags } from './collections';
 import { Variants } from './collections/(ecommerce)/Variants';
+import { Screen } from './collections/(mobile)/Screen';
+import { Notifications } from './collections/Notifications';
 import { defaultLexical } from './fields/defaultLexical';
+import { Rate } from './globals/Rate';
 // ---
 
 // Config Environment
@@ -36,8 +39,8 @@ const maxLengthSEO: Record<string, number> = {
   title: 60,
   description: 150
 }
-const allCollections = [Users, Media, Categories, Tags,Reviews, Newsletter, EmailSubscribe, Pages, Posts,Variants];
-const golobalCollections = [Header, Footer]
+const allCollections = [Users, Media, Categories, Tags,Reviews, Newsletter, EmailSubscribe, Pages, Posts,Variants,Screen,Notifications];
+const golobalCollections = [Header, Footer,Rate]
 const applySearchForCollection = ['categories', 'products', 'variants', 'posts']
 const applySEOForCollection = ['categories', 'products', 'variants', 'posts', 'pages']
 
@@ -46,10 +49,10 @@ export default buildConfig({
     components: {
       // The `BeforeLogin` component renders a message that you see while logging into your admin panel.
       // Feel free to delete this at any time. Simply remove the line below and the import `BeforeLogin` statement on line 15.
-      beforeLogin: ['@/components/BeforeLogin#BeforeLogin'],
+      beforeLogin: ['@/components/(dashboard)/BeforeLogin#BeforeLogin'],
       // The `BeforeDashboard` component renders the 'welcome' block that you see after logging into your admin panel.
       // Feel free to delete this at any time. Simply remove the line below and the import `BeforeDashboard` statement on line 15.
-      beforeDashboard: ['@/components/BeforeDashboard#BeforeDashboard'],
+      beforeDashboard: ['@/components/(dashboard)/BeforeDashboard#BeforeDashboard'],
     },
     user: Users.slug,
   },

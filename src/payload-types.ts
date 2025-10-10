@@ -82,6 +82,8 @@ export interface Config {
     pages: Page;
     posts: Post;
     variantsProduct: VariantsProduct;
+    screen: Screen;
+    notifications: Notification;
     search: Search;
     addresses: Address;
     variants: Variant;
@@ -121,6 +123,8 @@ export interface Config {
     pages: PagesSelect<false> | PagesSelect<true>;
     posts: PostsSelect<false> | PostsSelect<true>;
     variantsProduct: VariantsProductSelect<false> | VariantsProductSelect<true>;
+    screen: ScreenSelect<false> | ScreenSelect<true>;
+    notifications: NotificationsSelect<false> | NotificationsSelect<true>;
     search: SearchSelect<false> | SearchSelect<true>;
     addresses: AddressesSelect<false> | AddressesSelect<true>;
     variants: VariantsSelect<false> | VariantsSelect<true>;
@@ -142,10 +146,12 @@ export interface Config {
   globals: {
     header: Header;
     footer: Footer;
+    rate: Rate;
   };
   globalsSelect: {
     header: HeaderSelect<false> | HeaderSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
+    rate: RateSelect<false> | RateSelect<true>;
   };
   locale: 'vi' | 'en';
   user: User & {
@@ -1086,6 +1092,7 @@ export interface EmailSubscribe {
 export interface Post {
   id: number;
   title?: string | null;
+  description?: string | null;
   slug?: string | null;
   slugLock?: boolean | null;
   content?: {
@@ -1115,6 +1122,35 @@ export interface Post {
     description?: string | null;
     image?: (number | null) | Media;
   };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "screen".
+ */
+export interface Screen {
+  id: number;
+  title: string;
+  description?: string | null;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  sections?: unknown[] | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "notifications".
+ */
+export interface Notification {
+  id: number;
+  title: string;
+  message: string;
+  targetAll?: boolean | null;
+  targetUser?: (number | null) | User;
+  platform?: ('all' | 'mobile' | 'web') | null;
+  sendMail?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1290,6 +1326,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'variantsProduct';
         value: number | VariantsProduct;
+      } | null)
+    | ({
+        relationTo: 'screen';
+        value: number | Screen;
+      } | null)
+    | ({
+        relationTo: 'notifications';
+        value: number | Notification;
       } | null)
     | ({
         relationTo: 'search';
@@ -1676,6 +1720,7 @@ export interface CarouselSelect<T extends boolean = true> {
  */
 export interface PostsSelect<T extends boolean = true> {
   title?: T;
+  description?: T;
   slug?: T;
   slugLock?: T;
   content?: T;
@@ -1801,6 +1846,33 @@ export interface VariantsProductSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "screen_select".
+ */
+export interface ScreenSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  slug?: T;
+  slugLock?: T;
+  sections?: T | {};
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "notifications_select".
+ */
+export interface NotificationsSelect<T extends boolean = true> {
+  title?: T;
+  message?: T;
+  targetAll?: T;
+  targetUser?: T;
+  platform?: T;
+  sendMail?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2298,6 +2370,24 @@ export interface Footer {
   createdAt?: string | null;
 }
 /**
+ * Rate
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "rate".
+ */
+export interface Rate {
+  id: number;
+  rates?:
+    | {
+        currency?: string | null;
+        rate?: number | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "header_select".
  */
@@ -2366,6 +2456,22 @@ export interface FooterSelect<T extends boolean = true> {
               url?: T;
               label?: T;
             };
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "rate_select".
+ */
+export interface RateSelect<T extends boolean = true> {
+  rates?:
+    | T
+    | {
+        currency?: T;
+        rate?: T;
         id?: T;
       };
   updatedAt?: T;

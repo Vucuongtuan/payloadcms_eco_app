@@ -1,22 +1,23 @@
-'use client'
+"use client";
 
-import type { StaticImageData } from 'next/image'
+import type { StaticImageData } from "next/image";
 
-import { cn } from '@/utilities/cn'
-import NextImage from 'next/image'
-import React from 'react'
+import { cn } from "@/utilities/cn";
+import NextImage from "next/image";
+import React from "react";
 
-import { cssVariables } from '@/cssVariables'
-import { motion } from 'framer-motion'
-import type { Props as MediaProps } from '../types'
+import { cssVariables } from "@/cssVariables";
+import { motion } from "framer-motion";
+import type { Props as MediaProps } from "../types";
 
-const { breakpoints } = cssVariables
+const { breakpoints } = cssVariables;
 
-const defaultblurImage = "iVBORw0KGgoAAAANSUhEUgAAACAAAAASBAMAAADI5sFhAAAAKlBMVEXWzNzZ0OD37eXW1OHRyNbU0d7b4OfW3OTW2eLf1eXr5uvi4+vy6ujIwctyquTEAAAA3klEQVQY0yXQoQ7CMBAG4GvCA3BZELPTuGbJcBO1JEuWvkIR+BY/sT4Boa9Q0AjqkKQS23fhrvzu/9rcNYWOs/88T0uP2IYAe4b8ebpFAwvkmlgBAA8QX68Y451gAjWKFowx55SSIdgoRXBZnbPGnC4EG74hKd4752WdEWgyYiMHv/QEgrZQBOJu7vU0Aa9VahzpKmqOPFyhlCMZEXfvLUEpBFuhZ+mdPRN8vwSo52G19CQG7jvprUkpRig8AVGultojZ1C8oqk953fuqLbYDKtJj3f9GhAhhBuf/3v3A8XYZf1jUclIAAAAAElFTkSuQmCC"
+const defaultblurImage =
+  "iVBORw0KGgoAAAANSUhEUgAAACAAAAASBAMAAADI5sFhAAAAKlBMVEXWzNzZ0OD37eXW1OHRyNbU0d7b4OfW3OTW2eLf1eXr5uvi4+vy6ujIwctyquTEAAAA3klEQVQY0yXQoQ7CMBAG4GvCA3BZELPTuGbJcBO1JEuWvkIR+BY/sT4Boa9Q0AjqkKQS23fhrvzu/9rcNYWOs/88T0uP2IYAe4b8ebpFAwvkmlgBAA8QX68Y451gAjWKFowx55SSIdgoRXBZnbPGnC4EG74hKd4752WdEWgyYiMHv/QEgrZQBOJu7vU0Aa9VahzpKmqOPFyhlCMZEXfvLUEpBFuhZ+mdPRN8vwSo52G19CQG7jvprUkpRig8AVGultojZ1C8oqk953fuqLbYDKtJj3f9GhAhhBuf/3v3A8XYZf1jUclIAAAAAElFTkSuQmCC";
 
 interface ImageProps extends MediaProps {
-  onMouseEnter:() => void
-  onMouseLeave:() => void
+  onMouseEnter: () => void;
+  onMouseLeave: () => void;
 }
 export const Image: React.FC<ImageProps> = (props) => {
   const {
@@ -32,34 +33,34 @@ export const Image: React.FC<ImageProps> = (props) => {
     src: srcFromProps,
     width: widthFromProps,
     onMouseEnter,
-    onMouseLeave
-  } = props
+    onMouseLeave,
+  } = props;
 
-  const [isLoading, setIsLoading] = React.useState(true)
+  const [isLoading, setIsLoading] = React.useState(true);
 
-  let width: number | undefined | null
-  let height: number | undefined | null
-  let alt = altFromProps
-  let src: StaticImageData | string = srcFromProps || ''
-  let blurImage = defaultblurImage
-  if (!src && resource && typeof resource === 'object') {
+  let width: number | undefined | null;
+  let height: number | undefined | null;
+  let alt = altFromProps;
+  let src: StaticImageData | string = srcFromProps || "";
+  let blurImage = defaultblurImage;
+  if (!src && resource && typeof resource === "object") {
     const {
       alt: altFromResource,
       filename: fullFilename,
       height: fullHeight,
       url,
       width: fullWidth,
-      blurData
-    } = resource
-    blurImage = blurData || defaultblurImage
+      blurData,
+    } = resource;
+    blurImage = blurData || defaultblurImage;
 
-    width = widthFromProps ?? fullWidth
-    height = heightFromProps ?? fullHeight
-    alt = altFromResource || ''
+    width = widthFromProps ?? fullWidth;
+    height = heightFromProps ?? fullHeight;
+    alt = altFromResource || "";
 
-    const filename = fullFilename
+    const filename = fullFilename;
 
-    src = `${process.env.NEXT_PUBLIC_SERVER_URL}${url}`
+    src = `${process.env.NEXT_PUBLIC_SERVER_URL}${url}`;
   }
 
   // NOTE: this is used by the browser to determine which image to download at different screen sizes
@@ -67,46 +68,43 @@ export const Image: React.FC<ImageProps> = (props) => {
     ? sizeFromProps
     : Object.entries(breakpoints)
         .map(([, value]) => `(max-width: ${value}px) ${value}px`)
-        .join(', ')
+        .join(", ");
 
-
-        const w = !fill ? width || widthFromProps : 600;
-const h = !fill ? height || heightFromProps : 400;
-
-
+  // const w = !fill ? width || widthFromProps : 600;
+  // const h = !fill ? height || heightFromProps : 400;
+  // const isDev = process.env.NODE_ENV === "development";
   return (
-   <>
-     {isLoading && (
-       <motion.div
-         initial={{ opacity: 0 }}
-         animate={{ opacity: 1 }}
-         transition={{ duration: 0.3 }}
-       >
-     </motion.div>
-     )}
-     <NextImage
-      alt={alt || ''}
-      className={cn(imgClassName)}
-      fill={fill}
-      height={!fill ? height || heightFromProps : undefined}
-      onClick={onClick}
-      onLoad={() => {
-        setIsLoading(false)
-        if (typeof onLoadFromProps === 'function') {
-          onLoadFromProps()
-        }
-      }}
-      placeholder={"blur"}
-      blurDataURL={blurImage}
-      priority={priority}
-      quality={85}
-      sizes={sizes}
-      // src={src}
-      src={`https://placehold.co/${w}x${h}`}
-      width={!fill ? width || widthFromProps : undefined}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
-    />
-   </>
-  )
-}
+    <>
+      {isLoading && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3 }}
+        ></motion.div>
+      )}
+      <NextImage
+        alt={alt || ""}
+        className={cn(imgClassName)}
+        fill={fill}
+        width={!fill ? widthFromProps : undefined}
+        height={!fill ? heightFromProps : undefined}
+        onClick={onClick}
+        onLoad={() => {
+          setIsLoading(false);
+          if (typeof onLoadFromProps === "function") {
+            onLoadFromProps();
+          }
+        }}
+        placeholder={"blur"}
+        blurDataURL={blurImage}
+        priority={priority}
+        quality={85}
+        sizes={sizes}
+        src={src}
+        // src={isDev ? `https://placehold.co/${w || 600}x${h || 400}` : src}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+      />
+    </>
+  );
+};

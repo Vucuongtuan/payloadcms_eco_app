@@ -1,5 +1,5 @@
 // import { MobileNav } from "@/components/layout/Header/MobileNav";
-import { RenderBlocks } from "@/blocks/RenderBlocks";
+import { RenderBlocks } from "@/blocks/(web)/RenderBlocks";
 import { Page } from "@/payload-types";
 import { findPageDoc } from "@/service/pages";
 import { findLatestPostByLang } from "@/service/posts";
@@ -21,7 +21,6 @@ export default async function PageTemplate({ params }: PageProps) {
   if (!doc) {
     return notFound();
   }
-  console.log({doc})
   return (
     <>
       <RenderBlocks blocks={(doc as Page).sections} />

@@ -1,17 +1,17 @@
-import type { CollectionConfig } from 'payload'
+import type { CollectionConfig } from "payload";
 
-import { adminOnly } from '@/access/adminOnly'
-import { adminOrPublishedStatus } from '@/access/adminOrPublishedStatus'
-import { Carousel } from '@/blocks/Carousel/config'
-import { ColumnMedia } from '@/blocks/ColumnMedia/config'
-import { Content } from '@/blocks/Content/config'
-import { MediaBlock } from '@/blocks/MediaBlock/config'
-import { slugField } from '@/fields/slug'
-import { generatePreviewPath } from '@/utilities/generatePreviewPath'
-import { revalidateDelete, revalidatePage } from './hooks/revalidatePage'
+import { adminOnly } from "@/access/adminOnly";
+import { adminOrPublishedStatus } from "@/access/adminOrPublishedStatus";
+import { Carousel } from "@/blocks/(web)/Carousel/config";
+import { ColumnMedia } from "@/blocks/(web)/ColumnMedia/config";
+import { Content } from "@/blocks/(web)/Content/config";
+import { MediaBlock } from "@/blocks/(web)/MediaBlock/config";
+import { slugField } from "@/fields/slug";
+import { generatePreviewPath } from "@/utilities/generatePreviewPath";
+import { revalidateDelete, revalidatePage } from "./hooks/revalidatePage";
 
 export const Pages: CollectionConfig = {
-  slug: 'pages',
+  slug: "pages",
   access: {
     create: adminOnly,
     delete: adminOnly,
@@ -19,72 +19,66 @@ export const Pages: CollectionConfig = {
     update: adminOnly,
   },
   admin: {
-    group: 'Content',
-    defaultColumns: ['title', 'slug', 'updatedAt'],
+    group: "Content",
+    defaultColumns: ["title", "slug", "updatedAt"],
     livePreview: {
       url: ({ data, req }) => {
         const path = generatePreviewPath({
-          slug: typeof data?.slug === 'string' ? data.slug : '',
-          collection: 'pages',
+          slug: typeof data?.slug === "string" ? data.slug : "",
+          collection: "pages",
           req,
-        })
+        });
 
-        return path
+        return path;
       },
     },
     preview: (data, { req }) =>
       generatePreviewPath({
-        slug: typeof data?.slug === 'string' ? data.slug : '',
-        collection: 'pages',
+        slug: typeof data?.slug === "string" ? data.slug : "",
+        collection: "pages",
         req,
       }),
-    useAsTitle: 'title',
+    useAsTitle: "title",
   },
   fields: [
     {
-      name: 'title',
-      type: 'text',
+      name: "title",
+      type: "text",
       required: true,
-      localized:true
+      localized: true,
     },
     {
-      name: 'publishedOn',
-      type: 'date',
+      name: "publishedOn",
+      type: "date",
       admin: {
         date: {
-          pickerAppearance: 'dayAndTime',
+          pickerAppearance: "dayAndTime",
         },
-        position: 'sidebar',
+        position: "sidebar",
       },
       hooks: {
         beforeChange: [
           ({ siblingData, value }) => {
-            if (siblingData._status === 'published' && !value) {
-              return new Date()
+            if (siblingData._status === "published" && !value) {
+              return new Date();
             }
-            return value
+            return value;
           },
         ],
       },
     },
     {
-      type: 'tabs',
+      type: "tabs",
       tabs: [
-   
         {
           fields: [
             {
-              name: 'sections',
-              type: 'blocks',
-              blocks: [
-                Content,
-                MediaBlock,
-                Carousel,
-                ColumnMedia
-              ],
+              name: "sections",
+              type: "blocks",
+              blocks: [Content, MediaBlock, Carousel, ColumnMedia],
             },
           ],
-          label: 'Layout',
+          label: "Layout",
         },
         // {
         //   name: 'meta',
@@ -115,20 +109,23 @@ export const Pages: CollectionConfig = {
         // },
       ],
     },
-    ...slugField('title',{
-      slugOverrides: {
-        required: true,
+    ...slugField(
+      "title",
+      {
+        slugOverrides: {
+          required: true,
+        },
       },
-      
-    },false),
+      false
+    ),
     {
-      name:"isTopLevel",
-      type:'checkbox',
-      defaultValue:true,
-      admin:{
-        position:'sidebar',
-      }
-    }
+      name: "isTopLevel",
+      type: "checkbox",
+      defaultValue: true,
+      admin: {
+        position: "sidebar",
+      },
+    },
   ],
   hooks: {
     afterChange: [revalidatePage],
@@ -137,7 +134,7 @@ export const Pages: CollectionConfig = {
   versions: {
     drafts: {
       autosave: false,
-      schedulePublish:true
+      schedulePublish: true,
     },
   },
-}
+};

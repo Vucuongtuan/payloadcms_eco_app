@@ -1,5 +1,5 @@
-import { Content } from "@/blocks/Content/config";
-import { MediaBlock } from "@/blocks/MediaBlock/config";
+import { Content } from "@/blocks/(web)/Content/config";
+import { MediaBlock } from "@/blocks/(web)/MediaBlock/config";
 import { groupCategoriesField } from "@/fields/groupCategories";
 import { slugField } from "@/fields/slug";
 import { uploadCustomField } from "@/fields/upload";
@@ -14,6 +14,7 @@ import {
   OverviewField,
   PreviewField,
 } from "@payloadcms/plugin-seo/fields";
+import { rateAfterRead } from "./hooks/rateAfterRead";
 
 export const ProductsCollection: CollectionOverride = ({
   defaultCollection,
@@ -51,6 +52,9 @@ export const ProductsCollection: CollectionOverride = ({
     priceInUSD: true,
     inventory: true,
     meta: true,
+  },
+  hooks: {
+    afterRead: [rateAfterRead],
   },
   fields: [
     { name: "title", type: "text", required: true, localized: true },

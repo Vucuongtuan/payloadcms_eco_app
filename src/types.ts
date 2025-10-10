@@ -19,8 +19,8 @@ export interface NavItemBase {
   title?: string;
   link?: string;
   localLink?: {
-    value: Post | Page | Category ;
-    relationTo: "pages" | "posts" | "categories" ;
+    value: Post | Page | Category;
+    relationTo: "pages" | "posts" | "categories";
   };
   id: string;
 }
@@ -44,7 +44,7 @@ export interface ResponseDocs<T> {
 
 export interface RichTextContent {
   root: {
-    type: 'root';
+    type: "root";
     children: {
       type: string;
       version: number;
@@ -72,9 +72,10 @@ export interface GalleryBlock {
   image: Media;
 }
 
-
-
-
+export interface PaginationOption {
+  limit?: number;
+  page?: number;
+}
 
 export type Layout = ("container" | "full" | "wide" | "narrow") | null;
 
@@ -84,17 +85,30 @@ export interface FAQBlock {
   id: string;
   direction: Direction;
   layout: Layout;
-  content?:RichTextContent
+  content?: RichTextContent;
   faqList: {
     question: string;
     answer: RichTextContent;
   }[];
 }
 
-export interface NavChildItem { /** Choose whether this is an internal or external link */ checkTypeLink?: "internal" | "external" | null; /** Check if this item opens the document in a new window or tab */ isblank?: boolean | null; /** Enter the name for the menu item */ title?: string | null; /** Enter the external URL to link to */ link?: string | null; /** Select an internal page or product to link to */ localLink?: | { relationTo: "pages"; value: number | Page; } | { relationTo: "posts"; value: number | Post; } | { relationTo: "categories"; value: number | Category; } | null; id?: string | null; }
-
-
-
+export interface NavChildItem {
+  /** Choose whether this is an internal or external link */ checkTypeLink?:
+    | "internal"
+    | "external"
+    | null;
+  /** Check if this item opens the document in a new window or tab */ isblank?:
+    | boolean
+    | null;
+  /** Enter the name for the menu item */ title?: string | null;
+  /** Enter the external URL to link to */ link?: string | null;
+  /** Select an internal page or product to link to */ localLink?:
+    | { relationTo: "pages"; value: number | Page }
+    | { relationTo: "posts"; value: number | Post }
+    | { relationTo: "categories"; value: number | Category }
+    | null;
+  id?: string | null;
+}
 
 export interface LayoutDefaultBlock {
   layout?: "container" | "full" | "wide" | "narrow";

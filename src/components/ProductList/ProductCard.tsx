@@ -25,11 +25,12 @@ export const ProductCard = ({ doc, lang }: { doc: Product; lang: Lang }) => {
     <article className="flex flex-col gap-2 group w-full">
       <header className="flex-1 relative ">
         <Link href={`/products/${selectedVariant.slug}`} className="block">
-          <figure className="relative h-full w-full aspect-card">
+          <figure className="relative h-full w-full aspect-figcard">
             <Image
               resource={
                 (selectedVariant.thumbnail || doc.thumbnail)[isHover ? 1 : 0]
               }
+              fill
               imgClassName={cn("w-full h-full object-cover")}
               onMouseEnter={() => setIsHover(true)}
               onMouseLeave={() => setIsHover(false)}
@@ -49,8 +50,23 @@ export const ProductCard = ({ doc, lang }: { doc: Product; lang: Lang }) => {
           </h3>
         </Link>
 
-        <p className="text-base font-medium text-gray-700">
-          {formatPrice(selectedVariant.pricing.price, lang)}
+        <p className="flex items-center gap-2">
+          {selectedVariant.pricing.discount ? (
+            <>
+              <span className={cn("line-through text-sm text-gray-400")}>
+                {formatPrice(selectedVariant.pricing.price, lang)}
+              </span>
+              <span className="text-[18px] font-semibold text-neutral-900">
+                {formatPrice(
+                  selectedVariant.pricing.price,
+                  lang,
+                  selectedVariant.pricing.discount
+                )}
+              </span>
+            </>
+          ) : (
+            <span>{formatPrice(selectedVariant.pricing.price, lang)}</span>
+          )}
         </p>
       </div>
 

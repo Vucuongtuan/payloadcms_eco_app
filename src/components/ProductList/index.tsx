@@ -1,24 +1,38 @@
+"use client";
+
 import { Product } from "@/payload-types";
 import { Lang, ResponseDocs } from "@/types";
 import { ProductCard } from "./ProductCard";
 import Skeleton from "./Skeleton";
+import { useInfiniteProduct } from "./hooks/useInfiniteProduct";
 
 interface ProductListProps {
-  data: ResponseDocs<Product>;
-  isLoading?: boolean;
+  initData: ResponseDocs<Product>;
+  categoryId: number;
   lang: Lang;
 }
 
 export default function ProductList(props: ProductListProps) {
-  const { docs } = props.data;
-  const { isLoading = false } = props;
+  const { initData, categoryId, lang } = props;
+  const { data, isFetchingNextPage, ref } = useInfiniteProduct({
+    initData,
+    categoryId,
+    lang,
+  });
+
+  const products = data?.pages.flatMap((page) => page.docs) || [];
 
   return (
     <section className="w-full h-auto py-12">
-      <ul className="grid grid-cols-2 lg:grid-cols-4 gap-2 w-full">
-        {isLoading ? (
+      <ul className="grid grid-cols-2 lg:grid-cols-4 gap-x-1 gap-y-4 w-full">
+        {products.map((doc) => (
+          <li key={doc.id} className="aspect-card">
+            <ProductCard doc={doc} lang={lang} />
+          </li>
+        ))}
+        {isFetchingNextPage && (
           <Skeleton
-            numberItems={8}
+            numberItems={4}
             className="rounded-lg"
             options={{
               isImage: {
@@ -36,14 +50,9 @@ export default function ProductList(props: ProductListProps) {
               gap: "gap-2",
             }}
           />
-        ) : (
-          [...docs, ...docs].map((doc) => (
-            <li key={doc.id} className="aspect-card">
-              <ProductCard doc={doc} lang={props.lang as Lang} />
-            </li>
-          ))
         )}
       </ul>
+      <div ref={ref} />
     </section>
   );
 }
