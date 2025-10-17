@@ -49,9 +49,9 @@ const nextConfig = {
     reactCompiler: {
       compilationMode: "annotation",
     },
+    inlineCss: true,
     // viewTransition: true,
     // ppr: "incremental",
-    inlineCss: true,
 
     // turbopackFileSystemCacheForDev: true,
     // no supports production nextjs latest version
