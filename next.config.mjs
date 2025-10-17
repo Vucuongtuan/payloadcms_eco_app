@@ -42,11 +42,13 @@ const nextConfig = {
       },
     ],
   },
-  // Use React Compiler
-  reactCompiler: true,
 
   //  Experimental Beta
   experimental: {
+    // Use React Compiler
+    reactCompiler: {
+      compilationMode: "annotation",
+    },
     // viewTransition: true,
     // ppr: "incremental",
     inlineCss: true,
