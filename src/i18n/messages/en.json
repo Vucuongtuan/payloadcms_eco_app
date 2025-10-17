@@ -1,7 +1,65 @@
 {
-  "Block": {
-    "Hero": {
-      "cta": "See now"
+  "login": {
+    "title": "Login",
+    "email_label": "Email",
+    "password_label": "Password",
+    "remember_me_label": "Remember me",
+    "login_button": "Login",
+    "signup_text": "Don't have an account?",
+    "signup_link": "Sign up",
+    "google_login_button": "Login with Google"
+  },
+  "signup": {
+    "title": "Sign Up",
+    "name_label": "Name",
+    "email_label": "Email",
+    "password_label": "Password",
+    "confirm_password_label": "Confirm Password",
+    "signup_button": "Sign Up",
+    "login_text": "Already have an account?",
+    "login_link": "Log in",
+    "google_login_button": "Sign up with Google"
+  },
+  "product": {
+    "details": {
+      "save": "Save",
+      "sizeLabel": "Choose size",
+      "sizeGuide": "Size guide",
+      "quantityLabel": "Quantity",
+      "addToCart": "Add to cart",
+      "adding": "Adding...",
+      "addedToCart": "Added to cart",
+      "addToCartError": "Failed to add to cart",
+      "viewCart": "View cart",
+      "selectSizeError": "Please select a size",
+      "outOfStock": "Out of stock",
+      "inStock": "In stock",
+      "variantField": "Variant",
+      "breadcrumb": {
+        "home": "Home"
+      }
     }
+  },
+  "cart": {
+    "title": "Shopping Cart",
+    "empty": {
+      "title": "Your cart is empty",
+      "description": "Add some products to get started"
+    },
+    "subtotal": "Subtotal",
+    "checkout": "Checkout",
+    "clear": "Clear Cart",
+    "loginRequired": {
+      "title": "Login Required",
+      "message": "You need to login to add products to your cart",
+      "login": "Login",
+      "signup": "Sign Up"
+    }
+  },
+  "auth": {
+    "invalid_credentials": "Invalid credentials",
+    "success": "Success",
+    "signup_failed": "Signup failed",
+    "signup_success": "Signup success"
   }
 }

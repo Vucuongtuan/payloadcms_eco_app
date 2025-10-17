@@ -13,10 +13,10 @@ import {
   GenerateTitle,
   GenerateURL,
 } from "@payloadcms/plugin-seo/types";
+import { vercelBlobStorage } from "@payloadcms/storage-vercel-blob";
 import { FieldsOverride } from "node_modules/@payloadcms/plugin-ecommerce/dist/types";
 import { Plugin } from "payload";
 import { ProductsCollection } from "./collections";
-
 export const defaultMeta = {
   brandName: "Moon co.",
   description: {
@@ -39,10 +39,8 @@ const generateURL: GenerateURL<any> = ({ doc }) => {
   return doc?.slug ? `${url}/${doc.slug}` : url;
 };
 
-const generateDescription: GenerateDescription<any> = ({ doc }) => {
-  return doc.description
-    ? doc.description
-    : defaultMeta.description[doc?.locale || "vi"];
+const generateDescription: GenerateDescription<any> = ({ doc, locale }) => {
+  return doc.subTitle ? doc.subTitle : defaultMeta.description[locale || "vi"];
 };
 
 const applySearchForCollection = [
@@ -52,13 +50,7 @@ const applySearchForCollection = [
   "posts",
   "pages",
 ];
-const applySEOForCollection = [
-  "categories",
-  "products",
-  "variants",
-  "posts",
-  "pages",
-];
+const applySEOForCollection = ["products", "variants", "posts", "pages"];
 
 // override field for seo plugin disable localized
 const overrideSEOFields: FieldsOverride = ({ defaultFields }) => {
@@ -66,7 +58,7 @@ const overrideSEOFields: FieldsOverride = ({ defaultFields }) => {
     if ("name" in field && field.name) {
       return {
         ...field,
-        localized: false,
+        localized: true,
       };
     }
     return field;
@@ -159,5 +151,20 @@ export const plugins: Plugin[] = [
     products: {
       productsCollectionOverride: ProductsCollection,
     },
+  }),
+
+  // S3 vercel Blob
+  vercelBlobStorage({
+    collections: {
+      media: {
+        disableLocalStorage: true,
+        prefix: "uploads",
+        generateFileURL: async (args) =>
+          args.filename
+            ? `${process.env.BASE_URL_BLOB}/${args.prefix}/${args.filename}`
+            : "",
+      },
+    },
+    token: process.env.BLOB_READ_WRITE_TOKEN || "",
   }),
 ];

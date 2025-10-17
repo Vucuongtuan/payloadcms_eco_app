@@ -34,13 +34,7 @@ export const findPageDoc = async (
   )();
 };
 
-export const findCategoryBySlug = ({
-  lang,
-  slug,
-}: {
-  lang: Lang;
-  slug: string;
-}) => {
+export const findCategoryBySlug = ({ slug }: { slug: string }) => {
   return cacheFunc(
     async () => {
       const [result, err] = await query<ResponseDocs<Category>>((payload) => {
@@ -52,15 +46,14 @@ export const findCategoryBySlug = ({
             },
           },
           limit: 1,
-          locale: lang,
         });
       });
       if (err) throw err;
       return result.docs[0] as Category;
     },
-    [`category`, lang, slug],
+    [`category`, slug],
     {
-      tags: [`category:${lang}-${slug}`],
+      tags: [`category:${slug}`],
     }
   )();
 };
@@ -80,11 +73,22 @@ export const findListProductByCategory = ({
         return payload.find({
           collection: "products",
           where: {
-            category: {
-              slug: {
-                equals: slug,
+            or: [
+              {
+                category: {
+                  slug: {
+                    equals: slug,
+                  },
+                },
               },
-            },
+              {
+                subCategory: {
+                  slug: {
+                    equals: slug,
+                  },
+                },
+              },
+            ],
           },
           limit: limit || 10,
           locale: lang,

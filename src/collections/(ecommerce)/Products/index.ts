@@ -3,9 +3,8 @@ import { MediaBlock } from "@/blocks/(web)/MediaBlock/config";
 import { groupCategoriesField } from "@/fields/groupCategories";
 import { slugField } from "@/fields/slug";
 import { uploadCustomField } from "@/fields/upload";
-import { variants } from "@/fields/variant";
+import { beforeChangeMetaImage } from "@/hooks/beforeChangeMetaImage";
 import { generatePreviewPath } from "@/utilities/generatePreviewPath";
-import { statusField } from "@payloadcms/plugin-ecommerce";
 import { CollectionOverride } from "@payloadcms/plugin-ecommerce/types";
 import {
   MetaDescriptionField,
@@ -14,15 +13,16 @@ import {
   OverviewField,
   PreviewField,
 } from "@payloadcms/plugin-seo/fields";
-import { rateAfterRead } from "./hooks/rateAfterRead";
+import { DefaultDocumentIDType, Where } from "payload";
 
 export const ProductsCollection: CollectionOverride = ({
   defaultCollection,
 }) => ({
   ...defaultCollection,
+  trash: true,
   admin: {
     ...defaultCollection?.admin,
-    defaultColumns: ["title", "_status"],
+    defaultColumns: ["title", "enableVariants", "_status", "variants.variants"],
     livePreview: {
       url: ({ data, req }) => {
         const path = generatePreviewPath({
@@ -30,7 +30,6 @@ export const ProductsCollection: CollectionOverride = ({
           collection: "products",
           req,
         });
-
         return path;
       },
     },
@@ -42,120 +41,178 @@ export const ProductsCollection: CollectionOverride = ({
       }),
     useAsTitle: "title",
   },
+  hooks: {
+    beforeChange: [beforeChangeMetaImage],
+  },
   defaultPopulate: {
     ...defaultCollection?.defaultPopulate,
     title: true,
     slug: true,
     variantOptions: true,
     variants: true,
+    enableVariants: true,
     gallery: true,
     priceInUSD: true,
     inventory: true,
     meta: true,
   },
-  hooks: {
-    afterRead: [rateAfterRead],
-  },
   fields: [
     { name: "title", type: "text", required: true, localized: true },
-    {
-      name: "description",
-      type: "textarea",
-      label: { vi: "Mô tả ngắn", en: "Short Description" },
-      localized: true,
-    },
     {
       type: "tabs",
       tabs: [
         {
           fields: [
-            // ...defaultCollection.fields,
             {
-              type: "group",
+              name: "subTitle",
               label: {
-                vi: "Thông tin sản phẩm chính",
-                en: "Main Product Info",
+                vi: "Tiêu đề phụ",
+                en: "Sub title",
               },
-              fields: [
-                ...variants({
-                  isStatus: false,
-                  requiredPrice: true,
-                  isMain: true,
-                  isName: false,
-                }),
-              ],
-            },
-            // {
-            //   name:"gallery",
-            //   type:"upload",
-            //   hasMany:true,
-            //   relationTo:"media",
-            // }
-            uploadCustomField({
-              name: "gallery",
-              label: "Gallery",
-              hasMany: true,
-              isGallery: true,
-            }),
-            // {
-            //   type:"group",
-            //   label:{vi:"Biến thể",en:"Variants"},
-            //   fields:[
-            //     {
-            //       name:"variantsOption",
-            //       type:"relationship",
-            //       relationTo:"variantsProduct",
-            //       hasMany:true,
-            //     }
-            //   ]
-            // },
-            // {
-            //   name: 'relatedProducts',
-            //   type: 'relationship',
-            //   filterOptions: ({ id }) => {
-            //     if (id) {
-            //       return {
-            //         id: {
-            //           not_in: [id],
-            //         },
-            //       }
-            //     }
-            //     return {
-            //       id: {
-            //         exists: true,
-            //       },
-            //     }
-            //   },
-            //   hasMany: true,
-            //   relationTo: 'products',
-            // },
-          ],
-          label: "Details",
-        },
-        {
-          fields: [
-            {
-              name: "content",
-              type: "richText",
+              type: "textarea",
+              required: false,
               localized: true,
             },
             {
-              name: "sections",
+              name: "gallery",
+              type: "array",
+              minRows: 1,
+
+              fields: [
+                uploadCustomField({
+                  name: "image",
+                  hasMany: true,
+                  isGallery: true,
+                }),
+                {
+                  name: "variantOption",
+                  type: "relationship",
+                  relationTo: "variantOptions",
+                  admin: {
+                    condition: (data) => {
+                      return (
+                        data?.enableVariants === true &&
+                        data?.variantTypes?.length > 0
+                      );
+                    },
+                  },
+                  filterOptions: async ({ data, siblingData, req }) => {
+                    if (data?.enableVariants && data?.variantTypes?.length) {
+                      // const variantTypeCollection = await req.payload.find({
+                      //   collection: "variants",
+                      //   where: {
+                      //     product: {
+                      //       equals: data.id,
+                      //     },
+                      //   },
+                      // });
+                      // console.log({
+                      //   data: variantTypeCollection.docs[0].options,
+                      // });
+
+                      // const a = variantTypeCollection.docs.filter((f) => {
+                      //   return f.options.filter(
+                      //     (o: any) =>
+                      //       o.value.includes("#") ||
+                      //       o.value.includes("rgh") ||
+                      //       o.value.includes("gh")
+                      //   );
+                      // });
+
+                      const variantTypeIDs = data.variantTypes.map(
+                        (item: any) => {
+                          console.log({ item });
+                          if (typeof item === "object" && item?.id) {
+                            return item.id;
+                          }
+                          return item;
+                        }
+                      ) as DefaultDocumentIDType[];
+
+                      if (variantTypeIDs.length === 0)
+                        return {
+                          variantType: {
+                            in: [],
+                          },
+                        };
+
+                      const query: Where = {
+                        variantType: {
+                          in: variantTypeIDs,
+                        },
+                      };
+                      console.log({ query });
+                      return query;
+                    }
+
+                    return {
+                      variantType: {
+                        in: [],
+                      },
+                    };
+                  },
+                },
+              ],
+            },
+            {
+              name: "shortContent",
+              type: "array",
+              fields: [
+                {
+                  name: "name",
+                  type: "select",
+                  required: true,
+                  options: [
+                    {
+                      label: {
+                        vi: "Mô tả ngắn",
+                        en: "Description",
+                      },
+                      value: "description",
+                    },
+                    {
+                      label: {
+                        vi: "Chất liệu",
+                        en: "Material",
+                      },
+                      value: "material",
+                    },
+                    {
+                      label: {
+                        vi: "Kích thước",
+                        en: "Size",
+                      },
+                      value: "size",
+                    },
+                    {
+                      label: {
+                        vi: "Khác",
+                        en: "Other",
+                      },
+                      value: "other",
+                    },
+                  ],
+                  defaultValue: "description",
+                },
+                {
+                  name: "content",
+                  type: "richText",
+                  localized: true,
+                },
+              ],
+            },
+            {
+              name: "layout",
               type: "blocks",
               blocks: [Content, MediaBlock],
+              localized: true,
             },
           ],
           label: "Content",
         },
         {
-          label: "Variants and Related",
           fields: [
-            {
-              name: "variantsOption",
-              type: "relationship",
-              relationTo: "variantsProduct",
-              hasMany: true,
-            },
+            ...defaultCollection.fields,
             {
               name: "relatedProducts",
               type: "relationship",
@@ -167,6 +224,8 @@ export const ProductsCollection: CollectionOverride = ({
                     },
                   };
                 }
+
+                // ID comes back as undefined during seeding so we need to handle that case
                 return {
                   id: {
                     exists: true,
@@ -177,6 +236,7 @@ export const ProductsCollection: CollectionOverride = ({
               relationTo: "products",
             },
           ],
+          label: "Product Details",
         },
         {
           name: "meta",
@@ -189,23 +249,16 @@ export const ProductsCollection: CollectionOverride = ({
             }),
             MetaTitleField({
               hasGenerateFn: true,
-              overrides: {
-                localized: false,
-              },
+              overrides: {},
             }),
             MetaDescriptionField({
               hasGenerateFn: true,
-              overrides: {
-                localized: false,
-              },
+              overrides: {},
             }),
             MetaImageField({
               relationTo: "media",
-              overrides: {
-                localized: false,
-              },
+              overrides: {},
             }),
-
             PreviewField({
               // if the `generateUrl` function is configured
               hasGenerateFn: true,
@@ -218,53 +271,6 @@ export const ProductsCollection: CollectionOverride = ({
         },
       ],
     },
-    ...slugField("title", {
-      slugOverrides: {
-        required: true,
-      },
-    }),
-    {
-      name: "sales",
-      type: "number",
-      label: { vi: "Lượt mua", en: "Sales" },
-      defaultValue: 0,
-      admin: {
-        readOnly: true,
-        position: "sidebar",
-      },
-    },
-    statusField({
-      overrides: {
-        name: "statusProduct",
-        options: [
-          {
-            label: {
-              vi: "Còn hàng",
-              en: "In Stock",
-            },
-            value: "in-stock",
-          },
-          {
-            label: {
-              vi: "Hết hàng",
-              en: "Out of Stock",
-            },
-            value: "out-of-stock",
-          },
-          {
-            label: {
-              vi: "Đặt trước",
-              en: "Pre-order",
-            },
-            value: "pre-order",
-          },
-        ],
-        defaultValue: "in-stock",
-        admin: {
-          position: "sidebar",
-        },
-      },
-    }),
     {
       name: "taxonomies",
       type: "group",
@@ -284,22 +290,20 @@ export const ProductsCollection: CollectionOverride = ({
         },
       ],
     },
-    uploadCustomField({
-      name: "thumbnail",
-      label: "Thumbnail",
-      hasMany: true,
-      admin: {
-        position: "sidebar",
+    ...slugField(
+      "title",
+      {
+        slugOverrides: {
+          required: true,
+        },
       },
-      required: true,
-      minRows: 1,
-      maxRows: 2,
-    }),
+      false
+    ),
   ],
   versions: {
     drafts: {
       autosave: false,
-      schedulePublish: true,
     },
+    maxPerDoc: 30,
   },
 });

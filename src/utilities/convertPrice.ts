@@ -5,22 +5,34 @@ export const formatPrice = (
   lang: Lang,
   discount?: number
 ) => {
-  const value = Number(String(price).replace(/\./g, "")) || 0;
+  const valueInCents = Number(price) || 0;
 
-  const finalPrice =
-    discount && discount > 0 ? value - (value * discount) / 100 : value;
+  const finalPriceInCents =
+    discount && discount > 0
+      ? valueInCents - (valueInCents * discount) / 100
+      : valueInCents;
 
-  // update convert price
-  const VND_TO_USD = 1 / 25000;
+  const USD_TO_VND = 25000;
 
-  const converted = lang === "en" ? finalPrice * VND_TO_USD : finalPrice;
+  let converted: number;
+  let currency: string;
+  let locale: string;
+  let minimumFractionDigits = 0;
 
-  const currency = lang === "en" ? "USD" : "VND";
-  const locale = lang === "en" ? "en-US" : "vi-VN";
+  if (lang === "en") {
+    converted = finalPriceInCents / 100;
+    currency = "USD";
+    locale = "en-US";
+    minimumFractionDigits = 2;
+  } else {
+    converted = (finalPriceInCents / 100) * USD_TO_VND;
+    currency = "VND";
+    locale = "vi-VN";
+  }
 
   return new Intl.NumberFormat(locale, {
     style: "currency",
     currency,
-    minimumFractionDigits: 0,
+    minimumFractionDigits,
   }).format(converted);
 };

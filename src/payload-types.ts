@@ -81,7 +81,6 @@ export interface Config {
     'email-subscribe': EmailSubscribe;
     pages: Page;
     posts: Post;
-    variantsProduct: VariantsProduct;
     screen: Screen;
     notifications: Notification;
     search: Search;
@@ -108,6 +107,9 @@ export interface Config {
     variantTypes: {
       options: 'variantOptions';
     };
+    products: {
+      variants: 'variants';
+    };
     'payload-folders': {
       documentsAndFolders: 'payload-folders' | 'media' | 'categories';
     };
@@ -122,7 +124,6 @@ export interface Config {
     'email-subscribe': EmailSubscribeSelect<false> | EmailSubscribeSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
     posts: PostsSelect<false> | PostsSelect<true>;
-    variantsProduct: VariantsProductSelect<false> | VariantsProductSelect<true>;
     screen: ScreenSelect<false> | ScreenSelect<true>;
     notifications: NotificationsSelect<false> | NotificationsSelect<true>;
     search: SearchSelect<false> | SearchSelect<true>;
@@ -286,120 +287,46 @@ export interface Order {
 export interface Product {
   id: number;
   title: string;
-  description?: string | null;
-  color: string;
-  /**
-   * Enter the price in VND only, other currencies will be automatically converted based on the exchange rates defined in GlobalSetting.
-   */
-  pricing: {
-    price: string;
-    discount: number;
+  subTitle?: string | null;
+  gallery?:
+    | {
+        image?: (number | Media)[] | null;
+        variantOption?: (number | null) | VariantOption;
+        id?: string | null;
+      }[]
+    | null;
+  shortContent?:
+    | {
+        name: 'description' | 'material' | 'size' | 'other';
+        content?: {
+          root: {
+            type: string;
+            children: {
+              type: any;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
+        id?: string | null;
+      }[]
+    | null;
+  layout?: (ContentBlock | MediaBlock)[] | null;
+  inventory?: number | null;
+  enableVariants?: boolean | null;
+  variantTypes?: (number | VariantType)[] | null;
+  variants?: {
+    docs?: (number | Variant)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
   };
-  sizes?: {
-    s?: {
-      customPrice?: boolean | null;
-      /**
-       * Enter the price in VND only, other currencies will be automatically converted based on the exchange rates defined in GlobalSetting.
-       */
-      pricing?: {
-        price: string;
-        discount: number;
-      };
-      inventory?: {
-        /**
-         * Auto generate SKU
-         */
-        sku?: string | null;
-        stock?: number | null;
-      };
-    };
-    M?: {
-      customPrice?: boolean | null;
-      /**
-       * Enter the price in VND only, other currencies will be automatically converted based on the exchange rates defined in GlobalSetting.
-       */
-      pricing?: {
-        price: string;
-        discount: number;
-      };
-      inventory?: {
-        /**
-         * Auto generate SKU
-         */
-        sku?: string | null;
-        stock?: number | null;
-      };
-    };
-    L?: {
-      customPrice?: boolean | null;
-      /**
-       * Enter the price in VND only, other currencies will be automatically converted based on the exchange rates defined in GlobalSetting.
-       */
-      pricing?: {
-        price: string;
-        discount: number;
-      };
-      inventory?: {
-        /**
-         * Auto generate SKU
-         */
-        sku?: string | null;
-        stock?: number | null;
-      };
-    };
-    xl?: {
-      customPrice?: boolean | null;
-      /**
-       * Enter the price in VND only, other currencies will be automatically converted based on the exchange rates defined in GlobalSetting.
-       */
-      pricing?: {
-        price: string;
-        discount: number;
-      };
-      inventory?: {
-        /**
-         * Auto generate SKU
-         */
-        sku?: string | null;
-        stock?: number | null;
-      };
-    };
-    xxl?: {
-      customPrice?: boolean | null;
-      /**
-       * Enter the price in VND only, other currencies will be automatically converted based on the exchange rates defined in GlobalSetting.
-       */
-      pricing?: {
-        price: string;
-        discount: number;
-      };
-      inventory?: {
-        /**
-         * Auto generate SKU
-         */
-        sku?: string | null;
-        stock?: number | null;
-      };
-    };
-  };
-  gallery?: (number | Media)[] | null;
-  content?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  sections?: (ContentBlock | MediaBlock)[] | null;
-  variantsOption?: (number | VariantsProduct)[] | null;
+  priceInUSDEnabled?: boolean | null;
+  priceInUSD?: number | null;
   relatedProducts?: (number | Product)[] | null;
   meta?: {
     title?: string | null;
@@ -409,16 +336,13 @@ export interface Product {
      */
     image?: (number | null) | Media;
   };
-  slug: string;
-  slugLock?: boolean | null;
-  sales?: number | null;
-  statusProduct: 'in-stock' | 'out-of-stock' | 'pre-order';
   taxonomies: {
     category: number | Category;
     subCategory?: (number | null) | Category;
     tags?: (number | Tag)[] | null;
   };
-  thumbnail: (number | Media)[];
+  slug: string;
+  slugLock?: boolean | null;
   updatedAt: string;
   createdAt: string;
   deletedAt?: string | null;
@@ -433,6 +357,7 @@ export interface Media {
   alt?: string | null;
   caption?: string | null;
   blurData?: string | null;
+  prefix?: string | null;
   folder?: (number | null) | FolderInterface;
   updatedAt: string;
   createdAt: string;
@@ -520,11 +445,6 @@ export interface Category {
   description?: string | null;
   slug?: string | null;
   slugLock?: boolean | null;
-  meta?: {
-    title?: string | null;
-    description?: string | null;
-    image?: (number | null) | Media;
-  };
   parent?: (number | null) | Category;
   breadcrumbs?:
     | {
@@ -537,6 +457,41 @@ export interface Category {
   folder?: (number | null) | FolderInterface;
   updatedAt: string;
   createdAt: string;
+  deletedAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "variantOptions".
+ */
+export interface VariantOption {
+  id: number;
+  _variantOptions_options_order?: string | null;
+  variantType: number | VariantType;
+  label: string;
+  /**
+   * should be defaulted or dynamic based on label
+   */
+  value: string;
+  updatedAt: string;
+  createdAt: string;
+  deletedAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "variantTypes".
+ */
+export interface VariantType {
+  id: number;
+  label: string;
+  name: string;
+  options?: {
+    docs?: (number | VariantOption)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  updatedAt: string;
+  createdAt: string;
+  deletedAt?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -704,6 +659,7 @@ export interface Carousel {
   gallery?:
     | {
         media: number | Media;
+        heading?: string | null;
         content?: {
           root: {
             type: string;
@@ -755,130 +711,6 @@ export interface Carousel {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "variantsProduct".
- */
-export interface VariantsProduct {
-  id: number;
-  title: string;
-  titleVN: string;
-  /**
-   * Enter the price in VND only, other currencies will be automatically converted based on the exchange rates defined in GlobalSetting.
-   */
-  pricing: {
-    price: string;
-    discount: number;
-  };
-  slug?: string | null;
-  slugLock?: boolean | null;
-  color: string;
-  sizes?: {
-    s?: {
-      customPrice?: boolean | null;
-      /**
-       * Enter the price in VND only, other currencies will be automatically converted based on the exchange rates defined in GlobalSetting.
-       */
-      pricing?: {
-        price: string;
-        discount: number;
-      };
-      inventory?: {
-        /**
-         * Auto generate SKU
-         */
-        sku?: string | null;
-        stock?: number | null;
-      };
-    };
-    M?: {
-      customPrice?: boolean | null;
-      /**
-       * Enter the price in VND only, other currencies will be automatically converted based on the exchange rates defined in GlobalSetting.
-       */
-      pricing?: {
-        price: string;
-        discount: number;
-      };
-      inventory?: {
-        /**
-         * Auto generate SKU
-         */
-        sku?: string | null;
-        stock?: number | null;
-      };
-    };
-    L?: {
-      customPrice?: boolean | null;
-      /**
-       * Enter the price in VND only, other currencies will be automatically converted based on the exchange rates defined in GlobalSetting.
-       */
-      pricing?: {
-        price: string;
-        discount: number;
-      };
-      inventory?: {
-        /**
-         * Auto generate SKU
-         */
-        sku?: string | null;
-        stock?: number | null;
-      };
-    };
-    xl?: {
-      customPrice?: boolean | null;
-      /**
-       * Enter the price in VND only, other currencies will be automatically converted based on the exchange rates defined in GlobalSetting.
-       */
-      pricing?: {
-        price: string;
-        discount: number;
-      };
-      inventory?: {
-        /**
-         * Auto generate SKU
-         */
-        sku?: string | null;
-        stock?: number | null;
-      };
-    };
-    xxl?: {
-      customPrice?: boolean | null;
-      /**
-       * Enter the price in VND only, other currencies will be automatically converted based on the exchange rates defined in GlobalSetting.
-       */
-      pricing?: {
-        price: string;
-        discount: number;
-      };
-      inventory?: {
-        /**
-         * Auto generate SKU
-         */
-        sku?: string | null;
-        stock?: number | null;
-      };
-    };
-  };
-  gallery?: (number | Media)[] | null;
-  thumbnail?: (number | Media)[] | null;
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "tags".
- */
-export interface Tag {
-  id: number;
-  title: string;
-  description?: string | null;
-  slug?: string | null;
-  slugLock?: boolean | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "variants".
  */
 export interface Variant {
@@ -899,37 +731,15 @@ export interface Variant {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "variantOptions".
+ * via the `definition` "tags".
  */
-export interface VariantOption {
+export interface Tag {
   id: number;
-  _variantOptions_options_order?: string | null;
-  variantType: number | VariantType;
-  label: string;
-  /**
-   * should be defaulted or dynamic based on label
-   */
-  value: string;
+  title?: string | null;
+  slug?: string | null;
+  slugLock?: boolean | null;
   updatedAt: string;
   createdAt: string;
-  deletedAt?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "variantTypes".
- */
-export interface VariantType {
-  id: number;
-  label: string;
-  name: string;
-  options?: {
-    docs?: (number | VariantOption)[];
-    hasNextPage?: boolean;
-    totalDocs?: number;
-  };
-  updatedAt: string;
-  createdAt: string;
-  deletedAt?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1324,10 +1134,6 @@ export interface PayloadLockedDocument {
         value: number | Post;
       } | null)
     | ({
-        relationTo: 'variantsProduct';
-        value: number | VariantsProduct;
-      } | null)
-    | ({
         relationTo: 'screen';
         value: number | Screen;
       } | null)
@@ -1456,6 +1262,7 @@ export interface MediaSelect<T extends boolean = true> {
   alt?: T;
   caption?: T;
   blurData?: T;
+  prefix?: T;
   folder?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -1522,13 +1329,6 @@ export interface CategoriesSelect<T extends boolean = true> {
   description?: T;
   slug?: T;
   slugLock?: T;
-  meta?:
-    | T
-    | {
-        title?: T;
-        description?: T;
-        image?: T;
-      };
   parent?: T;
   breadcrumbs?:
     | T
@@ -1541,6 +1341,7 @@ export interface CategoriesSelect<T extends boolean = true> {
   folder?: T;
   updatedAt?: T;
   createdAt?: T;
+  deletedAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1548,7 +1349,6 @@ export interface CategoriesSelect<T extends boolean = true> {
  */
 export interface TagsSelect<T extends boolean = true> {
   title?: T;
-  description?: T;
   slug?: T;
   slugLock?: T;
   updatedAt?: T;
@@ -1696,6 +1496,7 @@ export interface CarouselSelect<T extends boolean = true> {
     | T
     | {
         media?: T;
+        heading?: T;
         content?: T;
         link?:
           | T
@@ -1735,117 +1536,6 @@ export interface PostsSelect<T extends boolean = true> {
       };
   updatedAt?: T;
   createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "variantsProduct_select".
- */
-export interface VariantsProductSelect<T extends boolean = true> {
-  title?: T;
-  titleVN?: T;
-  pricing?:
-    | T
-    | {
-        price?: T;
-        discount?: T;
-      };
-  slug?: T;
-  slugLock?: T;
-  color?: T;
-  sizes?:
-    | T
-    | {
-        s?:
-          | T
-          | {
-              customPrice?: T;
-              pricing?:
-                | T
-                | {
-                    price?: T;
-                    discount?: T;
-                  };
-              inventory?:
-                | T
-                | {
-                    sku?: T;
-                    stock?: T;
-                  };
-            };
-        M?:
-          | T
-          | {
-              customPrice?: T;
-              pricing?:
-                | T
-                | {
-                    price?: T;
-                    discount?: T;
-                  };
-              inventory?:
-                | T
-                | {
-                    sku?: T;
-                    stock?: T;
-                  };
-            };
-        L?:
-          | T
-          | {
-              customPrice?: T;
-              pricing?:
-                | T
-                | {
-                    price?: T;
-                    discount?: T;
-                  };
-              inventory?:
-                | T
-                | {
-                    sku?: T;
-                    stock?: T;
-                  };
-            };
-        xl?:
-          | T
-          | {
-              customPrice?: T;
-              pricing?:
-                | T
-                | {
-                    price?: T;
-                    discount?: T;
-                  };
-              inventory?:
-                | T
-                | {
-                    sku?: T;
-                    stock?: T;
-                  };
-            };
-        xxl?:
-          | T
-          | {
-              customPrice?: T;
-              pricing?:
-                | T
-                | {
-                    price?: T;
-                    discount?: T;
-                  };
-              inventory?:
-                | T
-                | {
-                    sku?: T;
-                    stock?: T;
-                  };
-            };
-      };
-  gallery?: T;
-  thumbnail?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1952,112 +1642,33 @@ export interface VariantOptionsSelect<T extends boolean = true> {
  */
 export interface ProductsSelect<T extends boolean = true> {
   title?: T;
-  description?: T;
-  color?: T;
-  pricing?:
+  subTitle?: T;
+  gallery?:
     | T
     | {
-        price?: T;
-        discount?: T;
+        image?: T;
+        variantOption?: T;
+        id?: T;
       };
-  sizes?:
+  shortContent?:
     | T
     | {
-        s?:
-          | T
-          | {
-              customPrice?: T;
-              pricing?:
-                | T
-                | {
-                    price?: T;
-                    discount?: T;
-                  };
-              inventory?:
-                | T
-                | {
-                    sku?: T;
-                    stock?: T;
-                  };
-            };
-        M?:
-          | T
-          | {
-              customPrice?: T;
-              pricing?:
-                | T
-                | {
-                    price?: T;
-                    discount?: T;
-                  };
-              inventory?:
-                | T
-                | {
-                    sku?: T;
-                    stock?: T;
-                  };
-            };
-        L?:
-          | T
-          | {
-              customPrice?: T;
-              pricing?:
-                | T
-                | {
-                    price?: T;
-                    discount?: T;
-                  };
-              inventory?:
-                | T
-                | {
-                    sku?: T;
-                    stock?: T;
-                  };
-            };
-        xl?:
-          | T
-          | {
-              customPrice?: T;
-              pricing?:
-                | T
-                | {
-                    price?: T;
-                    discount?: T;
-                  };
-              inventory?:
-                | T
-                | {
-                    sku?: T;
-                    stock?: T;
-                  };
-            };
-        xxl?:
-          | T
-          | {
-              customPrice?: T;
-              pricing?:
-                | T
-                | {
-                    price?: T;
-                    discount?: T;
-                  };
-              inventory?:
-                | T
-                | {
-                    sku?: T;
-                    stock?: T;
-                  };
-            };
+        name?: T;
+        content?: T;
+        id?: T;
       };
-  gallery?: T;
-  content?: T;
-  sections?:
+  layout?:
     | T
     | {
         content?: T | ContentBlockSelect<T>;
         mediaBlock?: T | MediaBlockSelect<T>;
       };
-  variantsOption?: T;
+  inventory?: T;
+  enableVariants?: T;
+  variantTypes?: T;
+  variants?: T;
+  priceInUSDEnabled?: T;
+  priceInUSD?: T;
   relatedProducts?: T;
   meta?:
     | T
@@ -2066,10 +1677,6 @@ export interface ProductsSelect<T extends boolean = true> {
         description?: T;
         image?: T;
       };
-  slug?: T;
-  slugLock?: T;
-  sales?: T;
-  statusProduct?: T;
   taxonomies?:
     | T
     | {
@@ -2077,7 +1684,8 @@ export interface ProductsSelect<T extends boolean = true> {
         subCategory?: T;
         tags?: T;
       };
-  thumbnail?: T;
+  slug?: T;
+  slugLock?: T;
   updatedAt?: T;
   createdAt?: T;
   deletedAt?: T;
@@ -2486,15 +2094,10 @@ export interface TaskSchedulePublish {
   input: {
     type?: ('publish' | 'unpublish') | null;
     locale?: string | null;
-    doc?:
-      | ({
-          relationTo: 'pages';
-          value: number | Page;
-        } | null)
-      | ({
-          relationTo: 'products';
-          value: number | Product;
-        } | null);
+    doc?: {
+      relationTo: 'pages';
+      value: number | Page;
+    } | null;
     global?: string | null;
     user?: (number | null) | User;
   };

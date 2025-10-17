@@ -10,16 +10,16 @@ import { memo } from "react";
 
 interface MegaDropdownProps {
   isOpen: boolean;
-  activeItem: Header['navItems'][0] | null;
+  activeItem: Header["navItems"][0] | null;
   onMouseEnter: () => void;
   onMouseLeave: () => void;
 }
 
-export const MegaDropdown = memo(function MegaDropdown({ 
-  isOpen, 
-  activeItem, 
+export const MegaDropdown = memo(function MegaDropdown({
+  isOpen,
+  activeItem,
   onMouseEnter,
-  onMouseLeave
+  onMouseLeave,
 }: MegaDropdownProps) {
   if (!activeItem?.child?.length) return null;
 
@@ -31,12 +31,12 @@ export const MegaDropdown = memo(function MegaDropdown({
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -10 }}
           transition={{ duration: 0.2, ease: "easeOut" }}
-          className="absolute top-full left-0 w-full bg-white shadow-xl  z-40"
+          className="absolute top-full left-0 w-full bg-[var(--color-primary-background)]/65  backdrop-blur-lg  z-40"
           onMouseEnter={onMouseEnter}
           onMouseLeave={onMouseLeave}
         >
           <div className="container mx-auto px-6 py-8">
-            <motion.div 
+            <motion.div
               key={activeItem.id}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -67,7 +67,7 @@ export const MegaDropdown = memo(function MegaDropdown({
                   )}
                 </div>
               ))}
-              
+
               {/* Cột cuối để trống cho hình ảnh sau này */}
               <div className="bg-gray-50 rounded-lg p-6 flex items-center justify-center">
                 <span className="text-gray-400 text-sm">Featured Image</span>

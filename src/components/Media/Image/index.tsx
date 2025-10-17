@@ -7,6 +7,7 @@ import NextImage from "next/image";
 import React from "react";
 
 import { cssVariables } from "@/cssVariables";
+import { getMediaURL } from "@/utilities/getMediaUrl";
 import { motion } from "framer-motion";
 import type { Props as MediaProps } from "../types";
 
@@ -16,8 +17,9 @@ const defaultblurImage =
   "iVBORw0KGgoAAAANSUhEUgAAACAAAAASBAMAAADI5sFhAAAAKlBMVEXWzNzZ0OD37eXW1OHRyNbU0d7b4OfW3OTW2eLf1eXr5uvi4+vy6ujIwctyquTEAAAA3klEQVQY0yXQoQ7CMBAG4GvCA3BZELPTuGbJcBO1JEuWvkIR+BY/sT4Boa9Q0AjqkKQS23fhrvzu/9rcNYWOs/88T0uP2IYAe4b8ebpFAwvkmlgBAA8QX68Y451gAjWKFowx55SSIdgoRXBZnbPGnC4EG74hKd4752WdEWgyYiMHv/QEgrZQBOJu7vU0Aa9VahzpKmqOPFyhlCMZEXfvLUEpBFuhZ+mdPRN8vwSo52G19CQG7jvprUkpRig8AVGultojZ1C8oqk953fuqLbYDKtJj3f9GhAhhBuf/3v3A8XYZf1jUclIAAAAAElFTkSuQmCC";
 
 interface ImageProps extends MediaProps {
-  onMouseEnter: () => void;
-  onMouseLeave: () => void;
+  onMouseEnter?: () => void;
+  onMouseLeave?: () => void;
+  imgSize?: "thumbnail" | "small" | "medium" | "large";
 }
 export const Image: React.FC<ImageProps> = (props) => {
   const {
@@ -25,6 +27,7 @@ export const Image: React.FC<ImageProps> = (props) => {
     fill,
     height: heightFromProps,
     imgClassName,
+    imgSize,
     onClick,
     onLoad: onLoadFromProps,
     priority,
@@ -60,7 +63,7 @@ export const Image: React.FC<ImageProps> = (props) => {
 
     const filename = fullFilename;
 
-    src = `${process.env.NEXT_PUBLIC_SERVER_URL}${url}`;
+    src = getMediaURL(resource, imgSize || "medium");
   }
 
   // NOTE: this is used by the browser to determine which image to download at different screen sizes
@@ -102,8 +105,8 @@ export const Image: React.FC<ImageProps> = (props) => {
         sizes={sizes}
         src={src}
         // src={isDev ? `https://placehold.co/${w || 600}x${h || 400}` : src}
-        onMouseEnter={onMouseEnter}
-        onMouseLeave={onMouseLeave}
+        {...(onMouseEnter ? { onMouseEnter } : {})}
+        {...(onMouseLeave ? { onMouseLeave } : {})}
       />
     </>
   );

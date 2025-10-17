@@ -8,5 +8,3 @@ export { Posts } from "./Posts";
 export { Reviews } from "./Reviews";
 export { Tags } from "./Tags";
 export { Users } from "./Users";
-
-export { Variants } from "./(ecommerce)/Variants";

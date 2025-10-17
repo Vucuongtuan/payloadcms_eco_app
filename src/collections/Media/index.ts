@@ -19,9 +19,7 @@ export const Media: CollectionConfig = {
     read: () => true,
   },
   hooks: {
-    beforeChange:[
-      generateBlurImage
-    ]
+    beforeChange: [generateBlurImage],
   },
   fields: [
     {
@@ -33,12 +31,12 @@ export const Media: CollectionConfig = {
       type: "text",
     },
     {
-      name:"blurData",
-      type:"textarea",
-      admin:{
-        readOnly:true
-      }
-    }
+      name: "blurData",
+      type: "textarea",
+      admin: {
+        readOnly: true,
+      },
+    },
   ],
   upload: {
     skipSafeFetch: true,
@@ -105,8 +103,8 @@ export const Media: CollectionConfig = {
         width: 1600,
       },
     ],
-    staticDir: "media",
-    staticURL: "/media",
+    staticURL: process.env.BASE_URL_BLOB,
+    staticDir: "/uploads",
     resizeOptions: {
       fit: "contain",
       withoutEnlargement: true,

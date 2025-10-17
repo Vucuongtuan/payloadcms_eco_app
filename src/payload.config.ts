@@ -6,17 +6,15 @@ import { Pages } from '@/collections/Pages';
 import { Users } from '@/collections/Users';
 import { Footer } from '@/globals/Footer';
 import { Header } from '@/globals/Header';
-import { vercelPostgresAdapter } from '@payloadcms/db-vercel-postgres';
 import path from 'path';
 import { buildConfig } from 'payload';
 import sharp from 'sharp';
 import { fileURLToPath } from 'url';
 import { plugins } from './plugin';
 // i18n Translations
-
 // ---
+import { vercelPostgresAdapter } from '@payloadcms/db-vercel-postgres';
 import { EmailSubscribe, Newsletter, Posts, Reviews, Tags } from './collections';
-import { Variants } from './collections/(ecommerce)/Variants';
 import { Screen } from './collections/(mobile)/Screen';
 import { Notifications } from './collections/Notifications';
 import { defaultLexical } from './fields/defaultLexical';
@@ -39,10 +37,10 @@ const maxLengthSEO: Record<string, number> = {
   title: 60,
   description: 150
 }
-const allCollections = [Users, Media, Categories, Tags,Reviews, Newsletter, EmailSubscribe, Pages, Posts,Variants,Screen,Notifications];
+const allCollections = [Users, Media, Categories, Tags,Reviews, Newsletter, EmailSubscribe, Pages, Posts,Screen,Notifications]
 const golobalCollections = [Header, Footer,Rate]
-const applySearchForCollection = ['categories', 'products', 'variants', 'posts']
-const applySEOForCollection = ['categories', 'products', 'variants', 'posts', 'pages']
+const applySearchForCollection = ['categories', 'products',  'posts']
+const applySEOForCollection = ['categories', 'products',  'posts', 'pages']
 
 export default buildConfig({
   admin: {
@@ -67,6 +65,7 @@ export default buildConfig({
     localization: {
       locales: ['vi', 'en'],
       defaultLocale: 'vi',
+      // fallback: true
     },
   db: vercelPostgresAdapter({
     pool: {

@@ -35,14 +35,14 @@ export const RenderBlocks: React.FC<{
                 <section
                   className={cn(
                     idx !== 0 && `${spacing(block.spacing || "none")}`,
-                    idx === 0 && "mt-17"
+                    idx === 0 && ""
                   )}
                   key={idx}
                   aria-label={blockName || ""}
                 >
                   {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
                   {/* @ts-ignore - weird type mismatch here */}
-                  <Block id={toKebabCase(blockName!)} {...block} />
+                  <Block id={toKebabCase(blockName!)} {...block} idx={idx} />
                 </section>
               );
             }

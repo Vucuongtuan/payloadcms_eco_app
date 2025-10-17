@@ -26,14 +26,24 @@ interface Props {
 }
 
 export default async function ProductPage({ params }: Props) {
+  "use memo";
   const { slug, lang } = await params;
   const product = await memoizingCache({ slug, lang: lang as Lang });
-  console.log({ product });
+  // const relatestProduct = await findProductsByTagsOrCategorySlug({
+  //   slugCategory: slug,
+  //   tags: product.taxonomies.tags || [],
+  //   lang: lang as Lang,
+  //   limit: 4,
+  //   page: 1,
+  // });
 
   return (
     <>
       {" "}
       <ProductDetails doc={product} lang={lang as Lang} />
+      {/* <Suspense>
+        <RelatedProducts initData={[]} lang={lang as Lang} />
+      </Suspense> */}
     </>
   );
 }

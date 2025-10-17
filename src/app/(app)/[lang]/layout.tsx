@@ -1,6 +1,8 @@
 import { LivePreviewListener } from "@/components/(dashboard)/LivePreviewListener";
 import { Footer } from "@/components/(layout)/Footer";
+import { Header } from "@/components/(layout)/Header";
 import { routing } from "@/i18n/routing";
+import { cn } from "@/lib/utils";
 import { Providers } from "@/providers";
 import { Lang } from "@/types";
 import { NextIntlClientProvider } from "next-intl";
@@ -56,14 +58,13 @@ export default async function RootLayout(props: {
         <link href="/favicon.ico" rel="icon" sizes="32x32" />
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
       </head>
-      <body>
+      <body className={cn("bg-primary-background")}>
         <NextIntlClientProvider messages={msg}>
           <Providers>
             {/* <AdminBar /> */}
             <LivePreviewListener />
-
-            {/* <Header lang={lang}/> */}
-            <main className={"mt-17 min-h-[800px]"}>{children}</main>
+            <Header lang={lang} />
+            <main className={"min-h-[800px]"}>{children}</main>
             <Footer lang={lang} />
           </Providers>
         </NextIntlClientProvider>

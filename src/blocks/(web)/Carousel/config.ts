@@ -34,6 +34,11 @@ export const Carousel: Block = {
                   localized: true,
                 },
                 {
+                  name: "heading",
+                  type: "text",
+                  localized: true,
+                },
+                {
                   name: "content",
                   type: "richText",
                   localized: true,

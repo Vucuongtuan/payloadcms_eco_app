@@ -23,7 +23,7 @@ export const VariantsColor = (props: {
                 : "border-gray-300"
             }`}
             style={{ backgroundColor: variant.color }}
-            title={variant.color}
+            title={variant.variantName}
           />
         ))}
         {data.length > 4 && (

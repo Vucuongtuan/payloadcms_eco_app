@@ -1,23 +1,27 @@
 import { Media } from "@/components/Media";
-import { Product, VariantsProduct } from "@/payload-types";
+import { Product } from "@/payload-types";
 
 interface ProductGalleryProps {
-  gallery?: (number | Media)[] | null;
+  currentData: any;
 }
 
-export function ProductGallery({ gallery }: ProductGalleryProps) {
+export function ProductGallery({ currentData }: ProductGalleryProps) {
   return (
     <aside className="w-3/5">
-      <div className="w-full h-auto relative grid grid-col-2">
-        {gallery &&
-          gallery.map((m, index) => (
-            <Media
-              key={index}
-              resource={m}
-              fill
-              className="aspect-figcard w-full h-full"
-            />
-          ))}
+      <div className="w-full h-auto relative grid grid-cols-2 gap-[2px]">
+        {(Array.isArray(currentData.gallery?.[0]?.image)
+          ? currentData.gallery[0].image
+          : currentData.gallery
+        )?.map((m, index) => (
+          <Media
+            key={index}
+            resource={m}
+            fill
+            className="aspect-figStyle w-full h-full relative"
+            imgClassName="object-cover"
+            imgSize={"large"}
+          />
+        ))}
       </div>
     </aside>
   );

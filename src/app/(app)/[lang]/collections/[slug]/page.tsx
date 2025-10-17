@@ -1,6 +1,7 @@
 import ProductList from "@/components/ProductList";
 import { findCategoryBySlug, findListProductByCategory } from "@/service/pages";
 import { Lang } from "@/types";
+import { notFound } from "next/navigation";
 
 export default async function PageCollection({
   params,
@@ -10,14 +11,19 @@ export default async function PageCollection({
     slug: string;
   }>;
 }) {
-  const { lang, slug } = await params;
+  const { lang = "vi", slug } = await params;
   const [category, products] = await Promise.all([
-    findCategoryBySlug({ lang: lang as Lang, slug }),
+    findCategoryBySlug({ slug }),
     findListProductByCategory({ lang: lang as Lang, slug }),
   ]);
+  console.log({ category });
+  if (!category || !category.id || !products) return notFound();
   return (
     <>
-      {/* <MetaTitle title={category.title} description={category.description || ''}/> */}
+      {/* <MetaTitle
+        title={category.title}
+        description={category.description || ""}
+      /> */}
       {/* <ListProduct data={products}/> */}
       <ProductList
         categoryId={category.id}

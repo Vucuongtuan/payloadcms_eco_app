@@ -1,7 +1,7 @@
 import { Field } from "payload";
 import { autoGenSKU } from "../autoGenSKU";
 
-export const inventoryField = ({size}: {size:string}): Field => ({
+export const inventoryField = (): Field => ({
   name: "inventory",
   type: "group",
   label: {
@@ -12,7 +12,7 @@ export const inventoryField = ({size}: {size:string}): Field => ({
     position: "sidebar",
   },
   fields: [
-    autoGenSKU({fieldToUse:"title",size}),
+    autoGenSKU({ fieldToUse: "title" }),
     {
       name: "stock",
       label: {

@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
 import { useFormFields } from "@payloadcms/ui";
 import { UIFieldClientProps } from "payload";
+import { useEffect, useState, useTransition } from "react";
 
 interface MediaPreviewData {
   url: string;
@@ -14,24 +14,28 @@ type MediaPreviewProps = {
 } & UIFieldClientProps;
 
 const LoadingSpinner = () => (
-  <div style={{
-    position: "absolute",
-    inset: 0,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.2)",
-    backdropFilter: "blur(4px)",
-    borderRadius: "5px"
-  }}>
-    <div style={{
-      width: "32px",
-      height: "32px",
-      border: "2px solid white",
-      borderTop: "2px solid transparent",
-      borderRadius: "50%",
-      animation: "spin 1s linear infinite"
-    }} />
+  <div
+    style={{
+      position: "absolute",
+      inset: 0,
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: "rgba(0, 0, 0, 0.2)",
+      backdropFilter: "blur(4px)",
+      borderRadius: "5px",
+    }}
+  >
+    <div
+      style={{
+        width: "32px",
+        height: "32px",
+        border: "2px solid white",
+        borderTop: "2px solid transparent",
+        borderRadius: "50%",
+        animation: "spin 1s linear infinite",
+      }}
+    />
     <style>{`
       @keyframes spin {
         to { transform: rotate(360deg); }
@@ -40,7 +44,13 @@ const LoadingSpinner = () => (
   </div>
 );
 
-const MediaItem = ({ media, isLoading }: { media: MediaPreviewData; isLoading: boolean }) => {
+const MediaItem = ({
+  media,
+  isLoading,
+}: {
+  media: MediaPreviewData;
+  isLoading: boolean;
+}) => {
   const isVideo = media.mimeType?.startsWith("video/");
   const baseStyle = {
     objectFit: "contain" as const,
@@ -72,7 +82,10 @@ export function MediaPreview({ isGallery, field, path }: MediaPreviewProps) {
   const [error, setError] = useState<string | null>(null);
 
   const referenceFieldName = field.name.split("-")[1];
-  const referencePath = (path as string).replace(field.name, referenceFieldName);
+  const referencePath = (path as string).replace(
+    field.name,
+    referenceFieldName
+  );
 
   const image = useFormFields(([field]) => field[referencePath]);
   const imageID = image?.value as number[] | number | undefined;
@@ -96,7 +109,7 @@ export function MediaPreview({ isGallery, field, path }: MediaPreviewProps) {
             return { url: result.url, mimeType: result.mimeType };
           })
         );
-        
+
         setPreviousMedia(mediaPreview);
         setMediaPreview(results);
       } catch (e) {
@@ -111,17 +124,20 @@ export function MediaPreview({ isGallery, field, path }: MediaPreviewProps) {
 
   if (error) return <p style={{ color: "#ef4444" }}>{error}</p>;
 
-  const displayMedia = isPending && previousMedia.length > 0 ? previousMedia : mediaPreview;
-  
+  const displayMedia =
+    isPending && previousMedia.length > 0 ? previousMedia : mediaPreview;
+
   if (!displayMedia.length) {
     return isPending ? (
-      <div style={{
-        width: "100%",
-        height: "200px",
-        backgroundColor: "#f3f4f6",
-        borderRadius: "5px",
-        animation: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite"
-      }}>
+      <div
+        style={{
+          width: "100%",
+          height: "200px",
+          backgroundColor: "#f3f4f6",
+          borderRadius: "5px",
+          animation: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+        }}
+      >
         <style>{`
           @keyframes pulse {
             0%, 100% { opacity: 1; }
@@ -134,12 +150,14 @@ export function MediaPreview({ isGallery, field, path }: MediaPreviewProps) {
 
   if (isGallery) {
     return (
-      <div style={{
-        display: "grid",
-        gap: "12px",
-        gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-        marginTop: "8px"
-      }}>
+      <div
+        style={{
+          display: "grid",
+          gap: "12px",
+          gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
+          marginTop: "8px",
+        }}
+      >
         {displayMedia.map((media, idx) => (
           <MediaItem key={idx} media={media} isLoading={isPending} />
         ))}
@@ -148,7 +166,14 @@ export function MediaPreview({ isGallery, field, path }: MediaPreviewProps) {
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "8px", marginTop: "8px" }}>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: "8px",
+        marginTop: "8px",
+      }}
+    >
       {displayMedia.map((media, idx) => (
         <MediaItem key={idx} media={media} isLoading={isPending} />
       ))}

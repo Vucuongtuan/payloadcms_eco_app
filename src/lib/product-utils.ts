@@ -9,6 +9,7 @@ export interface ProductVariant {
   sizes?: any;
   thumbnail?: any;
   isMain?: boolean;
+  variantName?: string;
 }
 
 export function buildVariantSelectData({
@@ -25,6 +26,7 @@ export function buildVariantSelectData({
       slug: doc.slug!,
       color: doc.color,
       title: doc.title,
+      variantName: doc.variantName,
       pricing: doc.pricing,
       sizes: doc.sizes,
       thumbnail: doc.thumbnail,
@@ -33,7 +35,8 @@ export function buildVariantSelectData({
     ...variants.map((v) => ({
       slug: v.slug!,
       color: v.color,
-      title: lang === "vi" ? ((v as any).titleVN ?? v.title) : v.title,
+      title: doc.title,
+      variantName: v.title,
       pricing: v.pricing,
       sizes: v.sizes,
       thumbnail: v.thumbnail,

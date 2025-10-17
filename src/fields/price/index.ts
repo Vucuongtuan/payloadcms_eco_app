@@ -4,9 +4,15 @@ const customTotalFinalPrice =
   "@/app/(payload)/fields/price/totalFinalPrice#TotalFinalPrice";
 // const customPriceLabelPath =
 //   "@/app/(payload)/fields/price/priceComponent#PriceLabelComponent";
-type PriceField = ({required,condition}: {required: boolean,condition?:(data:any,siblingData:any) => boolean}) => GroupField[];
+type PriceField = ({
+  required,
+  condition,
+}: {
+  required: boolean;
+  condition?: (data: any, siblingData: any) => boolean;
+}) => GroupField[];
 
-export const priceField: PriceField = ({required = false,condition}) => {
+export const priceField: PriceField = ({ required = false, condition }) => {
   const price: Field = {
     name: "price",
     label: {
@@ -15,10 +21,10 @@ export const priceField: PriceField = ({required = false,condition}) => {
     },
     type: "text",
     required: required,
-    admin:{
-      components:{
-        Field:"@/fields/price/priceFomatVND#PriceFormatVND"
-      }
+    admin: {
+      components: {
+        Field: "@/fields/price/priceFomatVND#PriceFormatVND",
+      },
     },
   };
 
@@ -34,7 +40,6 @@ export const priceField: PriceField = ({required = false,condition}) => {
     defaultValue: 0,
   };
 
- 
   return [
     {
       name: "pricing",
@@ -45,6 +50,7 @@ export const priceField: PriceField = ({required = false,condition}) => {
       type: "group",
       fields: [price, discount],
       admin: {
+        position: "sidebar",
         description: {
           vi: "Chỉ nhập giá bằng VND, các ngoại tệ khác sẽ được tự động quy đổi theo tỷ giá trong GlobalSetting.",
           en: "Enter the price in VND only, other currencies will be automatically converted based on the exchange rates defined in GlobalSetting.",
@@ -52,6 +58,5 @@ export const priceField: PriceField = ({required = false,condition}) => {
         ...(condition ? { condition } : {}),
       },
     },
-    
   ];
 };

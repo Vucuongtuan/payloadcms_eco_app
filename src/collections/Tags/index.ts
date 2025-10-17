@@ -1,7 +1,6 @@
 import { CollectionConfig } from "payload";
 
 import { slugField } from "@/fields/slug";
-import { baseField } from "../../fields/baseField";
 
 export const Tags: CollectionConfig = {
   slug: "tags",
@@ -28,8 +27,12 @@ export const Tags: CollectionConfig = {
     // beforeChange: [generateSlugForTitle],
   },
   fields: [
-    ...baseField,
-    ...slugField("title",{},false),
+    {
+      name: "title",
+      type: "text",
+      localized: true,
+    },
+    ...slugField("title", {}, true),
     // {
     //   name: "breadcrumbs",
     //   type: "ui",

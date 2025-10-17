@@ -1,73 +1,70 @@
 {
-  "Block": {
-    "Hero": {
+  "block": {
+    "hero": {
       "cta": "Xem ngay"
     }
   },
-  "plugin-ecommerce": {
-    "transactions": "Giao dịch",
-    "transaction": "Giao dịch",
-    "transactionsCollectionDescription": "Quản lý các giao dịch thanh toán",
-    "addressesCollectionDescription": "Quản lý địa chỉ khách hàng",
-    "customer": "Khách hàng",
-    "customerEmail": "Email khách hàng",
-    "addressTitle": "Tiêu đề địa chỉ",
-    "addressFirstName": "Tên",
-    "addressLastName": "Họ",
-    "addressCompany": "Công ty",
-    "addressLine1": "Địa chỉ dòng 1",
-    "addressLine2": "Địa chỉ dòng 2",
-    "addressCity": "Thành phố",
-    "addressState": "Tỉnh/Bang",
-    "addressPostalCode": "Mã bưu điện",
-    "addressCountry": "Quốc gia",
-    "addressPhone": "Số điện thoại",
-    "addresses": "Địa chỉ",
-    "address": "Địa chỉ",
-    "variantsCollectionDescription": "Quản lý biến thể sản phẩm",
-    "inventory": "Tồn kho",
-    "enableCurrencyPrice": "Bật giá theo tiền tệ",
-    "priceIn": "Giá bằng",
-    "variants": "Biến thể",
-    "variant": "Biến thể",
-    "variantTypes": "Loại biến thể",
-    "variantType": "Loại biến thể",
-    "variantOptions": "Tùy chọn biến thể",
-    "variantOption": "Tùy chọn biến thể",
-    "enableVariants": "Bật biến thể",
-    "availableVariants": "Biến thể có sẵn",
-    "products": "Sản phẩm",
-    "product": "Sản phẩm",
-    "cartsCollectionDescription": "Quản lý giỏ hàng",
-    "items": "Sản phẩm",
-    "item": "Sản phẩm",
-    "quantity": "Số lượng",
-    "purchasedAt": "Ngày mua",
-    "status": "Trạng thái",
-    "active": "Hoạt động",
-    "purchased": "Đã mua",
-    "abandoned": "Bỏ giỏ",
+  "login": {
+    "title": "Đăng nhập",
+    "email_label": "Email",
+    "password_label": "Mật khẩu",
+    "remember_me_label": "Ghi nhớ đăng nhập",
+    "login_button": "Đăng nhập",
+    "signup_text": "Chưa có tài khoản?",
+    "signup_link": "Đăng ký",
+    "google_login_button": "Đăng nhập bằng Google"
+  },
+  "signup": {
+    "title": "Đăng ký",
+    "name_label": "Tên",
+    "email_label": "Email",
+    "password_label": "Mật khẩu",
+    "confirm_password_label": "Xác nhận mật khẩu",
+    "signup_button": "Đăng ký",
+    "login_text": "Đã có tài khoản?",
+    "login_link": "Đăng nhập",
+    "google_login_button": "Đăng ký bằng Google"
+  },
+  "product": {
+    "details": {
+      "save": "Tiết kiệm",
+      "sizeLabel": "Chọn size",
+      "sizeGuide": "Hướng dẫn chọn size",
+      "quantityLabel": "Số lượng",
+      "addToCart": "Thêm vào giỏ hàng",
+      "adding": "Đang thêm...",
+      "addedToCart": "Đã thêm vào giỏ hàng",
+      "addToCartError": "Không thể thêm vào giỏ hàng",
+      "viewCart": "Xem giỏ hàng",
+      "selectSizeError": "Vui lòng chọn size",
+      "outOfStock": "Hết hàng",
+      "inStock": "Còn hàng",
+      "variantField": "Biến thể",
+      "breadcrumb": {
+        "home": "Trang chủ"
+      }
+    }
+  },
+  "cart": {
+    "title": "Giỏ hàng",
+    "empty": {
+      "title": "Giỏ hàng trống",
+      "description": "Thêm sản phẩm để bắt đầu mua sắm"
+    },
     "subtotal": "Tạm tính",
-    "currency": "Tiền tệ",
-    "carts": "Giỏ hàng",
-    "cart": "Giỏ hàng",
-    "ordersCollectionDescription": "Quản lý đơn hàng",
-    "orderDetails": "Chi tiết đơn hàng",
-    "shippingAddress": "Địa chỉ giao hàng",
-    "shipping": "Vận chuyển",
-    "processing": "Đang xử lý",
-    "completed": "Hoàn thành",
-    "cancelled": "Đã hủy",
-    "refunded": "Đã hoàn tiền",
-    "amount": "Số tiền",
-    "orders": "Đơn hàng",
-    "order": "Đơn hàng",
-    "transactionDetails": "Chi tiết giao dịch",
-    "billingAddress": "Địa chỉ thanh toán",
-    "billing": "Thanh toán",
-    "pending": "Chờ xử lý",
-    "succeeded": "Thành công",
-    "failed": "Thất bại",
-    "expired": "Hết hạn"
+    "checkout": "Thanh toán",
+    "clear": "Xóa giỏ hàng",
+    "loginRequired": {
+      "title": "Yêu cầu đăng nhập",
+      "message": "Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng",
+      "login": "Đăng nhập",
+      "signup": "Đăng ký"
+    }
+  },
+  "auth": {
+    "invalid_credentials": "Thông tin đăng nhập không hợp lệ",
+    "success": "Thành công",
+    "signup_failed": "Đăng ký thất bại",
+    "signup_success": "Đăng ký thành công"
   }
 }

@@ -44,11 +44,14 @@ export const MediaBlock: React.FC<MediaBlockProps> = ({
         )}
         style={{ backgroundColor: `${background}` }}
       >
-        <div className={cn(columns === "image-first" && "lg:order-2")}>
+        <div
+          className={cn(columns === "image-first" && "lg:order-2", "relative")}
+        >
           <Media
             className="h-full w-full"
-            imgClassName="border border-border h-full w-full"
+            imgClassName="border border-border h-full w-full object-cover"
             resource={media}
+            fill
           />
         </div>
         <div

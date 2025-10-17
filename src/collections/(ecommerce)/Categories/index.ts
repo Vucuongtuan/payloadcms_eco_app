@@ -2,12 +2,13 @@ import { baseField } from "@/fields/baseField";
 import { slugField } from "@/fields/slug";
 import { CollectionConfig } from "payload";
 
-
 export const Categories: CollectionConfig = {
   slug: "categories",
   folders: {
-    browseByFolder:true
+    browseByFolder: true,
   },
+  // tree: true,
+  trash: true,
   labels: {
     singular: {
       en: "Category",
@@ -24,7 +25,6 @@ export const Categories: CollectionConfig = {
       vi: "Danh Mục",
       en: "Categories",
     },
-
   },
   access: {
     read: () => true,
@@ -38,20 +38,5 @@ export const Categories: CollectionConfig = {
   hooks: {
     // beforeChange: [generateSlugForTitle],
   },
-  fields: [
-    ...baseField,
-     ...slugField("title",{},false),
-    
-    // {
-    //   name: "breadcrumbs",
-    //   type: "ui",
-    //   admin: {
-    //     components: {
-    //       Field:
-    //         "@/app/(payload)/customFields/breadcrumbs/breadcrumbsUI#BreadcrumbsUI"
-    //     }
-    //   }
-    // }
-    // { ...CustomSlugField }
-  ],
+  fields: [...baseField, ...slugField("title", {}, false)],
 };

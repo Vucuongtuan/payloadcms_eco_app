@@ -1,15 +1,15 @@
 "use client";
 
 import { Header } from "@/payload-types";
-import { AuthButtons } from "./AuthButtons";
 import { MegaDropdown } from "./MegaDropdown";
 import { MobileMenuButton } from "./MobileMenuButton";
 import { MobileMenuOverlay } from "./MobileMenuOverlay";
 import { Navigation } from "./Navigation";
+import { AuthButtons } from "./AuthButtons";
 import { useHeaderState } from "./hooks/useHeaderState";
 
 interface HeaderClientProps {
-  navData: Header['navItems'];
+  navData: Header["navItems"];
 }
 
 export default function HeaderClient({ navData }: HeaderClientProps) {
@@ -29,15 +29,14 @@ export default function HeaderClient({ navData }: HeaderClientProps) {
     <div className="relative">
       <div
         className={`flex gap-12 items-center justify-between px-4 sm:px-6 lg:px-8 transition-all duration-300 ${
-          isScrolled ? "h-10" : "h-17"
+          isScrolled
+            ? "h-10 bg-[var(--color-primary-background)]/65 backdrop-blur-lg"
+            : "h-17"
         }`}
       >
         {/* <Logo /> */}
         <div className="flex-1" onMouseLeave={handleMenuLeave}>
-          <Navigation 
-            navData={navData} 
-            onMenuItemHover={handleMenuItemHover}
-          />
+          <Navigation navData={navData} onMenuItemHover={handleMenuItemHover} />
           <MegaDropdown
             isOpen={megaDropdownOpen}
             activeItem={activeItem}
@@ -57,4 +56,3 @@ export default function HeaderClient({ navData }: HeaderClientProps) {
     </div>
   );
 }
-

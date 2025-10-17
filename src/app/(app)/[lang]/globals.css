@@ -32,9 +32,9 @@
   --aspect-retro: 4 / 3;
   --aspect-golden: 1.618 / 1;
   --aspect-wide: 2.3;
-  --aspect-card: 3/4;
-  --aspect-figcard: 3/5;
-
+  --aspect-card: 3/3.5;
+  --aspect-figcard: 3/4.5;
+  --aspect-figStyle: 3/4.2;
   /* // container */
   --max-w-screen-3xl: 1920px;
   --bg-red-low: #f0807d;
@@ -47,6 +47,7 @@
   --color-primary: #f5f0eb;
   --color-primary-dark: #e8ddd5;
   --color-primary-light: #faf7f4;
+  --color-primary-background: #f8f5ee;
 
   /* Secondary Colors */
   --color-secondary: #efeff2;
@@ -114,6 +115,29 @@
   --color-error: var(--error);
 }
 
+@layer components {
+  .prose-xxs {
+    @apply prose text-[0.7rem] leading-tight;
+  }
+
+  /* tinh chỉnh thêm nếu muốn, ví dụ bảng, tiêu đề, đoạn văn */
+  .prose-xxs table {
+    @apply text-[0.7rem] leading-[1.1];
+  }
+
+  .prose-xxs h1 {
+    @apply text-base;
+  }
+
+  .prose-xxs h2 {
+    @apply text-sm;
+  }
+
+  .prose-xxs p {
+    @apply my-1;
+  }
+}
+
 @layer base {
   h1,
   h2,
@@ -157,4 +181,32 @@ a,
 input,
 button {
   @apply focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-neutral-400 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-50 dark:focus-visible:ring-neutral-600 dark:focus-visible:ring-offset-neutral-900;
+}
+
+.smallContent > .lexical-table-container {
+  max-width: 100%;
+  overflow-x: auto;
+  font-size: 0.875rem;
+}
+
+.smallContent .lexical-table {
+  border-collapse: collapse;
+  width: full;
+  min-width: 300px;
+  margin: 0 auto;
+}
+
+.smallContent .lexical-table td,
+.smallContent .lexical-table th {
+  padding: 1px 4px;
+  line-height: 0;
+}
+
+.smallContent .lexical-table td:first-child {
+  text-align: left;
+  font-weight: 600;
+}
+
+.smallContent .lexical-table strong {
+  font-weight: 700;
 }

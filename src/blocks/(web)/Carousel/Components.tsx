@@ -1,84 +1,107 @@
-"use client"
+"use client";
 
-import { Media } from "@/components/Media"
-import { cn } from "@/lib/utils"
-import type { Carousel as CarouselBlockProps } from "@/payload-types"
-import { aspectConfig, layoutCtn } from "@/utilities/cssVariable"
-import { AnimatePresence, motion, useMotionValue, useSpring, useTransform } from "framer-motion"
-import { ChevronLeft, ChevronRight } from "lucide-react"
-import { memo, useCallback, useEffect, useRef, useState } from "react"
+import { Media } from "@/components/Media";
+import { cn } from "@/lib/utils";
+import type { Carousel as CarouselBlockProps } from "@/payload-types";
+import { aspectConfig, layoutCtn } from "@/utilities/cssVariable";
+import { RichText } from "@payloadcms/richtext-lexical/react";
+import {
+  AnimatePresence,
+  motion,
+  useMotionValue,
+  useSpring,
+  useTransform,
+} from "framer-motion";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 
+interface Props extends CarouselBlockProps {
+  idx: number;
+}
 const CarouselBlock = ({
   gallery,
   layout,
   aspect,
   duration = 5,
-}: CarouselBlockProps) => {
-  const [[currentSlide, direction], setCurrentSlide] = useState([0, 0])
-  const timerRef = useRef<NodeJS.Timeout | null>(null)
-  const progress = useMotionValue(0)
-  const smoothProgress = useSpring(progress, { stiffness: 50, damping: 20 })
+  idx,
+}: Props) => {
+  const [[currentSlide, direction], setCurrentSlide] = useState([0, 0]);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const progress = useMotionValue(0);
+  const smoothProgress = useSpring(progress, { stiffness: 50, damping: 20 });
 
-  if (!gallery?.length) return null
+  if (!gallery?.length) return null;
 
-  const slideCount = gallery.length
+  const slideCount = gallery.length;
 
-  const paginate = useCallback((newDirection: number) => {
-    setCurrentSlide(([prev]) => {
-      const next = (prev + newDirection + slideCount) % slideCount
-      return [next, newDirection]
-    })
-    progress.set(0)
-  }, [slideCount, progress])
+  const paginate = useCallback(
+    (newDirection: number) => {
+      setCurrentSlide(([prev]) => {
+        const next = (prev + newDirection + slideCount) % slideCount;
+        return [next, newDirection];
+      });
+      progress.set(0);
+    },
+    [slideCount, progress]
+  );
 
-  const handleDotClick = useCallback((index: number) => {
-    setCurrentSlide(([prev]) => {
-      const newDirection = index > prev ? 1 : -1
-      return [index, newDirection]
-    })
-    progress.set(0)
-  }, [progress])
+  const handleDotClick = useCallback(
+    (index: number) => {
+      setCurrentSlide(([prev]) => {
+        const newDirection = index > prev ? 1 : -1;
+        return [index, newDirection];
+      });
+      progress.set(0);
+    },
+    [progress]
+  );
 
   const resetTimer = useCallback(() => {
-    if (timerRef.current) clearInterval(timerRef.current)
-    progress.set(0)
-    
-    if ( slideCount > 1) {
-      const startTime = Date.now()
+    if (timerRef.current) clearInterval(timerRef.current);
+    progress.set(0);
+
+    if (slideCount > 1) {
+      const startTime = Date.now();
       timerRef.current = setInterval(() => {
-        const elapsed = Date.now() - startTime
-        const progressValue = Math.min((elapsed % (duration * 1000)) / (duration * 1000), 1)
-        progress.set(progressValue)
-        
+        const elapsed = Date.now() - startTime;
+        const progressValue = Math.min(
+          (elapsed % (duration * 1000)) / (duration * 1000),
+          1
+        );
+        progress.set(progressValue);
+
         if (progressValue >= 0.99) {
-          paginate(1)
+          paginate(1);
         }
-      }, 16)
+      }, 16);
     }
-  }, [slideCount, duration, paginate, progress])
+  }, [slideCount, duration, paginate, progress]);
 
   useEffect(() => {
-    resetTimer()
+    resetTimer();
     return () => {
-      if (timerRef.current) clearInterval(timerRef.current)
-    }
-  }, [resetTimer])
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [resetTimer]);
 
   const handlePrevClick = useCallback(() => {
-    paginate(-1)
-    resetTimer()
-  }, [paginate, resetTimer])
+    paginate(-1);
+    resetTimer();
+  }, [paginate, resetTimer]);
 
   const handleNextClick = useCallback(() => {
-    paginate(1)
-    resetTimer()
-  }, [paginate, resetTimer])
-
-
+    paginate(1);
+    resetTimer();
+  }, [paginate, resetTimer]);
 
   return (
     <div className={cn("relative", layoutCtn(layout || "container"))}>
-      <div className={cn("relative w-full h-full overflow-hidden", aspectConfig(aspect || 'wide'))}>
+      <div
+        className={cn(
+          "relative w-full h-full overflow-hidden",
+          aspectConfig(aspect || "wide")
+        )}
+      >
         {/* Main Slide */}
         <div className="absolute inset-0 flex items-center justify-center">
           <AnimatePresence initial={false} custom={direction}>
@@ -89,20 +112,21 @@ const CarouselBlock = ({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.8, ease: "easeInOut" }}
-              className={cn('absolute inset-0 w-full h-full',
-               
-              )}
+              className={cn("absolute inset-0 w-full h-full")}
             >
               <div className="relative w-full h-full overflow-hidden">
                 <Media
                   resource={gallery[currentSlide].media}
                   className="relative w-full h-full "
                   imgClassName="w-full h-full object-cover"
+                  fill
+                  imgSize="large"
+                  priority={idx === 0 && currentSlide === 0}
                 />
-                
+
                 {/* Gradient Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-                
+
                 {/* Content Overlay */}
                 <motion.div
                   initial={{ opacity: 0, y: 40 }}
@@ -110,23 +134,26 @@ const CarouselBlock = ({
                   transition={{ delay: 0.3, duration: 0.6 }}
                   className="absolute bottom-15 lg:bottom-0 left-0 right-0 p-12 text-white lg:text-left text-center"
                 >
-                  <motion.h2
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.5, duration: 0.6 }}
-                    className="text-5xl font-bold mb-4"
-                  >
-                    Slide {currentSlide + 1}
-                  </motion.h2>
-                  
-                  <motion.p
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.6, duration: 0.6 }}
-                    className="text-lg text-white/90 max-w-2xl"
-                  >
-                    Discover the latest collection with stunning visuals and modern design.
-                  </motion.p>
+                  {gallery[currentSlide].heading && (
+                    <motion.h2
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.5, duration: 0.6 }}
+                      className="text-5xl font-bold mb-4"
+                    >
+                      {gallery[currentSlide].heading}
+                    </motion.h2>
+                  )}
+                  {gallery[currentSlide].content && (
+                    <motion.p
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.6, duration: 0.6 }}
+                      className="text-lg text-white/90 max-w-2xl"
+                    >
+                      <RichText data={gallery[currentSlide].content} />
+                    </motion.p>
+                  )}
                 </motion.div>
               </div>
             </motion.div>
@@ -179,20 +206,20 @@ const CarouselBlock = ({
         </div>
 
         {/* Progress Bar */}
-        {slideCount > 1  && (
+        {slideCount > 1 && (
           <motion.div
             className="absolute top-0 left-0 h-1 bg-white z-30 shadow-lg shadow-white/50"
-            style={{ 
-              width: useTransform(smoothProgress, [0, 1], ["0%", "100%"])
+            style={{
+              width: useTransform(smoothProgress, [0, 1], ["0%", "100%"]),
             }}
           />
         )}
       </div>
     </div>
-  )
-}
+  );
+};
 
-const CarouselBlockMemo = memo(CarouselBlock)
-CarouselBlockMemo.displayName = "CarouselBlock"
+const CarouselBlockMemo = memo(CarouselBlock);
+CarouselBlockMemo.displayName = "CarouselBlock";
 
-export { CarouselBlockMemo as CarouselBlock }
+export { CarouselBlockMemo as CarouselBlock };
