@@ -1,5 +1,4 @@
 import ProductDetails from "@/components/(product-details)/ProductDetails";
-import { CarouselListProduct } from "@/components/CarouselProduct";
 import { Category, Product, Tag } from "@/payload-types";
 import {
   findListProducts,
@@ -8,7 +7,7 @@ import {
 } from "@/service/products";
 import { Lang } from "@/types";
 import { generateMeta } from "@/utilities/generateMeta";
-import { cache, Suspense } from "react";
+import { cache } from "react";
 
 /*
  * Generate static params for all products
@@ -62,14 +61,14 @@ export default async function ProductPage({ params }: Props) {
     <>
       <ProductDetails doc={product} lang={lang as Lang} />
 
-      {relatestProduct && relatestProduct.length > 0 && (
+      {/* {relatestProduct && relatestProduct.length > 0 && (
         <Suspense>
           <CarouselListProduct
             items={relatestProduct || []}
             lang={lang as Lang}
           />
         </Suspense>
-      )}
+      )} */}
     </>
   );
 }
