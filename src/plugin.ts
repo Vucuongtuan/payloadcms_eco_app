@@ -5,6 +5,7 @@ import { adminOrPublishedStatus } from "@/access/adminOrPublishedStatus";
 import { customerOnlyFieldAccess } from "@/access/customerOnlyFieldAccess";
 import { getServerSideURL } from "@/utilities/getURL";
 import { ecommercePlugin } from "@payloadcms/plugin-ecommerce";
+import { stripeAdapter } from "@payloadcms/plugin-ecommerce/payments/stripe";
 import { nestedDocsPlugin } from "@payloadcms/plugin-nested-docs";
 import { searchPlugin } from "@payloadcms/plugin-search";
 import { seoPlugin } from "@payloadcms/plugin-seo";
@@ -139,17 +140,43 @@ export const plugins: Plugin[] = [
     customers: {
       slug: "users",
     },
-    //   payments: {
-    //     paymentMethods: [
-    //       stripeAdapter({
-    //         secretKey: process.env.STRIPE_SECRET_KEY!,
-    //         publishableKey: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!,
-    //         webhookSecret: process.env.STRIPE_WEBHOOKS_SIGNING_SECRET!,
-    //       }),
-    //     ],
-    //   },
+    payments: {
+      paymentMethods: [
+        stripeAdapter({
+          secretKey: process.env.STRIPE_SECRET_KEY!,
+          publishableKey: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!,
+          webhookSecret: process.env.STRIPE_WEBHOOKS_SIGNING_SECRET!,
+          webhooks: {
+            "payment_intent.succeeded": ({ event, req, stripe }) => {
+              // req.logger.info("Payment intent succeeded");
+              console.log("Payment intent succeeded");
+              req.payload.logger.info("Payment succeeded");
+            },
+          },
+        }),
+      ],
+    },
     products: {
       productsCollectionOverride: ProductsCollection,
+      variants: {
+        variantOptionsCollectionOverride: ({ defaultCollection }) =>
+          ({
+            ...defaultCollection,
+            fields: defaultCollection.fields.map((f) =>
+              (f as { name: string }).name === "discount"
+                ? { ...f, defaultValue: "none" }
+                : f
+            ),
+          }) as any,
+        variantsCollectionOverride: ({ defaultCollection }) => ({
+          ...defaultCollection,
+          version: {
+            draft: {
+              autosave: false,
+            },
+          },
+        }),
+      },
     },
   }),
 

@@ -327,7 +327,9 @@ export interface Product {
   };
   priceInUSDEnabled?: boolean | null;
   priceInUSD?: number | null;
-  relatedProducts?: (number | Product)[] | null;
+  relatedType?: ('all' | 'tags' | 'category') | null;
+  relatedByTags?: (number | null) | Tag;
+  relatedByCategory?: (number | null) | Category;
   meta?: {
     title?: string | null;
     description?: string | null;
@@ -755,6 +757,11 @@ export interface Transaction {
         id?: string | null;
       }[]
     | null;
+  paymentMethod?: 'stripe' | null;
+  stripe?: {
+    customerID?: string | null;
+    paymentIntentID?: string | null;
+  };
   billingAddress?: {
     title?: string | null;
     firstName?: string | null;
@@ -1669,7 +1676,9 @@ export interface ProductsSelect<T extends boolean = true> {
   variants?: T;
   priceInUSDEnabled?: T;
   priceInUSD?: T;
-  relatedProducts?: T;
+  relatedType?: T;
+  relatedByTags?: T;
+  relatedByCategory?: T;
   meta?:
     | T
     | {
@@ -1761,6 +1770,13 @@ export interface TransactionsSelect<T extends boolean = true> {
         variant?: T;
         quantity?: T;
         id?: T;
+      };
+  paymentMethod?: T;
+  stripe?:
+    | T
+    | {
+        customerID?: T;
+        paymentIntentID?: T;
       };
   billingAddress?:
     | T
