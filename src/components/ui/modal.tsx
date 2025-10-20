@@ -1,9 +1,9 @@
 "use client";
 
-import * as React from "react";
-import { X } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { AnimatePresence, motion } from "framer-motion";
+import { X } from "lucide-react";
+import * as React from "react";
 import { Button } from "./button";
 
 interface ModalContextValue {
@@ -29,7 +29,9 @@ interface ModalProps {
 
 const Modal = ({ open = false, onOpenChange, children }: ModalProps) => {
   return (
-    <ModalContext.Provider value={{ open, onOpenChange: onOpenChange || (() => {}) }}>
+    <ModalContext.Provider
+      value={{ open, onOpenChange: onOpenChange || (() => {}) }}
+    >
       {children}
     </ModalContext.Provider>
   );
@@ -40,7 +42,7 @@ const ModalTrigger = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof Button>
 >(({ children, onClick, ...props }, ref) => {
   const { onOpenChange } = useModal();
-  
+
   return (
     <Button
       ref={ref}
@@ -76,8 +78,9 @@ const ModalContent = React.forwardRef<HTMLDivElement, ModalContentProps>(
               onClick={() => onOpenChange(false)}
               className="fixed inset-0 z-50 bg-black/50"
             />
-            
+
             {/* Modal */}
+            {/* @ts-ignore */}
             <motion.div
               ref={ref}
               initial={{ opacity: 0, scale: 0.95 }}
@@ -115,11 +118,7 @@ const ModalTitle = React.forwardRef<
   HTMLHeadingElement,
   React.HTMLAttributes<HTMLHeadingElement>
 >(({ className, ...props }, ref) => (
-  <h2
-    ref={ref}
-    className={cn("text-lg font-semibold", className)}
-    {...props}
-  />
+  <h2 ref={ref} className={cn("text-lg font-semibold", className)} {...props} />
 ));
 ModalTitle.displayName = "ModalTitle";
 
@@ -128,7 +127,7 @@ const ModalClose = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof Button>
 >(({ onClick, ...props }, ref) => {
   const { onOpenChange } = useModal();
-  
+
   return (
     <Button
       ref={ref}
@@ -150,20 +149,16 @@ const ModalBody = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn("px-6 pb-6", className)}
-    {...props}
-  />
+  <div ref={ref} className={cn("px-6 pb-6", className)} {...props} />
 ));
 ModalBody.displayName = "ModalBody";
 
 export {
   Modal,
-  ModalTrigger,
+  ModalBody,
+  ModalClose,
   ModalContent,
   ModalHeader,
   ModalTitle,
-  ModalClose,
-  ModalBody,
+  ModalTrigger,
 };

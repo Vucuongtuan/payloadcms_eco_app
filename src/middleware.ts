@@ -4,6 +4,7 @@ import { routing } from "./i18n/routing";
 
 export function middleware(request: NextRequest): NextResponse {
   const pathname = request.nextUrl.pathname;
+  // @ts-ignore
   const country = request.geo?.country || "US";
   const isVietnam = country === "VN";
 

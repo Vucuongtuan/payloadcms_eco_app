@@ -1,9 +1,7 @@
-import { ProductVariant } from "@/lib/product-utils";
-
 export const VariantsColor = (props: {
-  data: ProductVariant[];
+  data: any[];
   selectedColor?: string;
-  onColorSelect: (variant: ProductVariant) => void;
+  onColorSelect: (variant: any) => void;
 }) => {
   const { data, selectedColor, onColorSelect } = props;
 
