@@ -1,7 +1,7 @@
 "use client";
+import { Price } from "@/components/Price";
 import { Category, Variant } from "@/payload-types";
 import { Lang } from "@/types";
-import { formatPrice } from "@/utilities/convertPrice";
 import { motion } from "framer-motion";
 import { ChevronRight } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -11,6 +11,7 @@ interface ProductInfoProps {
   lang: Lang;
   data: any;
   selectedVariant?: Variant | null;
+  selectedDiscount?: string | null;
   category: Category;
 }
 
@@ -18,16 +19,25 @@ export function ProductInfo({
   data,
   lang,
   selectedVariant,
+  selectedDiscount,
   category,
 }: ProductInfoProps) {
   const t = useTranslations("product.details");
 
   // Fix price display logic
   const currentPrice = selectedVariant?.priceInUSD || data.priceInUSD;
-  const displayPricing = data.priceInUSDEnabled && currentPrice;
+  // const displayPricing = data.priceInUSDEnabled && currentPrice;
   const displayStock = selectedVariant?.inventory || data.inventory;
+  const discount = selectedDiscount || null;
+  const variantName = (
+    selectedVariant?.options.find(
+      (opt) =>
+        (opt as any).variantType ===
+        data.variantTypes?.find((vt: { name: string }) => vt.name === "Colors")
+          ?.id
+    ) as { label: string }
+  )?.label;
 
-  const variantName = selectedVariant?.title;
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -96,13 +106,7 @@ export function ProductInfo({
           transition={{ duration: 0.6, delay: 0.4 }}
           aria-label="Giá sản phẩm"
         >
-          <div className="flex items-baseline gap-3">
-            <span className="text-2xl font-light tracking-tight text-foreground">
-              {displayPricing
-                ? formatPrice(displayPricing, lang)
-                : t("priceNotAvailable")}
-            </span>
-          </div>
+          <Price price={currentPrice} lang={lang} discount={discount} />
         </motion.div>
       </header>
       <div className="h-px bg-gray-300" role="separator" aria-hidden="true" />

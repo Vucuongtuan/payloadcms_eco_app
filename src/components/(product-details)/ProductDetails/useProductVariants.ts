@@ -1,6 +1,6 @@
 import { Product, Variant } from "@/payload-types";
-import { useSearchParams, useRouter } from "next/navigation";
-import { useState, useEffect, useMemo } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export function useProductVariants(doc: Product) {
   const router = useRouter();
@@ -10,6 +10,7 @@ export function useProductVariants(doc: Product) {
     (doc.variants?.docs?.filter((v) => typeof v === "object") as Variant[]) ||
     [];
 
+  // Color
   const colorVariants =
     doc.gallery?.filter(
       (item) =>
@@ -19,18 +20,6 @@ export function useProductVariants(doc: Product) {
         typeof item.variantOption.variantType === "object" &&
         item.variantOption.variantType.name === "Colors"
     ) || [];
-
-  const sizeVariantType = doc.variantTypes?.find(
-    (vt) => typeof vt === "object" && vt.name === "Sizes"
-  );
-  const sizeVariants =
-    sizeVariantType &&
-    typeof sizeVariantType === "object" &&
-    sizeVariantType.options &&
-    "docs" in sizeVariantType.options
-      ? (sizeVariantType.options.docs as any[])
-      : [];
-
   const [selectedColor, setSelectedColor] = useState<any | null>(() => {
     const variantParam = searchParams.get("variant");
     if (variantParam && colorVariants.length > 0) {
@@ -44,33 +33,6 @@ export function useProductVariants(doc: Product) {
       ? (colorVariants[0].variantOption as any)
       : null;
   });
-
-  const [selectedSize, setSelectedSize] = useState<any | null>(() => {
-    const sizeParam = searchParams.get("size");
-    if (sizeParam && sizeVariants.length > 0) {
-      const foundSize = sizeVariants.find((s) => s.value === sizeParam);
-      return foundSize || sizeVariants[0];
-    }
-    return sizeVariants.length > 0 ? sizeVariants[0] : null;
-  });
-
-  const [selectedVariant, setSelectedVariant] = useState<Variant | null>(null);
-
-  useEffect(() => {
-    if (selectedColor && selectedSize) {
-      const matchingVariant = variants.find((variant) => {
-        const hasColor = variant.options?.some(
-          (opt) => (opt as any)?.id === selectedColor.id
-        );
-        const hasSize = variant.options?.some(
-          (opt) => (opt as any)?.id === selectedSize.id
-        );
-        return hasColor && hasSize;
-      });
-      setSelectedVariant(matchingVariant || null);
-    }
-  }, [selectedColor, selectedSize, variants]);
-
   const handleColorChange = (colorOption: any) => {
     setSelectedColor(colorOption);
     const params = new URLSearchParams(searchParams);
@@ -83,6 +45,25 @@ export function useProductVariants(doc: Product) {
     router.replace(newUrl, { scroll: false });
   };
 
+  // Size
+  const sizeVariantType = doc.variantTypes?.find(
+    (vt) => typeof vt === "object" && vt.name === "Sizes"
+  );
+  const sizeVariants =
+    sizeVariantType &&
+    typeof sizeVariantType === "object" &&
+    sizeVariantType.options &&
+    "docs" in sizeVariantType.options
+      ? (sizeVariantType.options.docs as any[])
+      : [];
+  const [selectedSize, setSelectedSize] = useState<any | null>(() => {
+    const sizeParam = searchParams.get("size");
+    if (sizeParam && sizeVariants.length > 0) {
+      const foundSize = sizeVariants.find((s) => s.value === sizeParam);
+      return foundSize || sizeVariants[0];
+    }
+    return sizeVariants.length > 0 ? sizeVariants[0] : null;
+  });
   const handleSizeChange = (size: any) => {
     setSelectedSize(size);
     const params = new URLSearchParams(searchParams);
@@ -95,6 +76,40 @@ export function useProductVariants(doc: Product) {
     router.replace(newUrl, { scroll: false });
   };
 
+  // Discount
+  const discountVariantType = doc.variantTypes?.find(
+    (vt) => typeof vt === "object" && vt.name === "discount"
+  );
+  const discountVariants =
+    discountVariantType &&
+    typeof discountVariantType === "object" &&
+    discountVariantType.options &&
+    "docs" in discountVariantType.options
+      ? (discountVariantType.options.docs as any[])
+      : [];
+
+  const [selectedVariant, setSelectedVariant] = useState<Variant | null>(null);
+  useEffect(() => {
+    if (selectedColor && selectedSize) {
+      const allMatchingVariants = variants.filter((variant) => {
+        const hasColor = variant.options?.some(
+          (opt) => (opt as any)?.id === selectedColor.id
+        );
+        const hasSize = variant.options?.some(
+          (opt) => (opt as any)?.id === selectedSize.id
+        );
+        return hasColor && hasSize;
+      });
+
+      // From all matching variants, prefer the one with more options (likely including a discount).
+      const bestMatch = allMatchingVariants.sort(
+        (a, b) => (b.options?.length || 0) - (a.options?.length || 0)
+      )[0];
+
+      setSelectedVariant(bestMatch || null);
+    }
+  }, [selectedColor, selectedSize, variants]);
+  console.log({ selectedVariant, variants, colorVariants, doc });
   return {
     variants,
     colorVariants,

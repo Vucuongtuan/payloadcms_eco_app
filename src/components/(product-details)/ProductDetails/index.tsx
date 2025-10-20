@@ -6,10 +6,10 @@ import { Lang } from "@/types";
 import { SerializedEditorState } from "@payloadcms/richtext-lexical/lexical";
 import { useMemo } from "react";
 import { ColorSelector } from "./ColorSelector";
+import ProductAction from "./ProductAction";
 import { ProductGallery } from "./ProductGallery";
 import { ProductInfo } from "./ProductInfo";
 import { SizeSelector } from "./SizeSelector";
-import ProductAction from "./ProductAction";
 import { useProductVariants } from "./useProductVariants";
 
 interface ProductDetailsProps {
@@ -29,6 +29,24 @@ export default function ProductDetails(props: ProductDetailsProps) {
     handleColorChange,
     handleSizeChange,
   } = useProductVariants(doc);
+
+  const discountVariantType = doc.variantTypes?.find(
+    (vt) => typeof vt === "object" && vt.name === "discount"
+  );
+
+  const discountOption = useMemo(() => {
+    if (!selectedVariant || !discountVariantType) return null;
+    return (selectedVariant.options as any[])?.find((opt) => {
+      if (typeof opt !== "object" || !opt.variantType) return false;
+      const vt = opt.variantType;
+      const vtId = typeof vt === "object" ? vt.id : vt;
+      return vtId === (discountVariantType as { id: number }).id;
+    });
+  }, [selectedVariant, discountVariantType]);
+
+  const selectedDiscount = discountOption
+    ? (discountOption as any).value
+    : null;
 
   const selectedGalleryItem = useMemo(() => {
     if (selectedColor) {
@@ -53,14 +71,15 @@ export default function ProductDetails(props: ProductDetailsProps) {
   }, [selectedVariant, selectedGalleryItem, doc]);
 
   return (
-    <section className="w-full h-auto flex gap-8">
-      <ProductGallery currentData={currentData} />
+    <section className="w-full h-auto flex max-lg:flex-col gap-8">
+      <ProductGallery currentData={currentData.gallery as Product["gallery"]} />
 
-      <article className="flex-1 h-fit sticky top-10 px-4">
+      <article className="flex-1 h-fit sticky top-12 px-4">
         <ProductInfo
           data={currentData}
           lang={lang}
           selectedVariant={selectedVariant}
+          selectedDiscount={selectedDiscount}
           category={doc.taxonomies.category as Category}
         />
 
@@ -76,9 +95,10 @@ export default function ProductDetails(props: ProductDetailsProps) {
           selectedSize={selectedSize}
           onSizeChange={handleSizeChange}
         />
-
-        <ProductAction 
-          product={currentData} 
+        <ProductAction
+          // @ts-expect-error
+          product={currentData}
+          // @ts-expect-error
           selectedVariant={selectedVariant}
         />
 
