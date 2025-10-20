@@ -62,7 +62,7 @@ export default async function ProductPage({ params }: Props) {
     <>
       <ProductDetails doc={product} lang={lang as Lang} />
 
-      {relatestProduct && (
+      {relatestProduct && relatestProduct.length > 0 && (
         <Suspense>
           <CarouselListProduct
             items={relatestProduct || []}

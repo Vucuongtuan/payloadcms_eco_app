@@ -213,7 +213,6 @@ export const ProductsCollection: CollectionOverride = ({
         {
           fields: [
             ...defaultCollection.fields,
-
             {
               name: "relatedType",
               type: "radio",

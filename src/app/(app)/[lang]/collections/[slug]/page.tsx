@@ -1,3 +1,4 @@
+import MetaTitle from "@/components/MetaTitle";
 import ProductList from "@/components/ProductList";
 import { findCategoryBySlug, findListProductByCategory } from "@/service/pages";
 import { Lang } from "@/types";
@@ -20,10 +21,10 @@ export default async function PageCollection({
   if (!category || !category.id || !products) return notFound();
   return (
     <>
-      {/* <MetaTitle
+      <MetaTitle
         title={category.title}
         description={category.description || ""}
-      /> */}
+      />
       {/* <ListProduct data={products}/> */}
       <ProductList
         categoryId={category.id}

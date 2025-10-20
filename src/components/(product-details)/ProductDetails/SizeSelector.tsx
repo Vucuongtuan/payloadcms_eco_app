@@ -33,7 +33,7 @@ export function SizeSelector({
             aria-pressed={selectedSize?.id === item.id}
             aria-label={`Size ${item.label}`}
           >
-            {item.value}
+            {item.value.toUpperCase()}
           </motion.button>
         ))}
       </div>
