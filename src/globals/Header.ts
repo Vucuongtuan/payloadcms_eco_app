@@ -1,50 +1,48 @@
-import type { GlobalConfig } from 'payload'
+import type { GlobalConfig } from "payload";
 
-import { link } from '@/fields/link'
+import { link } from "@/fields/link";
 
 export const Header: GlobalConfig = {
-  slug: 'header',
+  slug: "header",
   access: {
     read: () => true,
   },
   fields: [
     {
-      name:"logo",
-      type:"relationship",
-      relationTo:"media",
+      name: "logo",
+      type: "relationship",
+      relationTo: "media",
     },
     {
-      name: 'navItems',
-      type: 'array',
+      name: "navItems",
+      type: "array",
       fields: [
         link({
           appearances: false,
-          localeLabel:true
+          localeLabel: true,
         }),
         {
-          name:"child",
-          type:"array",
-          fields:[
+          name: "child",
+          type: "array",
+          fields: [
             link({
               appearances: false,
-              categoryLevel:'level2',
-              localeLabel:true
+              localeLabel: true,
             }),
             {
-              name:"subChild",
-              type:"array",
-              fields:[
+              name: "subChild",
+              type: "array",
+              fields: [
                 link({
                   appearances: false,
-                  categoryLevel:"level3",
-                  localeLabel:true
-                })
-              ]
-            }
-          ]
-        }
+                  localeLabel: true,
+                }),
+              ],
+            },
+          ],
+        },
       ],
       maxRows: 6,
     },
   ],
-}
+};

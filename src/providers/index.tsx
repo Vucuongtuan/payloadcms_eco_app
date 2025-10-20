@@ -1,8 +1,8 @@
+import CartProvider from "@/components/(cart)/CartProvider";
 import { AuthProvider } from "@/providers/Auth";
 import { EcommerceProvider } from "@payloadcms/plugin-ecommerce/client/react";
 import { stripeAdapterClient } from "@payloadcms/plugin-ecommerce/payments/stripe";
 import React from "react";
-import CartProvider from "@/components/(cart)/CartProvider";
 
 import { HeaderThemeProvider } from "./HeaderTheme";
 import { QueryProvider } from "./QueryClient";
@@ -26,7 +26,6 @@ export const Providers: React.FC<{
                       slug: true,
                       title: true,
                       gallery: true,
-                      sizes: true,
                     },
                     variants: {
                       title: true,
@@ -42,9 +41,7 @@ export const Providers: React.FC<{
                 }),
               ]}
             >
-              <CartProvider>
-                {children}
-              </CartProvider>
+              <CartProvider>{children}</CartProvider>
             </EcommerceProvider>
           </HeaderThemeProvider>
         </AuthProvider>
