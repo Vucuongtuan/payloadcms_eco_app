@@ -148,9 +148,14 @@ export const plugins: Plugin[] = [
           webhookSecret: process.env.STRIPE_WEBHOOKS_SIGNING_SECRET!,
           webhooks: {
             "payment_intent.succeeded": ({ event, req, stripe }) => {
-              // req.logger.info("Payment intent succeeded");
-              console.log("Payment intent succeeded");
-              req.payload.logger.info("Payment succeeded");
+              console.log("🎉 Payment intent succeeded:", event.id);
+              console.log("Event data:", JSON.stringify(event.data, null, 2));
+              req.payload.logger.info(`Payment succeeded: ${event.id}`);
+            },
+            "payment_intent.payment_failed": ({ event, req, stripe }) => {
+              console.log("❌ Payment failed:", event.id);
+              console.log("Event data:", JSON.stringify(event.data, null, 2));
+              req.payload.logger.error(`Payment failed: ${event.id}`);
             },
           },
         }),
