@@ -1,5 +1,3 @@
-import { Media } from "@/components/Media";
-
 interface ColorSelectorProps {
   colorVariants: any[];
   selectedColor: any;
@@ -13,8 +11,6 @@ export function ColorSelector({
   handleColorChange,
   selectedGalleryItem,
 }: ColorSelectorProps) {
-  if (colorVariants.length === 0) return null;
-
   return (
     <div className="flex flex-col space-y-6 mt-6">
       <div>

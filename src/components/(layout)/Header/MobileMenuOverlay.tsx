@@ -2,12 +2,12 @@
 
 import { Header } from "@/payload-types";
 import { resolveLink, resolveTitle } from "@/utilities/getLinkAndTitle";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, type Variants } from "framer-motion";
 import Link from "next/link";
 
 interface MobileMenuOverlayProps {
   isOpen: boolean;
-  navData: Header['navItems'];
+  navData: Header["navItems"];
   onToggle: () => void;
 }
 
@@ -26,9 +26,13 @@ const menuVariants = {
       ease: "easeInOut",
     },
   },
-};
+} as const satisfies Variants;
 
-export function MobileMenuOverlay({ isOpen, navData, onToggle }: MobileMenuOverlayProps) {
+export function MobileMenuOverlay({
+  isOpen,
+  navData,
+  onToggle,
+}: MobileMenuOverlayProps) {
   return (
     <AnimatePresence>
       {isOpen && (

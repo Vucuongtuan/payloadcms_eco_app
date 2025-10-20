@@ -2,15 +2,16 @@
 
 import { Button } from "@/components/ui/button";
 import { useCartStore } from "@/store/cartStore";
+import { Lang } from "@/types";
 import { formatPrice } from "@/utilities/convertPrice";
 import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import CartItem from "./CartItem";
 
 export default function CartDrawer() {
   const { items, isOpen, closeCart, subtotal, clearCart } = useCartStore();
-
+  const lang = useLocale();
   const t = useTranslations("cart");
 
   return (
@@ -89,7 +90,7 @@ export default function CartDrawer() {
                   {/* Subtotal */}
                   <div className="flex justify-between text-lg font-semibold">
                     <span>{t("subtotal")}</span>
-                    <span>{formatPrice(subtotal)}</span>
+                    <span>{formatPrice(subtotal, lang as Lang)}</span>
                   </div>
 
                   {/* Actions */}

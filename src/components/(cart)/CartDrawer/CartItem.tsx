@@ -31,7 +31,9 @@ export default function CartItem({ item }: CartItemProps) {
         {item.product.gallery?.length && (
           <Media
             resource={
+              // @ts-expect-error
               (item.product.gallery[1]?.image[1] as MediaType) ??
+              // @ts-expect-error
               (item.product.gallery[0]?.image[0] as MediaType)
             }
             alt={item.product.title || ""}
@@ -54,6 +56,7 @@ export default function CartItem({ item }: CartItemProps) {
         <div className="flex items-center justify-between mt-2">
           <span className="font-semibold text-sm">
             {formatPrice(
+              // @ts-expect-error
               item.variant?.priceInUSDEnabled
                 ? item.variant?.priceInUSD && item.variant?.priceInUSD
                 : item.product?.priceInUSDEnabled && item.product.priceInUSD,

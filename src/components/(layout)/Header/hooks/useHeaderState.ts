@@ -4,26 +4,29 @@ import { Header } from "@/payload-types";
 import { useWindowScroll } from "@uidotdev/usehooks";
 import { useCallback, useRef, useState } from "react";
 
-export function useHeaderState(navData: Header['navItems']) {
+export function useHeaderState(navData: Header["navItems"]) {
   const [isOpen, setIsOpen] = useState(false);
   const [{ y }] = useWindowScroll();
   const [megaDropdownOpen, setMegaDropdownOpen] = useState(false);
   const [activeMenuItem, setActiveMenuItem] = useState<string | null>(null);
-  const timeoutRef = useRef<NodeJS.Timeout>();
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const toggleMenu = useCallback(() => setIsOpen(prev => !prev), []);
+  const toggleMenu = useCallback(() => setIsOpen((prev) => !prev), []);
   const isScrolled = (y ?? 0) > 50;
 
-  const handleMenuEnter = useCallback((itemId: string) => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-    const item = navData?.find(item => item.id === itemId);
-    if (item?.child?.length) {
-      setActiveMenuItem(itemId);
-      setMegaDropdownOpen(true);
-    }
-  }, [navData]);
+  const handleMenuEnter = useCallback(
+    (itemId: string) => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+      const item = navData?.find((item) => item.id === itemId);
+      if (item?.child?.length) {
+        setActiveMenuItem(itemId);
+        setMegaDropdownOpen(true);
+      }
+    },
+    [navData]
+  );
 
   const handleMenuLeave = useCallback(() => {
     timeoutRef.current = setTimeout(() => {
@@ -38,7 +41,9 @@ export function useHeaderState(navData: Header['navItems']) {
     }
   }, []);
 
-  const activeItem = activeMenuItem ? navData?.find(item => item.id === activeMenuItem) : null;
+  const activeItem = activeMenuItem
+    ? navData?.find((item) => item.id === activeMenuItem)
+    : null;
 
   return {
     isOpen,

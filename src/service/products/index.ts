@@ -83,51 +83,64 @@ export const findSlugAllProduct = async (): Promise<ProductSlug[]> =>
     }
   )();
 
-export const findProductsByTagsOrCategorySlug = async ({
-  slugCategory,
-  tags,
-  lang,
-  limit,
-  page,
-}: {
-  slugCategory: string;
-  tags: Tag[];
+type FindProductsParams = {
   lang: Lang;
   limit?: number;
   page?: number;
-}) =>
+  cacheTags?: string[];
+  slugCategory?: {
+    main: string;
+    sub: string;
+  };
+  tags?: Tag[];
+  includeSubCategory?: boolean;
+};
+export const findListProducts = async ({
+  lang,
+  limit,
+  page,
+  cacheTags = ["products"],
+  slugCategory,
+  tags,
+  includeSubCategory = false,
+}: FindProductsParams) =>
   cacheFunc(
     async () => {
+      const where: any = {
+        _status: { equals: "published" },
+      };
+
+      if (slugCategory) {
+        const orConditions: any[] = [
+          { "taxonomies.category.slug": { equals: slugCategory.main } },
+        ];
+
+        if (includeSubCategory) {
+          orConditions.push({
+            "taxonomies.subcategory.slug": { equals: slugCategory.sub },
+          });
+        }
+
+        where.or = orConditions;
+      }
+
+      if (tags?.length) {
+        where["taxonomies.tags"] = { in: tags.map((t) => t.id) };
+      }
+
       const [result, err] = await query<ResponseDocs<Product>>((payload) => {
         return payload.find({
           collection: "products",
-          where: {
-            _status: {
-              equals: "published",
-            },
-            or: [
-              {
-                "taxonomies.category.slug": {
-                  equals: slugCategory,
-                },
-              },
-              {
-                "taxonomies.tags": {
-                  in: tags,
-                },
-              },
-            ],
-          },
-          page: page,
-          limit: limit,
+          where,
+          page,
+          limit,
           locale: lang,
         });
       });
+
       if (err) throw err;
       return result.docs;
     },
-    ["relatest-product"],
-    {
-      tags: [`relatest-product`],
-    }
+    [cacheTags[0]],
+    { tags: cacheTags }
   )();
