@@ -24,6 +24,9 @@ const nextConfig = {
     },
   },
 
+  // Apply PPR
+  cacheComponents: true,
+
   //Image
   images: {
     remotePatterns: [
