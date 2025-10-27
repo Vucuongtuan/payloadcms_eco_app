@@ -1,4 +1,3 @@
-// @ts-nocheck
 "use client";
 
 import {
@@ -11,25 +10,33 @@ import {
 } from "@/components/ui/sheet";
 import { useCart } from "@payloadcms/plugin-ecommerce/client/react";
 import { ShoppingCart } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useEffect, useMemo, useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { Product } from "@/payload-types";
+import {
+  Media as MediaType,
+  Product,
+  Variant,
+  VariantOption,
+  VariantType,
+} from "@/payload-types";
+import { Lang } from "@/types";
+import { useLocale, useTranslations } from "next-intl";
+import { Media } from "../Media";
+import { Price } from "../Price";
 import { DeleteItemButton } from "./DeleteItemButton";
 import { EditItemQuantityButton } from "./EditItemQuantityButton";
 import { OpenCartButton } from "./OpenCart";
 
 export function CartModal() {
+  const t = useTranslations("cart");
+  const locale = useLocale();
   const { cart } = useCart();
   const [isOpen, setIsOpen] = useState(false);
-
   const pathname = usePathname();
-
   useEffect(() => {
-    // Close the cart modal when the pathname changes.
     setIsOpen(false);
   }, [pathname]);
 
@@ -41,27 +48,59 @@ export function CartModal() {
     );
   }, [cart]);
 
+  const totalPrice = useMemo(() => {
+    if (!cart || !cart.items || !cart.items.length) return 0;
+    return cart.items.reduce((total, item) => {
+      const product = item.product;
+      const variant = item.variant;
+
+      if (typeof product !== "object") return total;
+
+      let price = (product as Product).priceInUSD || 0;
+
+      if (variant && typeof variant === "object") {
+        const discount = variant.options?.find((v: any) => {
+          const variantType =
+            typeof v.variantType === "number"
+              ? v.variantType
+              : (v.variantType as VariantType)?.id;
+          return variantType === 3;
+        }) as VariantOption | undefined;
+
+        const valueDiscount = discount?.value?.includes("%")
+          ? parseInt(discount.value.replace("%", ""))
+          : discount?.value === "none"
+            ? 0
+            : parseInt(discount?.value || "0");
+
+        if (variant.priceInUSD && valueDiscount > 0) {
+          price =
+            variant.priceInUSD - (variant.priceInUSD * valueDiscount) / 100;
+        } else if (variant.priceInUSD) {
+          price = variant.priceInUSD;
+        }
+      }
+
+      return total + price * (item.quantity || 1);
+    }, 0);
+  }, [cart]);
   return (
     <Sheet onOpenChange={setIsOpen} open={isOpen}>
-      <SheetTrigger asChild>
+      <SheetTrigger asChild aria-label="Cart">
         <OpenCartButton quantity={totalQuantity} />
       </SheetTrigger>
 
       <SheetContent className="flex flex-col">
         <SheetHeader>
-          <SheetTitle>My Cart</SheetTitle>
+          <SheetTitle>{t("title")}</SheetTitle>
 
-          <SheetDescription>
-            Manage your cart here, add items to view the total.
-          </SheetDescription>
+          <SheetDescription>{t("empty.description")}</SheetDescription>
         </SheetHeader>
 
         {!cart || cart?.items?.length === 0 ? (
           <div className="text-center flex flex-col items-center gap-2">
             <ShoppingCart className="h-16" />
-            <p className="text-center text-2xl font-bold">
-              Your cart is empty.
-            </p>
+            <p className="text-center text-2xl font-bold">{t("empty.title")}</p>
           </div>
         ) : (
           <div className="grow flex px-4">
@@ -70,7 +109,6 @@ export function CartModal() {
                 {cart?.items?.map((item, i) => {
                   const product = item.product;
                   const variant = item.variant;
-
                   if (
                     typeof product !== "object" ||
                     !item ||
@@ -85,19 +123,47 @@ export function CartModal() {
                       ? product.meta.image
                       : undefined;
 
-                  const firstGalleryImage =
-                    typeof product.gallery?.[0]?.image === "object"
-                      ? product.gallery?.[0]?.image
-                      : undefined;
+                  const firstGalleryImage = Array.isArray(
+                    product.gallery?.[0]?.image
+                  )
+                    ? product.gallery?.[0]?.image[0]
+                    : undefined;
 
                   let image = firstGalleryImage || metaImage;
-                  let price = product.priceInUSD;
+
+                  let price = product.priceInUSDEnabled && product.priceInUSD;
 
                   const isVariant =
                     Boolean(variant) && typeof variant === "object";
 
+                  //discount option
+                  const discount = (variant as Variant)?.options?.find(
+                    (v: any) => {
+                      const variantType =
+                        typeof v.variantType === "number"
+                          ? v.variantType
+                          : (v.variantType as VariantType)?.id;
+                      return variantType === 3;
+                    }
+                  ) as VariantOption | undefined;
+
+                  const valueDiscount = discount?.value?.includes("%")
+                    ? parseInt(discount.value.replace("%", ""))
+                    : discount?.value === "none"
+                      ? 0
+                      : parseInt(discount?.value || "0");
+
+                  // ---
                   if (isVariant) {
-                    price = variant?.priceInUSD;
+                    const afterPriceDiscount = variant?.priceInUSDEnabled
+                      ? variant?.priceInUSD &&
+                        valueDiscount &&
+                        valueDiscount > 0
+                        ? variant?.priceInUSD -
+                          (variant?.priceInUSD * valueDiscount) / 100
+                        : variant?.priceInUSD
+                      : product?.priceInUSD;
+                    price = afterPriceDiscount || 0;
 
                     const imageVariant = product.gallery?.find((item) => {
                       if (!item.variantOption) return false;
@@ -115,17 +181,18 @@ export function CartModal() {
                       return hasMatch;
                     });
 
-                    if (
-                      imageVariant &&
-                      typeof imageVariant.image === "object"
-                    ) {
-                      image = imageVariant.image;
+                    if (imageVariant && Array.isArray(imageVariant.image)) {
+                      image = imageVariant.image[0] as MediaType;
                     }
+                  } else {
+                    const basePrice =
+                      (product.priceInUSDEnabled && product.priceInUSD) || 0;
+                    price = basePrice;
                   }
 
                   return (
                     <li className="flex w-full flex-col" key={i}>
-                      <div className="relative flex w-full flex-row justify-between px-1 py-4">
+                      <div className="relative flex w-full flex-cols justify-between px-1 py-4">
                         <div className="absolute z-40 -mt-2 ml-[55px]">
                           <DeleteItemButton item={item} />
                         </div>
@@ -134,12 +201,11 @@ export function CartModal() {
                           href={`/products/${(item.product as Product)?.slug}`}
                         >
                           <div className="relative h-16 w-16 cursor-pointer overflow-hidden rounded-md border border-neutral-300 bg-neutral-300 dark:border-neutral-700 dark:bg-neutral-900 dark:hover:bg-neutral-800">
-                            {image?.url && (
-                              <Image
-                                alt={image?.alt || product?.title || ""}
+                            {typeof image === "object" && image && (
+                              <Media
+                                resource={image}
                                 className="h-full w-full object-cover"
                                 height={94}
-                                src={image.url}
                                 width={94}
                               />
                             )}
@@ -163,12 +229,12 @@ export function CartModal() {
                           </div>
                         </Link>
                         <div className="flex h-16 flex-col justify-between">
-                          {typeof price === "number" && (
-                            <Price
-                              amount={price}
-                              className="flex justify-end space-y-2 text-right text-sm"
-                            />
-                          )}
+                          <Price
+                            lang={locale as Lang}
+                            price={price * (item.quantity || 1)}
+                            // discount={pa}
+                            className="flex justify-end space-y-2 text-right text-sm"
+                          />
                           <div className="ml-auto flex h-9 flex-row items-center rounded-lg border">
                             <EditItemQuantityButton item={item} type="minus" />
                             <p className="w-6 text-center">
@@ -189,10 +255,11 @@ export function CartModal() {
                 <div className="py-4 text-sm text-neutral-500 dark:text-neutral-400">
                   {typeof cart?.subtotal === "number" && (
                     <div className="mb-3 flex items-center justify-between border-b border-neutral-200 pb-1 pt-1 dark:border-neutral-700">
-                      <p>Total</p>
+                      <p>{t("total")}</p>
 
                       <Price
-                        amount={cart?.subtotal}
+                        price={totalPrice}
+                        lang={"en"}
                         className="text-right text-base text-black dark:text-white"
                       />
                     </div>
@@ -200,7 +267,7 @@ export function CartModal() {
 
                   <Button asChild>
                     <Link className="w-full" href="/checkout">
-                      Proceed to Checkout
+                      {t("checkout")}
                     </Link>
                   </Button>
                 </div>
