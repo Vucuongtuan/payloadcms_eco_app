@@ -7,6 +7,7 @@ import { Providers } from "@/providers";
 import { Lang } from "@/types";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
+import { Suspense } from "react";
 import "./globals.css";
 
 /* const { SITE_NAME, TWITTER_CREATOR, TWITTER_SITE } = process.env
@@ -50,7 +51,6 @@ export default async function RootLayout(props: {
     console.error("Error fetching messages:", error);
     return <>Error loading messages {lang}</>;
   }
-
   return (
     <html lang={lang} suppressHydrationWarning>
       <head>
@@ -59,15 +59,17 @@ export default async function RootLayout(props: {
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
       </head>
       <body className={cn("bg-primary-background")}>
-        <NextIntlClientProvider messages={msg}>
-          <Providers>
-            {/* <AdminBar /> */}
-            <LivePreviewListener />
-            <Header lang={lang} />
-            <main className={"mt-17 min-h-[800px]"}>{children}</main>
-            <Footer lang={lang} />
-          </Providers>
-        </NextIntlClientProvider>
+        <Suspense>
+          <NextIntlClientProvider messages={msg}>
+            <Providers>
+              {/* <AdminBar /> */}
+              <LivePreviewListener />
+              <Header lang={lang} />
+              <main className={"mt-17 min-h-[800px]"}>{children}</main>
+              <Footer lang={lang} />
+            </Providers>
+          </NextIntlClientProvider>
+        </Suspense>
       </body>
     </html>
   );
