@@ -12,21 +12,6 @@ const withNextIntl = createNextIntlPlugin();
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // Your Next.js config here
-  turbopack: {
-    resolveExtensions: [".mdx", ".tsx", ".ts", ".jsx", ".js", ".mjs", ".json"],
-    rules: {
-      "*.svg": {
-        loaders: ["@svgr/webpack"],
-        as: "*.js",
-      },
-
-      //
-    },
-  },
-
-  // Apply PPR
-  cacheComponents: true,
-
   //Image
   images: {
     remotePatterns: [
@@ -46,13 +31,20 @@ const nextConfig = {
     ],
   },
 
+  // react compiler
+  reactCompiler: true,
+
+  cacheComponents: true,
+
   //  Experimental Beta
   experimental: {
     // Use React Compiler
-    reactCompiler: {
-      compilationMode: "annotation",
-    },
+    // reactCompiler: {
+    //   compilationMode: "annotation",
+    // },
     inlineCss: true,
+
+    turbopackFileSystemCacheForDev: true,
     // viewTransition: true,
     // ppr: "incremental",
 
@@ -74,11 +66,6 @@ const nextConfig = {
   //   locales: ['vi', 'en'],
   //   defaultLocale: 'vi',
   // },
-
-  sassOptions: {
-    silenceDeprecations: ["import"],
-    includePaths: [path.join(__dirname, "styles")],
-  },
 };
 
 export default withNextIntl(withPayload(nextConfig));
