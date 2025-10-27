@@ -31,6 +31,7 @@ type Props = {
 
 export const RichText: React.FC<Props> = (props) => {
   const { className, enableProse = true, enableGutter = true, ...rest } = props;
+
   return (
     <RichTextWithoutBlocks
       converters={jsxConverters}
