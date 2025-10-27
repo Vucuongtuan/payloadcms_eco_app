@@ -1,5 +1,3 @@
-import CartIcon from "@/components/(cart)/CartIcon";
-
 interface MobileMenuButtonProps {
   isOpen: boolean;
   onClick: () => void;
@@ -8,7 +6,6 @@ interface MobileMenuButtonProps {
 export function MobileMenuButton({ isOpen, onClick }: MobileMenuButtonProps) {
   return (
     <div className="md:hidden flex items-center gap-2">
-      <CartIcon />
       <button onClick={onClick} className="z-50">
         {isOpen ? (
           <svg
