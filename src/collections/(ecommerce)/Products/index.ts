@@ -214,6 +214,23 @@ export const ProductsCollection: CollectionOverride = ({
           fields: [
             ...defaultCollection.fields,
             {
+              name: "discount",
+              type: "relationship",
+              relationTo: "variantOptions",
+              filterOptions: () => {
+                return {
+                  "variantType.id": {
+                    equals: 3,
+                  },
+                };
+              },
+              admin: {
+                condition: (_, siblingData) => {
+                  return siblingData?.enableVariants === false;
+                },
+              },
+            },
+            {
               name: "relatedType",
               type: "radio",
               options: [
