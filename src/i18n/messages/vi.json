@@ -74,6 +74,14 @@
     "invalid_credentials": "Thông tin đăng nhập không hợp lệ",
     "success": "Thành công",
     "signup_failed": "Đăng ký thất bại",
-    "signup_success": "Đăng ký thành công"
+    "signup_success": "Đăng ký thành công",
+    "logout_success": "Đăng xuất thành công",
+    "logout_failed": "Đăng xuất thất bại, vui lòng thử lại",
+    "next_action": {
+      "next": "Thực hiện hành động tiếp theo",
+      "home": "Về trang chủ",
+      "login": "Đăng nhập lại ?"
+    },
+    "logout_rm_cart": "Lưu ý: Giỏ hàng của bạn sẽ bị xóa khi đăng xuất"
   }
 }
