@@ -23,7 +23,6 @@ export function ProductInfo({
   category,
 }: ProductInfoProps) {
   const t = useTranslations("product.details");
-
   // Fix price display logic
   const currentPrice = selectedVariant?.priceInUSD || data.priceInUSD;
   // const displayPricing = data.priceInUSDEnabled && currentPrice;
@@ -104,9 +103,9 @@ export function ProductInfo({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          aria-label="Giá sản phẩm"
+          aria-label={t("priceProduct")}
         >
-          <Price price={currentPrice} lang={lang} discount={discount} />
+          <Price lang={lang} price={currentPrice} discount={discount} />
         </motion.div>
       </header>
       <div className="h-px bg-gray-300" role="separator" aria-hidden="true" />

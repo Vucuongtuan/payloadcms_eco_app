@@ -87,7 +87,6 @@ export function useProductVariants(doc: Product) {
     "docs" in discountVariantType.options
       ? (discountVariantType.options.docs as any[])
       : [];
-
   const [selectedVariant, setSelectedVariant] = useState<Variant | null>(null);
   useEffect(() => {
     if (selectedColor && selectedSize) {
@@ -101,14 +100,15 @@ export function useProductVariants(doc: Product) {
         return hasColor && hasSize;
       });
 
-      // From all matching variants, prefer the one with more options (likely including a discount).
       const bestMatch = allMatchingVariants.sort(
         (a, b) => (b.options?.length || 0) - (a.options?.length || 0)
       )[0];
 
       setSelectedVariant(bestMatch || null);
+    } else {
+      setSelectedVariant(null);
     }
-  }, [selectedColor, selectedSize, variants]);
+  }, [selectedColor?.id, selectedSize?.id]);
   console.log({ selectedVariant, variants, colorVariants, doc });
   return {
     variants,
