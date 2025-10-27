@@ -40,6 +40,7 @@
       "outOfStock": "Hết hàng",
       "inStock": "Còn hàng",
       "variantField": "Biến thể",
+      "priceProduct": "Giá sản phẩm",
       "breadcrumb": {
         "home": "Trang chủ"
       }
@@ -51,6 +52,7 @@
       "title": "Giỏ hàng trống",
       "description": "Thêm sản phẩm để bắt đầu mua sắm"
     },
+    "total": "Tổng",
     "subtotal": "Tạm tính",
     "checkout": "Thanh toán",
     "clear": "Xóa giỏ hàng",
@@ -59,6 +61,13 @@
       "message": "Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng",
       "login": "Đăng nhập",
       "signup": "Đăng ký"
+    },
+    "actions": {
+      "addToCart": "Thêm vào giỏ hàng",
+      "viewCart": "Xem giỏ hàng",
+      "adding": "Đang thêm...",
+      "addedToCart": "Đã thêm vào giỏ hàng",
+      "addToCartError": "Không thể thêm vào giỏ hàng"
     }
   },
   "auth": {
