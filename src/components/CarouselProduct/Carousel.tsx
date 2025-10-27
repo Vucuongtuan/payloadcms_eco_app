@@ -143,9 +143,9 @@ export const CarouselList = React.forwardRef<HTMLDivElement, CarouselListProps>(
               (e.target as HTMLElement).style.userSelect = "auto";
             }}
           >
-            {products.map((product) => (
+            {products.map((product, idx) => (
               <div
-                key={product.id}
+                key={idx}
                 className="flex-shrink-0 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4"
               >
                 <ProductCard doc={product} lang={lang} />

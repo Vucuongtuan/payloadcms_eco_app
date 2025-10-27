@@ -75,21 +75,18 @@ export const findListProductByCategory = ({
           where: {
             or: [
               {
-                "taxonomies.category": {
-                  slug: {
-                    equals: slug,
-                  },
+                "taxonomies.category.slug": {
+                  equals: slug,
                 },
               },
               {
-                "taxonomies.subCategory": {
-                  slug: {
-                    equals: slug,
-                  },
+                "taxonomies.subCategory.slug": {
+                  contains: slug,
                 },
               },
             ],
           },
+
           limit: limit || 10,
           locale: lang,
         });

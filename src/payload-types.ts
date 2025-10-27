@@ -327,6 +327,7 @@ export interface Product {
   };
   priceInUSDEnabled?: boolean | null;
   priceInUSD?: number | null;
+  discount?: (number | null) | VariantOption;
   relatedType?: ('all' | 'tags' | 'category') | null;
   relatedByTags?: (number | null) | Tag;
   relatedByCategory?: (number | null) | Category;
@@ -1676,6 +1677,7 @@ export interface ProductsSelect<T extends boolean = true> {
   variants?: T;
   priceInUSDEnabled?: T;
   priceInUSD?: T;
+  discount?: T;
   relatedType?: T;
   relatedByTags?: T;
   relatedByCategory?: T;

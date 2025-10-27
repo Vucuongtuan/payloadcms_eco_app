@@ -85,7 +85,7 @@ export const login = async ({
 
   const cookieStore = await cookies();
   cookieStore.set({
-    name: "payload-token-customer",
+    name: "payload-token",
     value: result.token,
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
