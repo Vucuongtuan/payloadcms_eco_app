@@ -16,9 +16,9 @@ export function ColorSelector({
       <div>
         <h4 className="text-sm font-medium mb-3">Colors</h4>
         <div className="flex gap-2">
-          {colorVariants.map((item) => (
+          {colorVariants.map((item, idx) => (
             <button
-              key={item.id}
+              key={idx}
               onClick={() => handleColorChange(item.variantOption)}
               className={`w-8 h-8 rounded-full border-2 ${
                 selectedGalleryItem?.id === item.id

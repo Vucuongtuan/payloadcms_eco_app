@@ -1,4 +1,3 @@
-import CartProvider from "@/components/(cart)/CartProvider";
 import { AuthProvider } from "@/providers/Auth";
 import { EcommerceProvider } from "@payloadcms/plugin-ecommerce/client/react";
 import { stripeAdapterClient } from "@payloadcms/plugin-ecommerce/payments/stripe";
@@ -6,6 +5,7 @@ import React from "react";
 
 import { HeaderThemeProvider } from "./HeaderTheme";
 import { QueryProvider } from "./QueryClient";
+import { SonnerProvider } from "./Sonner";
 import { ThemeProvider } from "./Theme";
 
 export const Providers: React.FC<{
@@ -16,6 +16,7 @@ export const Providers: React.FC<{
       <ThemeProvider>
         <AuthProvider>
           <HeaderThemeProvider>
+            <SonnerProvider />
             <EcommerceProvider
               enableVariants={true}
               api={{
@@ -41,7 +42,7 @@ export const Providers: React.FC<{
                 }),
               ]}
             >
-              <CartProvider>{children}</CartProvider>
+              {children}
             </EcommerceProvider>
           </HeaderThemeProvider>
         </AuthProvider>

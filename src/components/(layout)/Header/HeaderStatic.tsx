@@ -1,18 +1,19 @@
 "use client";
 
 import { Header } from "@/payload-types";
+import { ReactNode } from "react";
+import { useHeaderState } from "./hooks/useHeaderState";
 import { MegaDropdown } from "./MegaDropdown";
 import { MobileMenuButton } from "./MobileMenuButton";
 import { MobileMenuOverlay } from "./MobileMenuOverlay";
 import { Navigation } from "./Navigation";
-import { AuthButtons } from "./AuthButtons";
-import { useHeaderState } from "./hooks/useHeaderState";
 
-interface HeaderClientProps {
+interface HeaderStaticProps {
   navData: Header["navItems"];
+  children: ReactNode;
 }
 
-export default function HeaderClient({ navData }: HeaderClientProps) {
+export function HeaderStatic({ navData, children }: HeaderStaticProps) {
   const {
     isOpen,
     isScrolled,
@@ -34,7 +35,6 @@ export default function HeaderClient({ navData }: HeaderClientProps) {
             : "h-17"
         }`}
       >
-        {/* <Logo /> */}
         <div className="flex-1" onMouseLeave={handleMenuLeave}>
           <Navigation navData={navData} onMenuItemHover={handleMenuItemHover} />
           <MegaDropdown
@@ -44,7 +44,7 @@ export default function HeaderClient({ navData }: HeaderClientProps) {
             onMouseLeave={handleDropdownLeave}
           />
         </div>
-        <AuthButtons />
+        {children}
         <MobileMenuButton isOpen={isOpen} onClick={toggleMenu} />
       </div>
 

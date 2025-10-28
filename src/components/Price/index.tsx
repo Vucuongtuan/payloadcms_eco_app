@@ -4,18 +4,19 @@ import { formatPrice } from "@/utilities/convertPrice";
 interface PriceProps {
   price: number;
   discount?: string | null;
-  lang: Lang;
   variant?: "default" | "compact" | "detailed";
   className?: string;
+  lang: Lang;
 }
 
 export function Price({
   price,
   discount,
-  lang,
   variant = "default",
   className = "",
+  lang,
 }: PriceProps) {
+  // const t = await getTranslations("ProfilePage");
   const discountPercent = discount ? parseFloat(discount.replace("%", "")) : 0;
   const hasDiscount = discountPercent > 0;
 

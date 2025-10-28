@@ -69,6 +69,25 @@
     "invalid_credentials": "Invalid credentials",
     "success": "Success",
     "signup_failed": "Signup failed",
-    "signup_success": "Signup success"
+    "signup_success": "Signup success",
+    "login_failed": "Login failed",
+    "login_success": "Login success",
+    "logout_success": "Logout success",
+    "logout_failed": "Logout failed",
+    "next-action": {
+      "next": "What would you like to do next?",
+      "home": "Continue home page",
+      "login": "Login again"
+    },
+    "logout_rm_cart": "Note : Your cart will be cleared when you logout"
+  },
+  "checkout": {
+    "title": "Checkout",
+    "description": "Checkout.",
+    "missingStripeKey": "To enable checkout, you must",
+    "getStripeKeys": "obtain your Stripe API Keys",
+    "setEnvVariables": "then set them as environment variables. See the",
+    "readme": "README",
+    "forMoreDetails": "for more details."
   }
 }

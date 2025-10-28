@@ -1,9 +1,11 @@
 // import { MobileNav } from "@/components/layout/Header/MobileNav";
 import { RenderBlocks } from "@/blocks/(web)/RenderBlocks";
+import MetaTitle from "@/components/MetaTitle";
 import { Page } from "@/payload-types";
 import { findPageDoc } from "@/service/pages";
 import { findLatestPostByLang } from "@/service/posts";
 import { Lang } from "@/types";
+import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
 interface PageProps {
@@ -14,6 +16,8 @@ interface PageProps {
 }
 
 export default async function PageTemplate({ params }: PageProps) {
+  await cookies();
+
   const { lang, slug = "" } = await params;
   const isHomepage = slug === "";
   const doc = await findPageDoc(lang, isHomepage ? "home" : slug);
@@ -23,6 +27,7 @@ export default async function PageTemplate({ params }: PageProps) {
   }
   return (
     <>
+      {!isHomepage && <MetaTitle title={(doc as Page).title} align="center" />}
       <RenderBlocks blocks={(doc as Page).sections} />
     </>
   );
@@ -33,12 +38,18 @@ export async function generateStaticParams() {
     findLatestPostByLang("vi"),
     findLatestPostByLang("en"),
   ]);
-  if (vi instanceof Error || en instanceof Error) {
-    return [];
-  }
 
-  const langVi = vi.map((item) => ({ lang: "vi", slug: item.slug }));
-  const langEn = en.map((item) => ({ lang: "en", slug: item.slug }));
+  const langVi =
+    vi instanceof Error
+      ? []
+      : vi.map((item) => ({ lang: "vi" as const, slug: item.slug }));
+  const langEn =
+    en instanceof Error
+      ? []
+      : en.map((item) => ({ lang: "en" as const, slug: item.slug }));
 
-  return [...langVi, ...langEn];
+  const params = [...langVi, ...langEn];
+
+  // Ensure at least one result for Cache Components
+  return params.length > 0 ? params : [{ lang: "en" as const, slug: "home" }];
 }

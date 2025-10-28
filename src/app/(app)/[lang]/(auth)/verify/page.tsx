@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 export default async function VerifyPage() {
   const cookieStore = await cookies();
-  const token = cookieStore.get("payload-token-customer");
+  const token = cookieStore.get("payload-token");
 
   if (!token) {
     return redirect("/login");

@@ -19,9 +19,9 @@ export function SizeSelector({
     <div className="space-y-3 mt-6">
       <h3 className="text-sm font-medium">Size</h3>
       <div className="grid grid-cols-5 gap-2">
-        {sizeVariants.map((item) => (
+        {sizeVariants.map((item, idx) => (
           <motion.button
-            key={item.id}
+            key={idx}
             onClick={() => onSizeChange(item)}
             className={`border py-3 text-center text-sm transition-colors ${
               selectedSize?.id === item.id

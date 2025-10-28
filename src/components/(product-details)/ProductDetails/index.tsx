@@ -96,10 +96,8 @@ export default function ProductDetails(props: ProductDetailsProps) {
           onSizeChange={handleSizeChange}
         />
         <ProductAction
-          // @ts-expect-error
-          product={currentData}
-          // @ts-expect-error
-          selectedVariant={selectedVariant}
+          product={currentData as Product}
+          selectedVariant={selectedVariant || null}
         />
 
         <footer className="smallContent mt-6">
@@ -109,10 +107,10 @@ export default function ProductDetails(props: ProductDetailsProps) {
           >
             <TabsList className="w-full ">
               {doc.shortContent &&
-                doc.shortContent.map((c) => (
+                doc.shortContent.map((c, idx) => (
                   <TabsTrigger
                     value={c.name}
-                    key={c.name}
+                    key={idx}
                     className={`shadow-none border-none border-0`}
                   >
                     {c.name.toUpperCase()}
@@ -120,8 +118,8 @@ export default function ProductDetails(props: ProductDetailsProps) {
                 ))}
             </TabsList>
             {doc.shortContent &&
-              doc.shortContent.map((c) => (
-                <TabsContent value={c.name} key={c.name}>
+              doc.shortContent.map((c, idx) => (
+                <TabsContent value={c.name} key={idx}>
                   <RichText
                     data={c.content as SerializedEditorState}
                     className="prose prose-xs px-0 w-full max-w-full"
