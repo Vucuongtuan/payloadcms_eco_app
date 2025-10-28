@@ -5,6 +5,7 @@ import React from "react";
 
 import { HeaderThemeProvider } from "./HeaderTheme";
 import { QueryProvider } from "./QueryClient";
+import { SonnerProvider } from "./Sonner";
 import { ThemeProvider } from "./Theme";
 
 export const Providers: React.FC<{
@@ -15,6 +16,7 @@ export const Providers: React.FC<{
       <ThemeProvider>
         <AuthProvider>
           <HeaderThemeProvider>
+            <SonnerProvider />
             <EcommerceProvider
               enableVariants={true}
               api={{

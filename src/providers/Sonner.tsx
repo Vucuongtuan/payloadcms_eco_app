@@ -13,7 +13,6 @@ export const SonnerProvider = ({
   return (
     <>
       {children}
-
       <Toaster richColors position="bottom-left" theme={theme || "light"} />
     </>
   );
