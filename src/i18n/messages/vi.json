@@ -83,5 +83,14 @@
       "login": "Đăng nhập lại ?"
     },
     "logout_rm_cart": "Lưu ý: Giỏ hàng của bạn sẽ bị xóa khi đăng xuất"
+  },
+  "checkout": {
+    "title": "Thanh toán",
+    "description": "Thanh toán.",
+    "missingStripeKey": "Để kích hoạt thanh toán, bạn phải",
+    "getStripeKeys": "lấy khóa API Stripe",
+    "setEnvVariables": "sau đó đặt chúng như biến môi trường. Xem",
+    "readme": "README",
+    "forMoreDetails": "cho thêm thông tin."
   }
 }
