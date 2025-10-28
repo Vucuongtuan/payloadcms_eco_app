@@ -31,6 +31,7 @@ export function AddToCart({ product, selectedVariant, quantity }: Props) {
         quantity || 1
       ).then(() => {
         toast.success("Item added to cart.");
+        setMessageAction(t("addedToCart"));
       });
     },
     [addItem, product, selectedVariant, quantity]
@@ -89,12 +90,13 @@ export function AddToCart({ product, selectedVariant, quantity }: Props) {
       variant={"outline"}
       className={clsx({
         "hover:opacity-90": true,
+        "w-full": true,
       })}
       disabled={disabled}
       onClick={addToCart}
       type="submit"
     >
-      {messageAction} --- {disabled ? "disabled" : "enabled"}
+      {messageAction}
     </Button>
   );
 }
