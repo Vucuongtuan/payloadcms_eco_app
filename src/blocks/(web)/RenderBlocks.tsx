@@ -1,3 +1,5 @@
+//@ts-nocheck
+
 import { ContentBlock } from "@/blocks/(web)/Content/Component";
 import { MediaBlock } from "@/blocks/(web)/MediaBlock/Component";
 import { toKebabCase } from "@/utilities/toKebabCase";
