@@ -7,6 +7,11 @@ import { ColumnMedia } from "@/blocks/(web)/ColumnMedia/config";
 import { Content } from "@/blocks/(web)/Content/config";
 import { MediaBlock } from "@/blocks/(web)/MediaBlock/config";
 import { slugField } from "@/fields/slug";
+import { Page } from "@/payload-types";
+import {
+  deleteEmbeddingFromQdrant,
+  saveEmbeddingToQdrant,
+} from "@/utilities/embedding";
 import { generatePreviewPath } from "@/utilities/generatePreviewPath";
 import { revalidateDelete, revalidatePage } from "./hooks/revalidatePage";
 
@@ -39,6 +44,22 @@ export const Pages: CollectionConfig = {
         req,
       }),
     useAsTitle: "title",
+  },
+  hooks: {
+    beforeChange: [
+      async ({ data, operation, originalDoc }) => {
+        if (operation === "update" || operation === "create") {
+          await saveEmbeddingToQdrant({
+            data: data as Page,
+            type: "page",
+          });
+        } else if (operation === "delete" && originalDoc) {
+          await deleteEmbeddingFromQdrant(originalDoc.id);
+        }
+      },
+    ],
+    afterChange: [revalidatePage],
+    afterDelete: [revalidateDelete],
   },
   fields: [
     {
@@ -127,10 +148,7 @@ export const Pages: CollectionConfig = {
       },
     },
   ],
-  hooks: {
-    afterChange: [revalidatePage],
-    afterDelete: [revalidateDelete],
-  },
+
   versions: {
     drafts: {
       autosave: false,

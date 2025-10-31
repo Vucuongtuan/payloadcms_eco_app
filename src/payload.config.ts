@@ -13,7 +13,7 @@ import { fileURLToPath } from 'url';
 import { plugins } from './plugin';
 // i18n Translations
 // ---
-import { vercelPostgresAdapter } from '@payloadcms/db-vercel-postgres';
+import { mongooseAdapter } from '@payloadcms/db-mongodb';
 import { EmailSubscribe, Newsletter, Posts, Reviews, Tags } from './collections';
 import { Screen } from './collections/(mobile)/Screen';
 import { Notifications } from './collections/Notifications';
@@ -50,7 +50,7 @@ export default buildConfig({
       beforeLogin: ['@/components/(dashboard)/BeforeLogin#BeforeLogin'],
       // The `BeforeDashboard` component renders the 'welcome' block that you see after logging into your admin panel.
       // Feel free to delete this at any time. Simply remove the line below and the import `BeforeDashboard` statement on line 15.
-      beforeDashboard: ['@/components/(dashboard)/BeforeDashboard#BeforeDashboard'],
+      // beforeDashboard: ['@/components/(dashboard)/BeforeDashboard#BeforeDashboard'],
     },
     user: Users.slug,
   },
@@ -67,15 +67,15 @@ export default buildConfig({
       defaultLocale: 'vi',
       // fallback: true
     },
-  db: vercelPostgresAdapter({
-    pool: {
-      connectionString: configEnv.postgresUrlNonPooling
-    },
+  // db: vercelPostgresAdapter({
+  //   pool: {
+  //     connectionString: configEnv.postgresUrlNonPooling
+  //   },
     
-  }),
-  // db: mongooseAdapter({
-  //   url: process.env.DATABASE_URI || '',
   // }),
+  db: mongooseAdapter({
+    url: process.env.DATABASE_URI || '',
+  }),
   editor: defaultLexical({
     headingSizes: ['h1','h2', 'h3', 'h4','h5','h6'],
     enableHeading:true,

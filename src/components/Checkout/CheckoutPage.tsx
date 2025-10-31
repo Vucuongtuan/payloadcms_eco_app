@@ -12,7 +12,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cssVariables } from "@/cssVariables";
-import type { Media as MediaType } from "@/payload-types";
+import type { Media as MediaType, Product, Variant } from "@/payload-types";
 import { Address } from "@/payload-types";
 import { useAuth } from "@/providers/Auth";
 import { useTheme } from "@/providers/Theme";
@@ -401,13 +401,11 @@ export const CheckoutPage: React.FC = () => {
               if (!quantity) return null;
 
               let image = gallery?.[0]?.image || meta?.image;
-              let price = product?.priceInUSD;
-
+              let price =
+                (product as Product).priceInUSDEnabled && product.priceInUSD;
               const isVariant = Boolean(variant) && typeof variant === "object";
 
-              if (isVariant) {
-                price = variant?.priceInUSD;
-
+              if (isVariant && variant) {
                 const imageVariant = product.gallery?.find((item) => {
                   if (!item.variantOption) return false;
                   const variantOptionID =
@@ -463,9 +461,11 @@ export const CheckoutPage: React.FC = () => {
                       </div>
                     </div>
 
-                    {typeof price === "number" && (
-                      <Price price={price} lang={locale as Lang} />
-                    )}
+                    <Price
+                      price={price || null}
+                      variants={variant as Variant}
+                      lang={locale as Lang}
+                    />
                   </div>
                 </div>
               );

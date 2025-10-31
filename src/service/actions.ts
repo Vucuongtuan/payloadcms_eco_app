@@ -7,7 +7,7 @@ import { cookies } from "next/headers";
 
 interface FindProductsByCategoryProps extends PaginationOption {
   lang: Lang;
-  categoryId: number;
+  categoryId: string;
 }
 
 export const findProductsByCategory = async ({

@@ -4,6 +4,11 @@ import { groupCategoriesField } from "@/fields/groupCategories";
 import { slugField } from "@/fields/slug";
 import { uploadCustomField } from "@/fields/upload";
 import { beforeChangeMetaImage } from "@/hooks/beforeChangeMetaImage";
+import { Product } from "@/payload-types";
+import {
+  deleteEmbeddingFromQdrant,
+  saveEmbeddingToQdrant,
+} from "@/utilities/embedding";
 import { generatePreviewPath } from "@/utilities/generatePreviewPath";
 import { CollectionOverride } from "@payloadcms/plugin-ecommerce/types";
 import {
@@ -42,7 +47,19 @@ export const ProductsCollection: CollectionOverride = ({
     useAsTitle: "title",
   },
   hooks: {
-    beforeChange: [beforeChangeMetaImage],
+    beforeChange: [
+      beforeChangeMetaImage,
+      async ({ data, operation, originalDoc }) => {
+        if (operation === "update" || operation === "create") {
+          await saveEmbeddingToQdrant({
+            data: data as Product,
+            type: "product",
+          });
+        } else if (operation === "delete" && originalDoc) {
+          await deleteEmbeddingFromQdrant(originalDoc.id);
+        }
+      },
+    ],
   },
   defaultPopulate: {
     ...defaultCollection?.defaultPopulate,
@@ -213,23 +230,7 @@ export const ProductsCollection: CollectionOverride = ({
         {
           fields: [
             ...defaultCollection.fields,
-            {
-              name: "discount",
-              type: "relationship",
-              relationTo: "variantOptions",
-              filterOptions: () => {
-                return {
-                  "variantType.id": {
-                    equals: 3,
-                  },
-                };
-              },
-              admin: {
-                condition: (_, siblingData) => {
-                  return siblingData?.enableVariants === false;
-                },
-              },
-            },
+
             {
               name: "relatedType",
               type: "radio",

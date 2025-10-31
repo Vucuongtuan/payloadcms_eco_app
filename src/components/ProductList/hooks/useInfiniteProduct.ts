@@ -10,7 +10,7 @@ import { get } from "lodash";
 interface Props {
   lang: Lang;
   initData: ResponseDocs<Product>;
-  categoryId: number;
+  categoryId: string;
   options?: PaginationOption;
 }
 export const useInfiniteProduct = (props: Props) => {
