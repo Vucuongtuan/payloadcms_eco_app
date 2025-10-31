@@ -1,11 +1,9 @@
+"use cache";
+
 import ProductDetails from "@/components/(product-details)/ProductDetails";
 import { CarouselListProduct } from "@/components/CarouselProduct";
 import { Category, Product, Tag } from "@/payload-types";
-import {
-  findListProducts,
-  findProductBySlug,
-  findSlugAllProduct,
-} from "@/service/products";
+import { findListProducts, findProductBySlug } from "@/service/products";
 import { Lang } from "@/types";
 import { generateMeta } from "@/utilities/generateMeta";
 import { cache, Suspense } from "react";
@@ -15,13 +13,13 @@ import { cache, Suspense } from "react";
  *    - vi, en
  * @returns {Promise<{ slug: string; lang: string }[]>}
  */
-export async function generateStaticParams() {
-  const products = await findSlugAllProduct();
-  return products.flatMap((item) => [
-    { slug: item.slug, lang: "vi" },
-    { slug: item.slug, lang: "en" },
-  ]);
-}
+// export async function generateStaticParams() {
+//   const products = await findSlugAllProduct();
+//   return products.flatMap((item) => [
+//     { slug: item.slug, lang: "vi" },
+//     { slug: item.slug, lang: "en" },
+//   ]);
+// }
 
 // Memoizing data cache using React cache
 const memoizingCache = cache(findProductBySlug);
