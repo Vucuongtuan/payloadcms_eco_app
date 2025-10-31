@@ -74,16 +74,21 @@ export function CartModal() {
             : parseInt(discount?.value || "0");
 
         if (variant.priceInUSD && valueDiscount > 0) {
+          console.log("Mount discount:", valueDiscount);
           price =
             variant.priceInUSD - (variant.priceInUSD * valueDiscount) / 100;
         } else if (variant.priceInUSD) {
           price = variant.priceInUSD;
+        } else if (!variant.priceInUSD && valueDiscount > 0) {
+          const basePrice = (product as Product).priceInUSD || 0;
+          price = basePrice - (basePrice * valueDiscount) / 100;
         }
       }
-
+      console.log({ total, price, quantity: item.quantity || 1 });
       return total + price * (item.quantity || 1);
     }, 0);
   }, [cart]);
+  console.log("Total price:", totalPrice);
   return (
     <Sheet onOpenChange={setIsOpen} open={isOpen}>
       <SheetTrigger asChild aria-label="Cart">
@@ -136,35 +141,8 @@ export function CartModal() {
                   const isVariant =
                     Boolean(variant) && typeof variant === "object";
 
-                  //discount option
-                  const discount = (variant as Variant)?.options?.find(
-                    (v: any) => {
-                      const variantType =
-                        typeof v.variantType === "number"
-                          ? v.variantType
-                          : (v.variantType as VariantType)?.id;
-                      return variantType === 3;
-                    }
-                  ) as VariantOption | undefined;
-
-                  const valueDiscount = discount?.value?.includes("%")
-                    ? parseInt(discount.value.replace("%", ""))
-                    : discount?.value === "none"
-                      ? 0
-                      : parseInt(discount?.value || "0");
-
                   // ---
                   if (isVariant) {
-                    const afterPriceDiscount = variant?.priceInUSDEnabled
-                      ? variant?.priceInUSD &&
-                        valueDiscount &&
-                        valueDiscount > 0
-                        ? variant?.priceInUSD -
-                          (variant?.priceInUSD * valueDiscount) / 100
-                        : variant?.priceInUSD
-                      : product?.priceInUSD;
-                    price = afterPriceDiscount || 0;
-
                     const imageVariant = product.gallery?.find((item) => {
                       if (!item.variantOption) return false;
                       const variantOptionID =
@@ -231,8 +209,9 @@ export function CartModal() {
                         <div className="flex h-16 flex-col justify-between">
                           <Price
                             lang={locale as Lang}
-                            price={price * (item.quantity || 1)}
-                            // discount={pa}
+                            price={price || null}
+                            quantity={item.quantity}
+                            variants={variant as Variant}
                             className="flex justify-end space-y-2 text-right text-sm"
                           />
                           <div className="ml-auto flex h-9 flex-row items-center rounded-lg border">

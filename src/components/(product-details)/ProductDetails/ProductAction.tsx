@@ -16,7 +16,6 @@ export default function ProductAction({
   product,
   selectedVariant,
 }: ProductActionProps) {
-  console.log({ product, selectedVariant });
   return (
     <motion.div
       className="flex items-center gap-3 mt-8"

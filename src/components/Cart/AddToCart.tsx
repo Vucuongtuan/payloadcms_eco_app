@@ -29,7 +29,8 @@ export function AddToCart({ product, selectedVariant, quantity }: Props) {
           variant: selectedVariant?.id ?? undefined,
         },
         quantity || 1
-      ).then(() => {
+      ).then((doc) => {
+        console.log("Added to cart:", doc);
         toast.success("Item added to cart.");
         setMessageAction(t("addedToCart"));
       });

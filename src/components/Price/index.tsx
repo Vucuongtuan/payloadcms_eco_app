@@ -1,39 +1,73 @@
+import { Variant } from "@/payload-types";
 import { Lang } from "@/types";
 import { formatPrice } from "@/utilities/convertPrice";
 
 interface PriceProps {
-  price: number;
-  discount?: string | null;
+  price?: number | null;
+  variants?: Variant; // Giá của variant
   variant?: "default" | "compact" | "detailed";
   className?: string;
+  quantity?: number;
   lang: Lang;
 }
 
 export function Price({
   price,
-  discount,
+  variants,
   variant = "default",
   className = "",
+  quantity = 1,
   lang,
 }: PriceProps) {
-  // const t = await getTranslations("ProfilePage");
-  const discountPercent = discount ? parseFloat(discount.replace("%", "")) : 0;
-  const hasDiscount = discountPercent > 0;
+  const unitPrice = (() => {
+    if (price != null) {
+      if (
+        variants?.priceInUSDEnabled &&
+        variants.priceInUSD != null &&
+        variants.priceInUSD < price
+      ) {
+        return variants.priceInUSD;
+      }
+      return price;
+    }
+    // fallback: không có price gốc nhưng variant có giá
+    if (variants?.priceInUSDEnabled && variants.priceInUSD != null) {
+      return variants.priceInUSD;
+    }
+    return null;
+  })();
 
+  if (unitPrice == null || quantity <= 0) return null;
+
+  const totalPrice = unitPrice * quantity;
+
+  const hasDiscount =
+    variants?.priceInUSDEnabled &&
+    variants.priceInUSD != null &&
+    price != null &&
+    variants.priceInUSD < price;
+
+  const discountPercent =
+    hasDiscount && price
+      ? Math.round(((price - variants!.priceInUSD!) / price) * 100)
+      : 0;
+  const discountText = hasDiscount ? `${discountPercent}%` : "";
+
+  // Render theo variant layout
   if (variant === "compact") {
     return (
       <div className={className}>
         {hasDiscount ? (
           <>
             <span className="line-through text-gray-500">
-              {formatPrice(price, lang)}
+              {formatPrice(price! * quantity, lang)}
             </span>
             <span className="ml-2 font-semibold">
-              {formatPrice(price, lang, discountPercent)}
+              {formatPrice(totalPrice, lang)}
             </span>
           </>
         ) : (
-          <span className="font-semibold">{formatPrice(price, lang)}</span>
+          <span className="font-semibold">{formatPrice(totalPrice, lang)}</span>
         )}
       </div>
     );
@@ -43,37 +77,38 @@ export function Price({
     return (
       <div className={className}>
         <div className="text-xl font-semibold">
-          {formatPrice(price, lang, discountPercent)}
+          {formatPrice(totalPrice, lang)}
         </div>
         {hasDiscount && (
           <>
             <div className="text-sm text-gray-500 line-through">
-              {formatPrice(price, lang)}
+              {formatPrice(price! * quantity, lang)}
             </div>
-            <div className="text-sm text-green-600">Save {discount}</div>
+            <div className="text-sm text-green-600">Save {discountText}</div>
           </>
         )}
       </div>
     );
   }
 
+  // default
   return (
     <div className={className}>
       {hasDiscount ? (
         <div className="flex items-center gap-2">
           <span className="text-2xl font-semibold">
-            {formatPrice(price, lang, discountPercent)}
+            {formatPrice(totalPrice, lang)}
           </span>
           <span className="text-lg text-gray-500 line-through">
-            {formatPrice(price, lang)}
+            {formatPrice(price! * quantity, lang)}
           </span>
           <span className="text-lg border border-green-600 px-2 py-0 text-green-600">
-            Save -{discount}
+            Save -{discountText}
           </span>
         </div>
       ) : (
         <span className="text-lg font-semibold">
-          {formatPrice(price, lang)}
+          {formatPrice(totalPrice, lang)}
         </span>
       )}
     </div>

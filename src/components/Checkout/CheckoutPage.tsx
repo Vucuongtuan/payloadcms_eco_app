@@ -12,12 +12,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cssVariables } from "@/cssVariables";
-import type {
-  Media as MediaType,
-  Product,
-  VariantOption,
-  VariantType,
-} from "@/payload-types";
+import type { Media as MediaType, Product, Variant } from "@/payload-types";
 import { Address } from "@/payload-types";
 import { useAuth } from "@/providers/Auth";
 import { useTheme } from "@/providers/Theme";
@@ -406,26 +401,11 @@ export const CheckoutPage: React.FC = () => {
               if (!quantity) return null;
 
               let image = gallery?.[0]?.image || meta?.image;
-              let price = (product as Product).priceInUSD || 0;
-              let discount = !product.enableVariants && product.discount;
-              let discountValue = "";
+              let price =
+                (product as Product).priceInUSDEnabled && product.priceInUSD;
               const isVariant = Boolean(variant) && typeof variant === "object";
 
               if (isVariant && variant) {
-                const discount = variant?.options?.find((v: any) => {
-                  const variantType =
-                    typeof v.variantType === "number"
-                      ? v.variantType
-                      : (v.variantType as VariantType)?.id;
-                  return variantType === 3;
-                }) as VariantOption | undefined;
-
-                if (variant.priceInUSD) {
-                  price = variant.priceInUSD;
-                }
-                if (discount && discount.value !== "none") {
-                  discountValue = discount.value;
-                }
                 const imageVariant = product.gallery?.find((item) => {
                   if (!item.variantOption) return false;
                   const variantOptionID =
@@ -445,9 +425,6 @@ export const CheckoutPage: React.FC = () => {
                 if (imageVariant && typeof imageVariant.image !== "string") {
                   image = imageVariant.image;
                 }
-              }
-              if (discount && typeof discount === "object") {
-                discountValue = discount.value;
               }
 
               return (
@@ -484,13 +461,11 @@ export const CheckoutPage: React.FC = () => {
                       </div>
                     </div>
 
-                    {typeof price === "number" && (
-                      <Price
-                        price={price}
-                        discount={discountValue}
-                        lang={locale as Lang}
-                      />
-                    )}
+                    <Price
+                      price={price || null}
+                      variants={variant as Variant}
+                      lang={locale as Lang}
+                    />
                   </div>
                 </div>
               );

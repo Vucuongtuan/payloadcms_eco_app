@@ -8,7 +8,7 @@ import { useInfiniteProduct } from "./hooks/useInfiniteProduct";
 
 interface ProductListProps {
   initData: ResponseDocs<Product>;
-  categoryId: number;
+  categoryId: string;
   lang: Lang;
 }
 

@@ -19,7 +19,6 @@ export function ProductInfo({
   data,
   lang,
   selectedVariant,
-  selectedDiscount,
   category,
 }: ProductInfoProps) {
   const t = useTranslations("product.details");
@@ -27,7 +26,6 @@ export function ProductInfo({
   const currentPrice = selectedVariant?.priceInUSD || data.priceInUSD;
   // const displayPricing = data.priceInUSDEnabled && currentPrice;
   const displayStock = selectedVariant?.inventory || data.inventory;
-  const discount = selectedDiscount || null;
   const variantName = (
     selectedVariant?.options.find(
       (opt) =>
@@ -105,7 +103,7 @@ export function ProductInfo({
           transition={{ duration: 0.6, delay: 0.4 }}
           aria-label={t("priceProduct")}
         >
-          <Price lang={lang} price={currentPrice} discount={discount} />
+          <Price lang={lang} price={currentPrice} />
         </motion.div>
       </header>
       <div className="h-px bg-gray-300" role="separator" aria-hidden="true" />

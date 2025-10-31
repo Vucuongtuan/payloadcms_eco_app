@@ -30,24 +30,6 @@ export default function ProductDetails(props: ProductDetailsProps) {
     handleSizeChange,
   } = useProductVariants(doc);
 
-  const discountVariantType = doc.variantTypes?.find(
-    (vt) => typeof vt === "object" && vt.name === "discount"
-  );
-
-  const discountOption = useMemo(() => {
-    if (!selectedVariant || !discountVariantType) return null;
-    return (selectedVariant.options as any[])?.find((opt) => {
-      if (typeof opt !== "object" || !opt.variantType) return false;
-      const vt = opt.variantType;
-      const vtId = typeof vt === "object" ? vt.id : vt;
-      return vtId === (discountVariantType as { id: number }).id;
-    });
-  }, [selectedVariant, discountVariantType]);
-
-  const selectedDiscount = discountOption
-    ? (discountOption as any).value
-    : null;
-
   const selectedGalleryItem = useMemo(() => {
     if (selectedColor) {
       return (
@@ -79,7 +61,6 @@ export default function ProductDetails(props: ProductDetailsProps) {
           data={currentData}
           lang={lang}
           selectedVariant={selectedVariant}
-          selectedDiscount={selectedDiscount}
           category={doc.taxonomies.category as Category}
         />
 
