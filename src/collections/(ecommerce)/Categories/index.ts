@@ -1,10 +1,5 @@
 import { baseField } from "@/fields/baseField";
 import { slugField } from "@/fields/slug";
-import { Category } from "@/payload-types";
-import {
-  deleteEmbeddingFromQdrant,
-  saveEmbeddingToQdrant,
-} from "@/utilities/embedding";
 import { CollectionConfig } from "payload";
 
 export const Categories: CollectionConfig = {
@@ -41,18 +36,7 @@ export const Categories: CollectionConfig = {
   // defaultPopulate: ["title", "description", "slug"],
   // defaultPopulate: ["title", "description", "slug"],
   hooks: {
-    beforeChange: [
-      async ({ data, operation, originalDoc }) => {
-        if (operation === "update" || operation === "create") {
-          await saveEmbeddingToQdrant({
-            data: data as Category,
-            type: "category",
-          });
-        } else if (operation === "delete" && originalDoc) {
-          await deleteEmbeddingFromQdrant(originalDoc.id);
-        }
-      },
-    ],
+    beforeChange: [],
   },
   fields: [...baseField, ...slugField("title", {}, false)],
 };
