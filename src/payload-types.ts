@@ -449,6 +449,11 @@ export interface Category {
   description?: string | null;
   slug?: string | null;
   slugLock?: boolean | null;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    image?: (string | null) | Media;
+  };
   parent?: (string | null) | Category;
   breadcrumbs?:
     | {
@@ -1204,14 +1209,6 @@ export interface PayloadLockedDocument {
         value: string | Transaction;
       } | null)
     | ({
-        relationTo: 'payload-kv';
-        value: string | PayloadKv;
-      } | null)
-    | ({
-        relationTo: 'payload-jobs';
-        value: string | PayloadJob;
-      } | null)
-    | ({
         relationTo: 'payload-folders';
         value: string | FolderInterface;
       } | null);
@@ -1359,6 +1356,13 @@ export interface CategoriesSelect<T extends boolean = true> {
   description?: T;
   slug?: T;
   slugLock?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
   parent?: T;
   breadcrumbs?:
     | T
