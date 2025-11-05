@@ -1,7 +1,5 @@
 import { CollectionConfig } from "payload";
 
-import { slugField } from "@/fields/slug";
-
 export const Tags: CollectionConfig = {
   slug: "tags",
   labels: {
@@ -32,7 +30,7 @@ export const Tags: CollectionConfig = {
       type: "text",
       localized: true,
     },
-    ...slugField("title", {}, true),
+    // ...slugField("title", {}, true),
     // {
     //   name: "breadcrumbs",
     //   type: "ui",

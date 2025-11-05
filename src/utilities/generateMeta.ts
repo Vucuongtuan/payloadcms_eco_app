@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
 
-import type { Page, Post, Product } from "../payload-types";
+import type { Category, Page, Post, Product } from "../payload-types";
 
 import { defaultMeta } from "@/plugin";
+import { Lang } from "@/types";
 import { mergeOpenGraph } from "./mergeOpenGraph";
 
 export const generateMeta = async (args: {
-  doc: Page | Product | Post;
+  doc: Page | Product | Post | Category;
+  lang: Lang;
 }): Promise<Metadata> => {
-  const { doc } = args || {};
+  const { doc, lang = "vi" } = args || {};
 
   const ogImage =
     typeof doc?.meta?.image === "object" &&
@@ -34,12 +36,20 @@ export const generateMeta = async (args: {
       title:
         doc?.meta?.title ||
         doc?.title ||
-        `${defaultMeta.brandName} - Thời trang hiện đại cho giới trẻ`,
+        `${defaultMeta.brandName} - ${
+          lang === "vi"
+            ? "Thời trang hiện đại cho giới trẻ"
+            : "Modern Fashion for Teenagers"
+        }`,
       url: Array.isArray(doc?.slug) ? doc?.slug.join("/") : "/",
     }),
     title:
       doc?.meta?.title ||
       doc?.title ||
-      `${defaultMeta.brandName} - Thời trang hiện đại cho giới trẻ`,
+      `${defaultMeta.brandName} - ${
+        lang === "vi"
+          ? "Thời trang hiện đại cho giới trẻ"
+          : "Modern Fashion for Teenagers"
+      }`,
   };
 };

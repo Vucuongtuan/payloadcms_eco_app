@@ -34,7 +34,13 @@ export const findPageDoc = async (
   )();
 };
 
-export const findCategoryBySlug = ({ slug }: { slug: string }) => {
+export const findCategoryBySlug = ({
+  slug,
+  lang,
+}: {
+  slug: string;
+  lang: Lang;
+}) => {
   return cacheFunc(
     async () => {
       const [result, err] = await query<ResponseDocs<Category>>((payload) => {
@@ -46,14 +52,15 @@ export const findCategoryBySlug = ({ slug }: { slug: string }) => {
             },
           },
           limit: 1,
+          locale: lang,
         });
       });
       if (err) throw err;
       return result.docs[0] as Category;
     },
-    [`category`, slug],
+    [`category`, lang, slug],
     {
-      tags: [`category:${slug}`],
+      tags: [`category:${lang}-${slug}`],
     }
   )();
 };
