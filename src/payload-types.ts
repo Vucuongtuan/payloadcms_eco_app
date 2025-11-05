@@ -75,7 +75,6 @@ export interface Config {
     users: User;
     media: Media;
     categories: Category;
-    tags: Tag;
     reviews: Review;
     newsletter: Newsletter;
     'email-subscribe': EmailSubscribe;
@@ -83,6 +82,7 @@ export interface Config {
     posts: Post;
     screen: Screen;
     notifications: Notification;
+    tags: Tag;
     search: Search;
     addresses: Address;
     variants: Variant;
@@ -119,7 +119,6 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
-    tags: TagsSelect<false> | TagsSelect<true>;
     reviews: ReviewsSelect<false> | ReviewsSelect<true>;
     newsletter: NewsletterSelect<false> | NewsletterSelect<true>;
     'email-subscribe': EmailSubscribeSelect<false> | EmailSubscribeSelect<true>;
@@ -127,6 +126,7 @@ export interface Config {
     posts: PostsSelect<false> | PostsSelect<true>;
     screen: ScreenSelect<false> | ScreenSelect<true>;
     notifications: NotificationsSelect<false> | NotificationsSelect<true>;
+    tags: TagsSelect<false> | TagsSelect<true>;
     search: SearchSelect<false> | SearchSelect<true>;
     addresses: AddressesSelect<false> | AddressesSelect<true>;
     variants: VariantsSelect<false> | VariantsSelect<true>;
@@ -745,8 +745,6 @@ export interface Variant {
 export interface Tag {
   id: string;
   title?: string | null;
-  slug?: string | null;
-  slugLock?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1141,10 +1139,6 @@ export interface PayloadLockedDocument {
         value: string | Category;
       } | null)
     | ({
-        relationTo: 'tags';
-        value: string | Tag;
-      } | null)
-    | ({
         relationTo: 'reviews';
         value: string | Review;
       } | null)
@@ -1171,6 +1165,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'notifications';
         value: string | Notification;
+      } | null)
+    | ({
+        relationTo: 'tags';
+        value: string | Tag;
       } | null)
     | ({
         relationTo: 'search';
@@ -1379,17 +1377,6 @@ export interface CategoriesSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "tags_select".
- */
-export interface TagsSelect<T extends boolean = true> {
-  title?: T;
-  slug?: T;
-  slugLock?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "reviews_select".
  */
 export interface ReviewsSelect<T extends boolean = true> {
@@ -1595,6 +1582,15 @@ export interface NotificationsSelect<T extends boolean = true> {
   targetUser?: T;
   platform?: T;
   sendMail?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tags_select".
+ */
+export interface TagsSelect<T extends boolean = true> {
+  title?: T;
   updatedAt?: T;
   createdAt?: T;
 }

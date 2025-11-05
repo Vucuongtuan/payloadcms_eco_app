@@ -4,7 +4,7 @@ import { Lang } from "@/types";
 import { generateMeta } from "@/utilities/generateMeta";
 import { genStaticParams } from "@/utilities/generateStaticParam";
 import { notFound } from "next/navigation";
-import { cache } from "react";
+import { cache, Suspense } from "react";
 
 // Generate static params for all categories
 //    - vi, en
@@ -22,7 +22,7 @@ interface Props {
 }
 export default async function PageCollection({ params }: Props) {
   "use memo"; // react compiler mode
-  const { lang = "vi", slug } = await params;
+  const { lang, slug } = await params;
   const [category, products] = await Promise.all([
     memoizingCache({ slug, lang: lang as Lang }),
     findListProductByCategory({ lang: lang as Lang, slug }),
@@ -35,11 +35,15 @@ export default async function PageCollection({ params }: Props) {
         description={category.description || ""}
       /> */}
       {/* <ListProduct data={products}/> */}
-      <ProductList
-        categoryId={category.id}
-        initData={products}
-        lang={lang as Lang}
-      />
+      {!products ? null : (
+        <Suspense>
+          <ProductList
+            categoryId={category.id}
+            initData={products}
+            lang={lang as Lang}
+          />
+        </Suspense>
+      )}
     </>
   );
 }

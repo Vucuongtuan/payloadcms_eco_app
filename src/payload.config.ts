@@ -37,7 +37,7 @@ const maxLengthSEO: Record<string, number> = {
   title: 60,
   description: 150
 }
-const allCollections = [Users, Media, Categories, Tags,Reviews, Newsletter, EmailSubscribe, Pages, Posts,Screen,Notifications]
+const allCollections = [Users, Media, Categories,Reviews, Newsletter, EmailSubscribe, Pages, Posts,Screen,Notifications,Tags]
 const golobalCollections = [Header, Footer,Rate]
 const applySearchForCollection = ['categories', 'products',  'posts']
 const applySEOForCollection = ['categories', 'products',  'posts', 'pages']

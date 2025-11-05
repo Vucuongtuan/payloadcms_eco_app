@@ -21,9 +21,11 @@ export const genStaticParams = async ({
     payload.find({
       collection,
       where: {
-        _status: {
-          equals: "published",
-        },
+        ...(collection !== "categories" && {
+          _status: {
+            equals: "published",
+          },
+        }),
       },
       sort: "-publishedAt",
       limit,
