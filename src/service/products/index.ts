@@ -68,7 +68,7 @@ export const findSlugAllProduct = async (): Promise<ProductSlug[]> =>
               equals: "published",
             },
           },
-          limit: LIMIT_STATIC_PRODUCT,
+          limit: Number(LIMIT_STATIC_PRODUCT),
           select: {
             slug: true,
           },

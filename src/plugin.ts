@@ -51,7 +51,7 @@ const applySearchForCollection = [
   "posts",
   "pages",
 ];
-const applySEOForCollection = ["products", "variants", "posts", "pages"];
+const applySEOForCollection = ["products", "posts", "pages", "categories"];
 
 // override field for seo plugin disable localized
 const overrideSEOFields: FieldsOverride = ({ defaultFields }) => {

@@ -8,18 +8,33 @@ import {
   RichText as RichTextWithoutBlocks,
 } from "@payloadcms/richtext-lexical/react";
 
-import { MediaBlock } from "@/blocks/(web)/MediaBlock/Component";
-import type { MediaBlock as MediaBlockProps } from "@/payload-types";
+import { Media } from "@/payload-types";
 import { cn } from "@/utilities/cn";
 
-type NodeTypes = DefaultNodeTypes | SerializedBlockNode<MediaBlockProps>;
+type NodeTypes = DefaultNodeTypes | SerializedBlockNode;
 
 const jsxConverters: JSXConvertersFunction<NodeTypes> = ({
   defaultConverters,
 }) => ({
   ...defaultConverters,
-  blocks: {
-    mediaBlock: ({ node }) => <MediaBlock {...node.fields} />,
+  blocks: {},
+  upload: ({ node, ...props }) => {
+    const defaultElement = defaultConverters.upload;
+
+    const element =
+      typeof defaultElement === "function"
+        ? defaultElement({ node, ...props })
+        : defaultElement;
+
+    const media = node.value as Media;
+    const caption = media?.caption;
+
+    return (
+      <figure>
+        {element}
+        {caption && <figcaption>{caption}</figcaption>}
+      </figure>
+    );
   },
 });
 
