@@ -32,9 +32,7 @@ const nextConfig = {
   },
 
   // react compiler
-  reactCompiler: true,
 
-  cacheComponents: true,
 
   //  Experimental Beta
   experimental: {
@@ -42,9 +40,11 @@ const nextConfig = {
     // reactCompiler: {
     //   compilationMode: "annotation",
     // },
+    reactCompiler: true,
+
     inlineCss: true,
 
-    turbopackFileSystemCacheForDev: true,
+    // turbopackFileSystemCacheForDev: true,
     // viewTransition: true,
     // ppr: "incremental",
 
