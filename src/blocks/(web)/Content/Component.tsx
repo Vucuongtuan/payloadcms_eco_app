@@ -5,6 +5,13 @@ import { layoutCtn } from "@/utilities/cssVariable";
 import type { DefaultDocumentIDType } from "payload";
 import React from "react";
 
+export const colsSpanClasses = {
+  full: "lg:col-span-12",
+  half: "lg:col-span-6",
+  oneThird: "lg:col-span-4",
+  twoThirds: "lg:col-span-8",
+};
+
 export const ContentBlock: React.FC<
   ContentBlockProps & {
     id?: DefaultDocumentIDType;
@@ -13,12 +20,6 @@ export const ContentBlock: React.FC<
 > = (props) => {
   const { columns, layout } = props;
 
-  const colsSpanClasses = {
-    full: "lg:col-span-12",
-    half: "lg:col-span-6",
-    oneThird: "lg:col-span-4",
-    twoThirds: "lg:col-span-8",
-  };
   return (
     <div className={`${layoutCtn(layout || "container")} my-16`}>
       <div className="grid grid-cols-4 lg:grid-cols-12 gap-y-8 gap-x-16">

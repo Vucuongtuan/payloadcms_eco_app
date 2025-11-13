@@ -22,12 +22,13 @@ export const MediaBlock: React.FC<MediaBlockProps> = ({
   // Template: image-only
   if (template === "image-only") {
     return (
-      <div className={cn(baseClasses, "aspect-wide")}>
+      <div className={cn(baseClasses)}>
         <Media
           imgClassName="w-full object-cover"
-          fClassName={`relative ${aspectClasses}`}
+          fClassName={`relative  ${aspectClasses}`}
           fill
           resource={media}
+          imgSize="large"
         />
       </div>
     );
@@ -69,7 +70,7 @@ export const MediaBlock: React.FC<MediaBlockProps> = ({
             )}
             {cta?.link && cta?.link.label && (
               <CMSLink
-                className="bg-transparent border-black border-[1px] px-4 py-4 text-black rounded-sm hover:bg-transparent text-lg"
+                className="bg-transparent border-black border px-4 py-4 text-black rounded-sm hover:bg-transparent text-lg"
                 {...cta.link}
               />
             )}
