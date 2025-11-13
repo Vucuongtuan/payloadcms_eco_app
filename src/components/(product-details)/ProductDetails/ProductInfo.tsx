@@ -2,6 +2,7 @@
 import { Price } from "@/components/Price";
 import { Category, Variant } from "@/payload-types";
 import { Lang } from "@/types";
+import { getDisplayPrice } from "@/utilities/getPriceValue";
 import { motion } from "framer-motion";
 import { ChevronRight } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -11,7 +12,6 @@ interface ProductInfoProps {
   lang: Lang;
   data: any;
   selectedVariant?: Variant | null;
-  selectedDiscount?: string | null;
   category: Category;
 }
 
@@ -23,7 +23,6 @@ export function ProductInfo({
 }: ProductInfoProps) {
   const t = useTranslations("product.details");
   // Fix price display logic
-  const currentPrice = selectedVariant?.priceInUSD || data.priceInUSD;
   // const displayPricing = data.priceInUSDEnabled && currentPrice;
   const displayStock = selectedVariant?.inventory || data.inventory;
   const variantName = (
@@ -34,6 +33,7 @@ export function ProductInfo({
           ?.id
     ) as { label: string }
   )?.label;
+  const price = getDisplayPrice(data, selectedVariant);
 
   return (
     <motion.div
@@ -80,7 +80,7 @@ export function ProductInfo({
           <div className="flex items-center gap-2">
             {variantName && (
               <span className="text-sm text-muted-foreground">
-                {t("variantField")}: {variantName}
+                {t("variantField")}: {variantName} --- 123
               </span>
             )}
             <span
@@ -88,10 +88,10 @@ export function ProductInfo({
               aria-hidden="true"
             />
             {displayStock && (
-              <span className="text-green-600">{t("inStock")}</span>
+              <span className="text-green-600">{t("inStock")} sss</span>
             )}
             {!displayStock && (
-              <span className="text-red-600">{t("outOfStock")}</span>
+              <span className="text-red-600">{t("outOfStock")} oo</span>
             )}
           </div>
         </motion.div>
@@ -103,7 +103,7 @@ export function ProductInfo({
           transition={{ duration: 0.6, delay: 0.4 }}
           aria-label={t("priceProduct")}
         >
-          <Price lang={lang} price={currentPrice} />
+          <Price lang={lang} {...price} />
         </motion.div>
       </header>
       <div className="h-px bg-gray-300" role="separator" aria-hidden="true" />

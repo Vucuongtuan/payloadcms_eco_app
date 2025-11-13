@@ -18,7 +18,6 @@ import { Button } from "@/components/ui/button";
 import {
   Media as MediaType,
   Product,
-  Variant,
   VariantOption,
   VariantType,
 } from "@/payload-types";
@@ -136,13 +135,15 @@ export function CartModal() {
 
                   let image = firstGalleryImage || metaImage;
 
-                  let price = product.priceInUSDEnabled && product.priceInUSD;
+                  let price =
+                    product.priceInUSDEnabled && (product.priceInUSD as number);
 
                   const isVariant =
                     Boolean(variant) && typeof variant === "object";
 
                   // ---
                   if (isVariant) {
+                    price = variant?.priceInUSD;
                     const imageVariant = product.gallery?.find((item) => {
                       if (!item.variantOption) return false;
                       const variantOptionID =
@@ -209,9 +210,7 @@ export function CartModal() {
                         <div className="flex h-16 flex-col justify-between">
                           <Price
                             lang={locale as Lang}
-                            price={price || null}
-                            quantity={item.quantity}
-                            variants={variant as Variant}
+                            amount={price || 0}
                             className="flex justify-end space-y-2 text-right text-sm"
                           />
                           <div className="ml-auto flex h-9 flex-row items-center rounded-lg border">
@@ -237,7 +236,7 @@ export function CartModal() {
                       <p>{t("total")}</p>
 
                       <Price
-                        price={totalPrice}
+                        amount={totalPrice}
                         lang={"en"}
                         className="text-right text-base text-black dark:text-white"
                       />

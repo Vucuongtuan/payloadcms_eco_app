@@ -1,116 +1,50 @@
-import { Variant } from "@/payload-types";
+"use client";
+
 import { Lang } from "@/types";
-import { formatPrice } from "@/utilities/convertPrice";
+import { useCurrency } from "@payloadcms/plugin-ecommerce/client/react";
+import React from "react";
 
-interface PriceProps {
-  price?: number | null;
-  variants?: Variant; // Giá của variant
-  variant?: "default" | "compact" | "detailed";
+type Props = {
+  amount: number;
+  originalAmount?: number;
+  discountPercent?: number;
   className?: string;
-  quantity?: number;
+  as?: "span" | "p";
   lang: Lang;
-}
+};
 
-export function Price({
-  price,
-  variants,
-  variant = "default",
-  className = "",
-  quantity = 1,
+export const Price = ({
+  amount,
+  originalAmount,
+  discountPercent,
+  className,
+  as = "p",
   lang,
-}: PriceProps) {
-  const unitPrice = (() => {
-    if (price != null) {
-      if (
-        variants?.priceInUSDEnabled &&
-        variants.priceInUSD != null &&
-        variants.priceInUSD < price
-      ) {
-        return variants.priceInUSD;
-      }
-      return price;
-    }
-    // fallback: không có price gốc nhưng variant có giá
-    if (variants?.priceInUSDEnabled && variants.priceInUSD != null) {
-      return variants.priceInUSD;
-    }
-    return null;
-  })();
+}: Props & React.ComponentProps<"p">) => {
+  const { formatCurrency } = useCurrency();
+  const Element = as;
 
-  if (unitPrice == null || quantity <= 0) return null;
-
-  const totalPrice = unitPrice * quantity;
-
-  const hasDiscount =
-    variants?.priceInUSDEnabled &&
-    variants.priceInUSD != null &&
-    price != null &&
-    variants.priceInUSD < price;
-
-  const discountPercent =
-    hasDiscount && price
-      ? Math.round(((price - variants!.priceInUSD!) / price) * 100)
-      : 0;
-  const discountText = hasDiscount ? `${discountPercent}%` : "";
-
-  // Render theo variant layout
-  if (variant === "compact") {
-    return (
-      <div className={className}>
-        {hasDiscount ? (
-          <>
-            <span className="line-through text-gray-500">
-              {formatPrice(price! * quantity, lang)}
-            </span>
-            <span className="ml-2 font-semibold">
-              {formatPrice(totalPrice, lang)}
-            </span>
-          </>
-        ) : (
-          <span className="font-semibold">{formatPrice(totalPrice, lang)}</span>
-        )}
-      </div>
-    );
-  }
-
-  if (variant === "detailed") {
-    return (
-      <div className={className}>
-        <div className="text-xl font-semibold">
-          {formatPrice(totalPrice, lang)}
-        </div>
-        {hasDiscount && (
-          <>
-            <div className="text-sm text-gray-500 line-through">
-              {formatPrice(price! * quantity, lang)}
-            </div>
-            <div className="text-sm text-green-600">Save {discountText}</div>
-          </>
-        )}
-      </div>
-    );
-  }
-
-  // default
   return (
-    <div className={className}>
-      {hasDiscount ? (
-        <div className="flex items-center gap-2">
-          <span className="text-2xl font-semibold">
-            {formatPrice(totalPrice, lang)}
-          </span>
-          <span className="text-lg text-gray-500 line-through">
-            {formatPrice(price! * quantity, lang)}
-          </span>
-          <span className="text-lg border border-green-600 px-2 py-0 text-green-600">
-            Save -{discountText}
-          </span>
-        </div>
-      ) : (
-        <span className="text-lg font-semibold">
-          {formatPrice(totalPrice, lang)}
+    <Element
+      className={`flex items-center gap-3 ${className || ""}`}
+      suppressHydrationWarning
+    >
+      {/* Nếu có giảm giá thì show badge */}
+      {discountPercent && (
+        <span className="bg-red-600 text-white text-xs px-2 py-[1px] rounded-md font-medium">
+          -{discountPercent}%
         </span>
       )}
-    </div>
+
+      <span className="font-semibold text-foreground">
+        {formatCurrency(amount)}
+      </span>
+
+      {originalAmount && (
+        <span className="line-through opacity-50 text-muted-foreground">
+          {formatCurrency(originalAmount)}
+        </span>
+      )}
+    </Element>
   );
-}
+};

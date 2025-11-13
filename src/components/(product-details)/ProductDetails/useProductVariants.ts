@@ -18,8 +18,10 @@ export function useProductVariants(doc: Product) {
         typeof item.variantOption === "object" &&
         item.variantOption.variantType &&
         typeof item.variantOption.variantType === "object" &&
-        item.variantOption.variantType.name === "Colors"
+        item.variantOption.variantType.name === "color"
     ) || [];
+  console.log({ colorVariants });
+
   const [selectedColor, setSelectedColor] = useState<any | null>(() => {
     const variantParam = searchParams.get("variant");
     if (variantParam && colorVariants.length > 0) {
@@ -47,7 +49,7 @@ export function useProductVariants(doc: Product) {
 
   // Size
   const sizeVariantType = doc.variantTypes?.find(
-    (vt) => typeof vt === "object" && vt.name === "Sizes"
+    (vt) => typeof vt === "object" && vt.name === "size"
   );
   const sizeVariants =
     sizeVariantType &&
@@ -68,7 +70,7 @@ export function useProductVariants(doc: Product) {
     setSelectedSize(size);
     const params = new URLSearchParams(searchParams);
     if (size.id !== sizeVariants[0].id) {
-      params.set("size", size.value);
+      params.set("size", size.value.toUpperCase());
     } else {
       params.delete("size");
     }
@@ -76,17 +78,6 @@ export function useProductVariants(doc: Product) {
     router.replace(newUrl, { scroll: false });
   };
 
-  // Discount
-  const discountVariantType = doc.variantTypes?.find(
-    (vt) => typeof vt === "object" && vt.name === "discount"
-  );
-  const discountVariants =
-    discountVariantType &&
-    typeof discountVariantType === "object" &&
-    discountVariantType.options &&
-    "docs" in discountVariantType.options
-      ? (discountVariantType.options.docs as any[])
-      : [];
   const [selectedVariant, setSelectedVariant] = useState<Variant | null>(null);
   useEffect(() => {
     if (selectedColor && selectedSize) {
@@ -109,7 +100,7 @@ export function useProductVariants(doc: Product) {
       setSelectedVariant(null);
     }
   }, [selectedColor?.id, selectedSize?.id]);
-  console.log({ selectedVariant, variants, colorVariants, doc });
+
   return {
     variants,
     colorVariants,

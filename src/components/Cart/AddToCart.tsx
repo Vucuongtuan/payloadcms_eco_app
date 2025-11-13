@@ -23,6 +23,10 @@ export function AddToCart({ product, selectedVariant, quantity }: Props) {
     (e: React.FormEvent<HTMLButtonElement>) => {
       e.preventDefault();
       setMessageAction(t("adding"));
+      console.log({
+        product: product.id,
+        variant: selectedVariant?.id ?? undefined,
+      });
       addItem(
         {
           product: product.id,
