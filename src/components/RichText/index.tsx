@@ -8,9 +8,9 @@ import {
   RichText as RichTextWithoutBlocks,
 } from "@payloadcms/richtext-lexical/react";
 
-import { extendDefaultColor } from "@/fields/defaultLexical";
 import { Media } from "@/payload-types";
 import { cn } from "@/utilities/cn";
+import { color } from "./colorState";
 
 type NodeTypes = DefaultNodeTypes | SerializedBlockNode;
 
@@ -48,8 +48,10 @@ const jsxConverters: JSXConvertersFunction<NodeTypes> = ({
       const textState = (node.$ as { color: string }).color;
       const type = textState.includes("bg-") ? "background" : "text";
       return (
-        //@ts-expect-error
-        <span style={extendDefaultColor[type][textState].css} {...props}>
+        <span
+          style={(color as Record<string, any>)[type][textState]?.css}
+          {...props}
+        >
           {node.text}
         </span>
       );
