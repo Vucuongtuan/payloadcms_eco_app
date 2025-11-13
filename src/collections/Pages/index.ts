@@ -6,6 +6,7 @@ import { Carousel } from "@/blocks/(web)/Carousel/config";
 import { ColumnMedia } from "@/blocks/(web)/ColumnMedia/config";
 import { Content } from "@/blocks/(web)/Content/config";
 import { MediaBlock } from "@/blocks/(web)/MediaBlock/config";
+import { RowBlock } from "@/blocks/(web)/Row/config";
 import { slugField } from "@/fields/slug";
 import { generatePreviewPath } from "@/utilities/generatePreviewPath";
 import { revalidateDelete, revalidatePage } from "./hooks/revalidatePage";
@@ -80,7 +81,7 @@ export const Pages: CollectionConfig = {
             {
               name: "sections",
               type: "blocks",
-              blocks: [Content, MediaBlock, Carousel, ColumnMedia],
+              blocks: [Content, MediaBlock, Carousel, ColumnMedia, RowBlock],
             },
           ],
           label: "Layout",

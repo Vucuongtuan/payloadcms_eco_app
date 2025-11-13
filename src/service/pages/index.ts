@@ -25,7 +25,7 @@ export const findPageDoc = async (
         });
       });
       if (err) throw err;
-      return result.docs[0] as Page;
+      return result.docs[0];
     },
     [`page`, lang, slug],
     {
