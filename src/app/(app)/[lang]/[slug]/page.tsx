@@ -8,6 +8,10 @@ import { Lang } from "@/types";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
+function isPage(doc: Page | Error): doc is Page {
+  return !(doc instanceof Error);
+}
+
 interface PageProps {
   params: Promise<{
     lang: Lang;
@@ -22,13 +26,18 @@ export default async function PageTemplate({ params }: PageProps) {
   const isHomepage = slug === "";
   const doc = await findPageDoc(lang, isHomepage ? "home" : slug);
 
-  if (!doc) {
+  if (!doc || doc instanceof Error) {
     return notFound();
   }
+
   return (
     <>
-      {!isHomepage && <MetaTitle title={(doc as Page).title} align="center" />}
-      <RenderBlocks blocks={(doc as Page).sections} />
+      {!isHomepage ? (
+        <MetaTitle title={doc.title} align="center" />
+      ) : (
+        <h1 className="sr-only">{doc?.meta?.title || doc?.title}</h1>
+      )}
+      <RenderBlocks blocks={doc.sections} />
     </>
   );
 }
