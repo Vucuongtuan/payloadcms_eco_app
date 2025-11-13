@@ -8,6 +8,7 @@ import {
   RichText as RichTextWithoutBlocks,
 } from "@payloadcms/richtext-lexical/react";
 
+import { extendDefaultColor } from "@/fields/defaultLexical";
 import { Media } from "@/payload-types";
 import { cn } from "@/utilities/cn";
 
@@ -15,28 +16,46 @@ type NodeTypes = DefaultNodeTypes | SerializedBlockNode;
 
 const jsxConverters: JSXConvertersFunction<NodeTypes> = ({
   defaultConverters,
-}) => ({
-  ...defaultConverters,
-  blocks: {},
-  upload: ({ node, ...props }) => {
-    const defaultElement = defaultConverters.upload;
+}) => {
+  return {
+    ...defaultConverters,
+    blocks: {},
+    upload: ({ node, ...props }) => {
+      const defaultElement = defaultConverters.upload;
 
-    const element =
-      typeof defaultElement === "function"
-        ? defaultElement({ node, ...props })
-        : defaultElement;
+      const element =
+        typeof defaultElement === "function"
+          ? defaultElement({ node, ...props })
+          : defaultElement;
 
-    const media = node.value as Media;
-    const caption = media?.caption;
+      const media = node.value as Media;
+      const caption = media?.caption;
 
-    return (
-      <figure>
-        {element}
-        {caption && <figcaption>{caption}</figcaption>}
-      </figure>
-    );
-  },
-});
+      return (
+        <figure>
+          {element}
+          {caption && <figcaption>{caption}</figcaption>}
+        </figure>
+      );
+    },
+    text: ({ node, ...props }) => {
+      const defaultText = defaultConverters.text;
+      const element =
+        typeof defaultText === "function"
+          ? defaultText({ node, ...props })
+          : defaultText;
+      if (!node.$ || !node.$.color) return element;
+      const textState = (node.$ as { color: string }).color;
+      const type = textState.includes("bg-") ? "background" : "text";
+      return (
+        //@ts-expect-error
+        <span style={extendDefaultColor[type][textState].css} {...props}>
+          {node.text}
+        </span>
+      );
+    },
+  };
+};
 
 type Props = {
   data: SerializedEditorState;

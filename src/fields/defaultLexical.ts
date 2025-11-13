@@ -14,7 +14,7 @@ import {
   OrderedListFeature,
   TextStateFeature,
   UnderlineFeature,
-  UnorderedListFeature
+  UnorderedListFeature,
 } from "@payloadcms/richtext-lexical";
 export type HeadingTagType = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 
@@ -45,7 +45,7 @@ export const defaultLexical = ({
         ItalicFeature(),
         OrderedListFeature(),
         UnorderedListFeature(),
-         InlineToolbarFeature(),
+        InlineToolbarFeature(),
         IndentFeature(),
         ...defaultFeatures,
       ];
@@ -62,23 +62,7 @@ export const defaultLexical = ({
         features.push(
           TextStateFeature({
             state: {
-              color: {
-                ...defaultColors.background,
-                ...defaultColors.text,
-                galaxy: {
-                  label: "Galaxy",
-                  css: {
-                    background: "linear-gradient(to right, #0000ff, #ff0000)",
-                    color: "white",
-                  },
-                },
-                sunset: {
-                  label: "Sunset",
-                  css: {
-                    background: "linear-gradient(to top, #ff5f6d, #6a3093)",
-                  },
-                },
-              } as any,
+              color: extendDefaultColor as any,
             },
           })
         );
@@ -118,3 +102,31 @@ export const defaultLexical = ({
       return features;
     },
   });
+
+export const extendDefaultColor = {
+  text: {
+    ...defaultColors.text,
+    white: {
+      label: "white",
+      css: {
+        color: "white",
+      },
+    },
+  },
+  background: {
+    ...defaultColors.background,
+    "bg-galaxy": {
+      label: "Galaxy",
+      css: {
+        "background-color": "linear-gradient(to right, #0000ff, #ff0000)",
+        color: "white",
+      },
+    },
+    "bg-sunset": {
+      label: "Sunset",
+      css: {
+        "background-color": "linear-gradient(to top, #ff5f6d, #6a3093)",
+      },
+    },
+  },
+};

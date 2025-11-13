@@ -512,6 +512,8 @@ export interface ContentBlock {
   columns?:
     | {
         size?: ('oneThird' | 'half' | 'twoThirds' | 'full') | null;
+        type?: ('content' | 'media') | null;
+        media?: (string | null) | Media;
         richText?: {
           root: {
             type: string;
@@ -645,6 +647,7 @@ export interface Page {
             blockName?: string | null;
             blockType: 'columnMedia';
           }
+        | RowBlock
       )[]
     | null;
   slug: string;
@@ -717,6 +720,19 @@ export interface Carousel {
   id?: string | null;
   blockName?: string | null;
   blockType: 'carousel';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "RowBlock".
+ */
+export interface RowBlock {
+  layout?: ('container' | 'full' | 'wide' | 'narrow') | null;
+  spacing?: ('none' | 'small' | 'medium' | 'large') | null;
+  background: string;
+  row?: ContentBlock[] | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'rowBlock';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1445,6 +1461,7 @@ export interface PagesSelect<T extends boolean = true> {
               id?: T;
               blockName?: T;
             };
+        rowBlock?: T | RowBlockSelect<T>;
       };
   slug?: T;
   slugLock?: T;
@@ -1471,6 +1488,8 @@ export interface ContentBlockSelect<T extends boolean = true> {
     | T
     | {
         size?: T;
+        type?: T;
+        media?: T;
         richText?: T;
         id?: T;
       };
@@ -1533,6 +1552,22 @@ export interface CarouselSelect<T extends boolean = true> {
   layout?: T;
   spacing?: T;
   aspect?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "RowBlock_select".
+ */
+export interface RowBlockSelect<T extends boolean = true> {
+  layout?: T;
+  spacing?: T;
+  background?: T;
+  row?:
+    | T
+    | {
+        content?: T | ContentBlockSelect<T>;
+      };
   id?: T;
   blockName?: T;
 }
