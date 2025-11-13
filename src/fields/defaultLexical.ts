@@ -2,20 +2,21 @@ import { Config } from "payload";
 
 import {
   BoldFeature,
-  defaultColors,
   EXPERIMENTAL_TableFeature,
   FixedToolbarFeature,
   HeadingFeature,
   IndentFeature,
   InlineToolbarFeature,
   ItalicFeature,
-  lexicalEditor,
   LinkFeature,
   OrderedListFeature,
   TextStateFeature,
   UnderlineFeature,
   UnorderedListFeature,
+  lexicalEditor,
 } from "@payloadcms/richtext-lexical";
+import { extendDefaultColor } from "./textStateExtend";
+
 export type HeadingTagType = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 
 type LexicalFeatureOptions = {
@@ -102,31 +103,3 @@ export const defaultLexical = ({
       return features;
     },
   });
-
-export const extendDefaultColor = {
-  text: {
-    ...defaultColors.text,
-    white: {
-      label: "white",
-      css: {
-        color: "white",
-      },
-    },
-  },
-  background: {
-    ...defaultColors.background,
-    "bg-galaxy": {
-      label: "Galaxy",
-      css: {
-        "background-color": "linear-gradient(to right, #0000ff, #ff0000)",
-        color: "white",
-      },
-    },
-    "bg-sunset": {
-      label: "Sunset",
-      css: {
-        "background-color": "linear-gradient(to top, #ff5f6d, #6a3093)",
-      },
-    },
-  },
-};
