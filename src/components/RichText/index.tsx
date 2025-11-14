@@ -8,18 +8,25 @@ import {
   RichText as RichTextWithoutBlocks,
 } from "@payloadcms/richtext-lexical/react";
 
-import { Media } from "@/payload-types";
+import { StickyElementComp } from "@/blocks/(web)/lexical/StickyElement/Component";
+import { Media, StickyElementBlockProps } from "@/payload-types";
 import { cn } from "@/utilities/cn";
 import { color } from "./colorState";
 
-type NodeTypes = DefaultNodeTypes | SerializedBlockNode;
+type NodeTypes =
+  | DefaultNodeTypes
+  | SerializedBlockNode<StickyElementBlockProps>;
 
 const jsxConverters: JSXConvertersFunction<NodeTypes> = ({
   defaultConverters,
 }) => {
   return {
     ...defaultConverters,
-    blocks: {},
+    blocks: {
+      StickyElementBlock: ({ node }) => {
+        return <StickyElementComp {...node.fields} />;
+      },
+    },
     upload: ({ node, ...props }) => {
       const defaultElement = defaultConverters.upload;
 

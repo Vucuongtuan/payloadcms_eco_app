@@ -20,7 +20,7 @@ export default function MetaTitle(props: MetaTitleProps) {
         align === "left" && "text-left"
       )}
     >
-      <h1 className="text-5xl font-bold ">{title}</h1>
+      <h1 className="text-9xl font-bold ">{title}</h1>
       {description && <p>{description}</p>}
     </Comp>
   );

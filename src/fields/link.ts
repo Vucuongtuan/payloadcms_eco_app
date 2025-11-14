@@ -24,6 +24,7 @@ type LinkType = (options?: {
   overrides?: Record<string, unknown>;
   localeLabel?: boolean;
   isMobile?: boolean;
+  admin?: any;
 }) => Field;
 
 export const link: LinkType = ({
@@ -32,12 +33,14 @@ export const link: LinkType = ({
   overrides = {},
   localeLabel = false,
   isMobile = false,
+  admin = {},
 } = {}) => {
   const linkResult: Field = {
     name: "link",
     type: "group",
     admin: {
       hideGutter: true,
+      ...admin,
     },
     fields: [
       {

@@ -62,7 +62,9 @@ export const MediaBlock: Block = {
                   type: "richText",
                   localized: true,
                 },
-                link({ disableLabel: false }),
+                link({
+                  disableLabel: false,
+                }),
               ],
               admin: {
                 condition: (_, { template } = {}) => template !== "image-only",

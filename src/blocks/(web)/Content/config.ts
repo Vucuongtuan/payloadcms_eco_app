@@ -54,6 +54,7 @@ const columnFields: Field[] = [
       enableTextState: true,
       enableLink: true,
       enableTable: true,
+      enableBlock: true,
     }),
     label: false,
     localized: true,

@@ -1,6 +1,8 @@
 import { Config } from "payload";
 
+import { StickyElementBlock } from "@/blocks/(web)/lexical/StickyElement/config";
 import {
+  BlocksFeature,
   BoldFeature,
   EXPERIMENTAL_TableFeature,
   FixedToolbarFeature,
@@ -25,6 +27,7 @@ type LexicalFeatureOptions = {
   enableTextState?: boolean;
   enableLink?: boolean;
   enableTable?: boolean;
+  enableBlock?: boolean;
 };
 
 export const defaultLexical = ({
@@ -33,6 +36,7 @@ export const defaultLexical = ({
   enableTextState = true,
   enableLink = true,
   enableTable = true,
+  enableBlock = true,
 }: LexicalFeatureOptions = {}): Config["editor"] =>
   lexicalEditor({
     features: ({ defaultFeatures }) => {
@@ -50,7 +54,13 @@ export const defaultLexical = ({
         IndentFeature(),
         ...defaultFeatures,
       ];
-
+      if (enableBlock) {
+        features.push(
+          BlocksFeature({
+            blocks: [StickyElementBlock],
+          })
+        );
+      }
       if (enableHeading) {
         features.push(
           HeadingFeature({
