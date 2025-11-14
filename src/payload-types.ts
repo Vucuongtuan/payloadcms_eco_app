@@ -2187,6 +2187,33 @@ export interface TaskSchedulePublish {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "StickyElementBlockProps".
+ */
+export interface StickyElementBlockProps {
+  first?: ('text' | 'media') | null;
+  stickyCol?: ('text' | 'media') | null;
+  content?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  image?: (string | Media)[] | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'StickyElementBlock';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "auth".
  */
 export interface Auth {
