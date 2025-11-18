@@ -10,6 +10,7 @@ import { Page } from "@/payload-types";
 import { spacing } from "@/utilities/cssVariable";
 import { CarouselBlock } from "./Carousel/Components";
 import { ColumnMedia } from "./ColumnMedia/Component";
+import { ListProductsComp } from "./ListProduct/Component";
 import { RowBlock } from "./Row/Component";
 
 const blockComponents = {
@@ -18,6 +19,7 @@ const blockComponents = {
   columnMedia: ColumnMedia,
   carousel: CarouselBlock,
   rowBlock: RowBlock,
+  ListProducts: ListProductsComp,
 };
 export const RenderBlocks: React.FC<{
   blocks: Page["sections"];

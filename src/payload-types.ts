@@ -606,7 +606,6 @@ export interface Page {
     | (
         | ContentBlock
         | MediaBlock
-        | Carousel
         | {
             items?:
               | {
@@ -648,6 +647,8 @@ export interface Page {
             blockType: 'columnMedia';
           }
         | RowBlock
+        | Carousel
+        | ListProductsBlock
       )[]
     | null;
   slug: string;
@@ -661,6 +662,19 @@ export interface Page {
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "RowBlock".
+ */
+export interface RowBlock {
+  layout?: ('container' | 'full' | 'wide' | 'narrow') | null;
+  spacing?: ('none' | 'small' | 'medium' | 'large') | null;
+  background: string;
+  row?: ContentBlock[] | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'rowBlock';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -723,16 +737,34 @@ export interface Carousel {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "RowBlock".
+ * via the `definition` "ListProductsBlock".
  */
-export interface RowBlock {
-  layout?: ('container' | 'full' | 'wide' | 'narrow') | null;
-  spacing?: ('none' | 'small' | 'medium' | 'large') | null;
-  background: string;
-  row?: ContentBlock[] | null;
+export interface ListProductsBlock {
+  title: string;
+  description?: string | null;
+  type?: ('categories' | 'products' | 'tags') | null;
+  categories?: (string | Category)[] | null;
+  products?: (string | Product)[] | null;
+  hashTag?: (string | Tag)[] | null;
+  configs?: {
+    layout?: ('container' | 'full' | 'wide' | 'narrow') | null;
+    spacing?: ('none' | 'small' | 'medium' | 'large') | null;
+    ui?: ('grid' | 'carousel') | null;
+    gap?: number | null;
+  };
   id?: string | null;
   blockName?: string | null;
-  blockType: 'rowBlock';
+  blockType: 'ListProducts';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tags".
+ */
+export interface Tag {
+  id: string;
+  title?: string | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -753,16 +785,6 @@ export interface Variant {
   createdAt: string;
   deletedAt?: string | null;
   _status?: ('draft' | 'published') | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "tags".
- */
-export interface Tag {
-  id: string;
-  title?: string | null;
-  updatedAt: string;
-  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1434,7 +1456,6 @@ export interface PagesSelect<T extends boolean = true> {
     | {
         content?: T | ContentBlockSelect<T>;
         mediaBlock?: T | MediaBlockSelect<T>;
-        carousel?: T | CarouselSelect<T>;
         columnMedia?:
           | T
           | {
@@ -1462,6 +1483,8 @@ export interface PagesSelect<T extends boolean = true> {
               blockName?: T;
             };
         rowBlock?: T | RowBlockSelect<T>;
+        carousel?: T | CarouselSelect<T>;
+        ListProducts?: T | ListProductsBlockSelect<T>;
       };
   slug?: T;
   slugLock?: T;
@@ -1528,6 +1551,22 @@ export interface MediaBlockSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "RowBlock_select".
+ */
+export interface RowBlockSelect<T extends boolean = true> {
+  layout?: T;
+  spacing?: T;
+  background?: T;
+  row?:
+    | T
+    | {
+        content?: T | ContentBlockSelect<T>;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "Carousel_select".
  */
 export interface CarouselSelect<T extends boolean = true> {
@@ -1557,16 +1596,22 @@ export interface CarouselSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "RowBlock_select".
+ * via the `definition` "ListProductsBlock_select".
  */
-export interface RowBlockSelect<T extends boolean = true> {
-  layout?: T;
-  spacing?: T;
-  background?: T;
-  row?:
+export interface ListProductsBlockSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  type?: T;
+  categories?: T;
+  products?: T;
+  hashTag?: T;
+  configs?:
     | T
     | {
-        content?: T | ContentBlockSelect<T>;
+        layout?: T;
+        spacing?: T;
+        ui?: T;
+        gap?: T;
       };
   id?: T;
   blockName?: T;
