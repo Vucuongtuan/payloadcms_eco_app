@@ -1,27 +1,30 @@
 "use client";
 
-import { Product } from "@/payload-types";
+import { Product, VariantType } from "@/payload-types";
 import { Lang } from "@/types";
 import { formatPrice } from "@/utilities/convertPrice";
 import Link from "next/link";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import ProductImage from "./ProductImage";
+import { SizeSelector } from "./SizeSelector";
 
 export const ProductCard = ({ doc, lang }: { doc: Product; lang: Lang }) => {
-  const colorVariants =
-    doc.gallery?.filter(
-      (item) =>
-        item.variantOption &&
-        typeof item.variantOption === "object" &&
-        item.variantOption.variantType &&
-        typeof item.variantOption.variantType === "object" &&
-        item.variantOption.variantType.name === "Colors"
-    ) || [];
+  const colorVariants = useMemo(() => {
+    return (
+      doc.gallery?.filter(
+        (item) =>
+          item.variantOption &&
+          typeof item.variantOption === "object" &&
+          item.variantOption.variantType &&
+          typeof item.variantOption.variantType === "object" &&
+          item.variantOption.variantType.name === "color"
+      ) || []
+    );
+  }, [doc.gallery]);
 
   const [selectedGalleryItem, setSelectedGalleryItem] = useState(
     colorVariants[0] || null
   );
-
   // Find matching variant for selected gallery item
   const matchingVariant =
     selectedGalleryItem &&
@@ -38,7 +41,7 @@ export const ProductCard = ({ doc, lang }: { doc: Product; lang: Lang }) => {
     typeof matchingVariant === "object" ? matchingVariant : null;
   const currentPrice = currentVariant?.priceInUSD || doc.priceInUSD;
   const currentImages = selectedGalleryItem?.image || doc.gallery?.[0]?.image;
-  const localeLink = lang === "vi" ? "" : `/${lang}`;
+  const localeLink = `/${lang}`;
   return (
     <article className="flex flex-col gap-2 group w-full">
       <header className="flex-1 relative">
@@ -50,6 +53,22 @@ export const ProductCard = ({ doc, lang }: { doc: Product; lang: Lang }) => {
             }}
           />
         </Link>
+        {doc.variantTypes?.map((vt: string | VariantType) => {
+          const variantType = vt as VariantType;
+          if (variantType.name === "size") {
+            return (
+              <SizeSelector
+                variantSelect={
+                  (selectedGalleryItem?.variantOption as any)?.label as string
+                }
+                lang={lang}
+                slug={doc.slug}
+                sizes={doc.variants?.docs}
+                sizeId={variantType.id}
+              />
+            );
+          }
+        })}
       </header>
 
       <div className="px-4 py-2 space-y-2 flex flex-col items-start">

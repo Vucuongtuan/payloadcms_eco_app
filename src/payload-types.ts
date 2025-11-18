@@ -512,6 +512,8 @@ export interface ContentBlock {
   columns?:
     | {
         size?: ('oneThird' | 'half' | 'twoThirds' | 'full') | null;
+        type?: ('content' | 'media') | null;
+        media?: (string | null) | Media;
         richText?: {
           root: {
             type: string;
@@ -604,7 +606,6 @@ export interface Page {
     | (
         | ContentBlock
         | MediaBlock
-        | Carousel
         | {
             items?:
               | {
@@ -645,6 +646,9 @@ export interface Page {
             blockName?: string | null;
             blockType: 'columnMedia';
           }
+        | RowBlock
+        | Carousel
+        | ListProductsBlock
       )[]
     | null;
   slug: string;
@@ -658,6 +662,19 @@ export interface Page {
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "RowBlock".
+ */
+export interface RowBlock {
+  layout?: ('container' | 'full' | 'wide' | 'narrow') | null;
+  spacing?: ('none' | 'small' | 'medium' | 'large') | null;
+  background: string;
+  row?: ContentBlock[] | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'rowBlock';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -720,6 +737,37 @@ export interface Carousel {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ListProductsBlock".
+ */
+export interface ListProductsBlock {
+  title: string;
+  description?: string | null;
+  type?: ('categories' | 'products' | 'tags') | null;
+  categories?: (string | Category)[] | null;
+  products?: (string | Product)[] | null;
+  hashTag?: (string | Tag)[] | null;
+  configs?: {
+    layout?: ('container' | 'full' | 'wide' | 'narrow') | null;
+    spacing?: ('none' | 'small' | 'medium' | 'large') | null;
+    ui?: ('grid' | 'carousel') | null;
+    gap?: number | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'ListProducts';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tags".
+ */
+export interface Tag {
+  id: string;
+  title?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "variants".
  */
 export interface Variant {
@@ -737,16 +785,6 @@ export interface Variant {
   createdAt: string;
   deletedAt?: string | null;
   _status?: ('draft' | 'published') | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "tags".
- */
-export interface Tag {
-  id: string;
-  title?: string | null;
-  updatedAt: string;
-  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1418,7 +1456,6 @@ export interface PagesSelect<T extends boolean = true> {
     | {
         content?: T | ContentBlockSelect<T>;
         mediaBlock?: T | MediaBlockSelect<T>;
-        carousel?: T | CarouselSelect<T>;
         columnMedia?:
           | T
           | {
@@ -1445,6 +1482,9 @@ export interface PagesSelect<T extends boolean = true> {
               id?: T;
               blockName?: T;
             };
+        rowBlock?: T | RowBlockSelect<T>;
+        carousel?: T | CarouselSelect<T>;
+        ListProducts?: T | ListProductsBlockSelect<T>;
       };
   slug?: T;
   slugLock?: T;
@@ -1471,6 +1511,8 @@ export interface ContentBlockSelect<T extends boolean = true> {
     | T
     | {
         size?: T;
+        type?: T;
+        media?: T;
         richText?: T;
         id?: T;
       };
@@ -1509,6 +1551,22 @@ export interface MediaBlockSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "RowBlock_select".
+ */
+export interface RowBlockSelect<T extends boolean = true> {
+  layout?: T;
+  spacing?: T;
+  background?: T;
+  row?:
+    | T
+    | {
+        content?: T | ContentBlockSelect<T>;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "Carousel_select".
  */
 export interface CarouselSelect<T extends boolean = true> {
@@ -1533,6 +1591,28 @@ export interface CarouselSelect<T extends boolean = true> {
   layout?: T;
   spacing?: T;
   aspect?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ListProductsBlock_select".
+ */
+export interface ListProductsBlockSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  type?: T;
+  categories?: T;
+  products?: T;
+  hashTag?: T;
+  configs?:
+    | T
+    | {
+        layout?: T;
+        spacing?: T;
+        ui?: T;
+        gap?: T;
+      };
   id?: T;
   blockName?: T;
 }
@@ -2149,6 +2229,33 @@ export interface TaskSchedulePublish {
     user?: (string | null) | User;
   };
   output?: unknown;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "StickyElementBlockProps".
+ */
+export interface StickyElementBlockProps {
+  first?: ('text' | 'media') | null;
+  stickyCol?: ('text' | 'media') | null;
+  content?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  image?: (string | Media)[] | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'StickyElementBlock';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

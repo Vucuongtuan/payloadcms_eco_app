@@ -13,7 +13,7 @@ export function SizeSelector({
   selectedSize,
   onSizeChange,
 }: SizeSelectorProps) {
-  if (sizeVariants.length === 0) return null;
+  if (sizeVariants.length === 0) return <>null</>;
 
   return (
     <div className="space-y-3 mt-6">

@@ -1,18 +1,18 @@
 "use client";
 
-import { AddressItem } from "@/components/addresses/AddressItem";
-import { CreateAddressModal } from "@/components/addresses/CreateAddressModal";
 import { CheckoutAddresses } from "@/components/Checkout/CheckoutAddresses";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { Media } from "@/components/Media";
 import { Message } from "@/components/Message";
 import { Price } from "@/components/Price";
+import { AddressItem } from "@/components/addresses/AddressItem";
+import { CreateAddressModal } from "@/components/addresses/CreateAddressModal";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cssVariables } from "@/cssVariables";
-import type { Media as MediaType, Product, Variant } from "@/payload-types";
+import type { Media as MediaType, Product } from "@/payload-types";
 import { Address } from "@/payload-types";
 import { useAuth } from "@/providers/Auth";
 import { useTheme } from "@/providers/Theme";
@@ -461,11 +461,7 @@ export const CheckoutPage: React.FC = () => {
                       </div>
                     </div>
 
-                    <Price
-                      price={price || null}
-                      variants={variant as Variant}
-                      lang={locale as Lang}
-                    />
+                    <Price amount={price || 0} lang={locale as Lang} />
                   </div>
                 </div>
               );
@@ -477,7 +473,7 @@ export const CheckoutPage: React.FC = () => {
             <span className="uppercase">Total</span>{" "}
             <Price
               className="text-3xl font-medium"
-              price={cart.subtotal || 0}
+              amount={cart.subtotal || 0}
               lang={locale as Lang}
             />
           </div>

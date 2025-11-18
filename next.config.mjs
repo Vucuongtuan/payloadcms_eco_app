@@ -33,7 +33,6 @@ const nextConfig = {
 
   // react compiler
 
-
   //  Experimental Beta
   experimental: {
     // Use React Compiler
@@ -52,13 +51,28 @@ const nextConfig = {
     // no supports production nextjs latest version
     // cacheComponents: true, // next@canary
   },
-  // webpack: (webpackConfig) => {
-  //   webpackConfig.resolve.extensionAlias = {
-  //     ".cjs": [".cts", ".cjs"],
-  //     ".js": [".ts", ".tsx", ".js", ".jsx"],
-  //     ".mjs": [".mts", ".mjs"],
-  //   };
-  //   return webpackConfig;
+  // webpack: (config, { isServer }) => {
+  //   if (!isServer) {
+  //     // Don't bundle server-only packages on the client
+  //     config.resolve.fallback = {
+  //       ...config.resolve.fallback,
+  //       fs: false,
+  //       net: false,
+  //       tls: false,
+  //       crypto: false,
+  //       stream: false,
+  //       url: false,
+  //       zlib: false,
+  //       http: false,
+  //       https: false,
+  //       assert: false,
+  //       os: false,
+  //       path: false,
+  //       worker_threads: false,
+  //       child_process: false,
+  //     };
+  //   }
+  //   return config;
   // },
 
   //Config I18n next-intl
@@ -68,4 +82,6 @@ const nextConfig = {
   // },
 };
 
-export default withNextIntl(withPayload(nextConfig));
+export default withNextIntl(
+  withPayload(nextConfig, { devBundleServerPackages: false })
+);

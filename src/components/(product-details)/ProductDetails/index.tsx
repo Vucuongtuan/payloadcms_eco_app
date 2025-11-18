@@ -42,12 +42,10 @@ export default function ProductDetails(props: ProductDetailsProps) {
   }, [selectedColor, colorVariants, doc.gallery]);
 
   const currentData = useMemo(() => {
-    const currentPrice = selectedVariant?.priceInUSD || doc.priceInUSD;
     const currentImages = selectedGalleryItem?.image || doc.gallery;
 
     return {
       ...doc,
-      priceInUSD: currentPrice,
       gallery: currentImages ? [{ image: currentImages }] : doc.gallery,
     };
   }, [selectedVariant, selectedGalleryItem, doc]);
@@ -81,36 +79,38 @@ export default function ProductDetails(props: ProductDetailsProps) {
           selectedVariant={selectedVariant || null}
         />
 
-        <footer className="smallContent mt-6">
-          <Tabs
-            defaultValue={doc.shortContent?.[0].name}
-            className="w-full space-y-2"
-          >
-            <TabsList className="w-full ">
+        {doc.shortContent && doc.shortContent.length > 0 && (
+          <footer className="smallContent mt-6">
+            <Tabs
+              defaultValue={doc.shortContent?.[0].name}
+              className="w-full space-y-2"
+            >
+              <TabsList className="w-full ">
+                {doc.shortContent &&
+                  doc.shortContent.map((c, idx) => (
+                    <TabsTrigger
+                      value={c.name}
+                      key={idx}
+                      className={`shadow-none border-none border-0`}
+                    >
+                      {c.name.toUpperCase()}
+                    </TabsTrigger>
+                  ))}
+              </TabsList>
               {doc.shortContent &&
                 doc.shortContent.map((c, idx) => (
-                  <TabsTrigger
-                    value={c.name}
-                    key={idx}
-                    className={`shadow-none border-none border-0`}
-                  >
-                    {c.name.toUpperCase()}
-                  </TabsTrigger>
+                  <TabsContent value={c.name} key={idx}>
+                    <RichText
+                      data={c.content as SerializedEditorState}
+                      className="prose prose-xs px-0 w-full max-w-full"
+                      enableGutter={false}
+                      enableProse={false}
+                    />
+                  </TabsContent>
                 ))}
-            </TabsList>
-            {doc.shortContent &&
-              doc.shortContent.map((c, idx) => (
-                <TabsContent value={c.name} key={idx}>
-                  <RichText
-                    data={c.content as SerializedEditorState}
-                    className="prose prose-xs px-0 w-full max-w-full"
-                    enableGutter={false}
-                    enableProse={false}
-                  />
-                </TabsContent>
-              ))}
-          </Tabs>
-        </footer>
+            </Tabs>
+          </footer>
+        )}
       </article>
     </section>
   );

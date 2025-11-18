@@ -8,7 +8,7 @@ export async function Header({ lang }: { lang: Lang }) {
   const header = await findGlobal<HeaderType>(lang, "header");
   if (!header) return null;
   return (
-    <header className="fixed top-0 left-0 w-full z-50">
+    <header className="sticky top-0 left-0 w-full z-50">
       <HeaderStatic navData={header.navItems}>
         <ActionButtons />
       </HeaderStatic>

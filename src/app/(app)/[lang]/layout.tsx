@@ -65,7 +65,7 @@ export default async function RootLayout(props: {
               {/* <AdminBar /> */}
               <LivePreviewListener />
               <Header lang={lang} />
-              <main className={"mt-17 min-h-[800px]"}>{children}</main>
+              <main className={"min-h-[800px]"}>{children}</main>
               <Footer lang={lang} />
             </Providers>
           </NextIntlClientProvider>

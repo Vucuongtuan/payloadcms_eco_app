@@ -6,7 +6,7 @@ import { Image } from "./Image";
 import { Video } from "./Video";
 
 export const Media: React.FC<Props> = (props) => {
-  const { className, htmlElement = "figure", resource } = props;
+  const { className, htmlElement = "figure", resource, fClassName } = props;
 
   const isVideo =
     typeof resource === "object" && resource?.mimeType?.includes("video");
@@ -16,7 +16,7 @@ export const Media: React.FC<Props> = (props) => {
     <Tag
       {...(htmlElement !== null
         ? {
-            className,
+            className: fClassName,
           }
         : {})}
     >

@@ -10,12 +10,16 @@ import { Page } from "@/payload-types";
 import { spacing } from "@/utilities/cssVariable";
 import { CarouselBlock } from "./Carousel/Components";
 import { ColumnMedia } from "./ColumnMedia/Component";
+import { ListProductsComp } from "./ListProduct/Component";
+import { RowBlock } from "./Row/Component";
 
 const blockComponents = {
   content: ContentBlock,
   mediaBlock: MediaBlock,
   columnMedia: ColumnMedia,
   carousel: CarouselBlock,
+  rowBlock: RowBlock,
+  ListProducts: ListProductsComp,
 };
 export const RenderBlocks: React.FC<{
   blocks: Page["sections"];
@@ -39,6 +43,11 @@ export const RenderBlocks: React.FC<{
                     idx !== 0 && `${spacing(block.spacing || "none")}`,
                     idx === 0 && ""
                   )}
+                  style={
+                    block.background && {
+                      backgroundColor: `${block.background}`,
+                    }
+                  }
                   key={idx}
                   aria-label={blockName || ""}
                 >

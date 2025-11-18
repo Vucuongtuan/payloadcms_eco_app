@@ -56,16 +56,20 @@ export default async function ProductPage({ params }: Props) {
   "use memo"; // react compiler mode **annotation**
   const { slug, lang } = await params;
   const product = await memoizingCache({ slug, lang: lang as Lang });
-  const relatestProduct = await getRelatedProducts(product, lang as Lang);
-
+  let dataRelatest;
+  if(product.relatedByCategory || product.relatedByTags || product.relatedType){
+    dataRelatest = await getRelatedProducts(product, lang as Lang);
+  }else{
+    dataRelatest = null
+  }
+  
   return (
     <>
       <ProductDetails doc={product} lang={lang as Lang} />
-
-      {relatestProduct && relatestProduct.length > 0 && (
+      {dataRelatest && (
         <Suspense>
           <CarouselListProduct
-            items={relatestProduct || []}
+            items={dataRelatest || []}
             lang={lang as Lang}
           />
         </Suspense>

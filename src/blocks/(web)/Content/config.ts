@@ -29,6 +29,23 @@ const columnFields: Field[] = [
     ],
   },
   {
+    name: "type",
+    type: "select",
+    options: [
+      { value: "content", label: "Content" },
+      { value: "media", label: "Media" },
+    ],
+    defaultValue: "content",
+  },
+  {
+    name: "media",
+    type: "upload",
+    relationTo: "media",
+    admin: {
+      condition: (_, siblingData) => siblingData.type === "media",
+    },
+  },
+  {
     name: "richText",
     type: "richText",
     editor: defaultLexical({
@@ -37,9 +54,13 @@ const columnFields: Field[] = [
       enableTextState: true,
       enableLink: true,
       enableTable: true,
+      enableBlock: true,
     }),
     label: false,
     localized: true,
+    admin: {
+      condition: (_, siblingData) => siblingData.type === "content",
+    },
   },
 ];
 

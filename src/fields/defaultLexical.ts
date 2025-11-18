@@ -1,21 +1,24 @@
 import { Config } from "payload";
 
+import { StickyElementBlock } from "@/blocks/(web)/lexical/StickyElement/config";
 import {
+  BlocksFeature,
   BoldFeature,
-  defaultColors,
   EXPERIMENTAL_TableFeature,
   FixedToolbarFeature,
   HeadingFeature,
   IndentFeature,
   InlineToolbarFeature,
   ItalicFeature,
-  lexicalEditor,
   LinkFeature,
   OrderedListFeature,
   TextStateFeature,
   UnderlineFeature,
-  UnorderedListFeature
+  UnorderedListFeature,
+  lexicalEditor,
 } from "@payloadcms/richtext-lexical";
+import { extendDefaultColor } from "./textStateExtend";
+
 export type HeadingTagType = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 
 type LexicalFeatureOptions = {
@@ -24,6 +27,7 @@ type LexicalFeatureOptions = {
   enableTextState?: boolean;
   enableLink?: boolean;
   enableTable?: boolean;
+  enableBlock?: boolean;
 };
 
 export const defaultLexical = ({
@@ -32,6 +36,7 @@ export const defaultLexical = ({
   enableTextState = true,
   enableLink = true,
   enableTable = true,
+  enableBlock = true,
 }: LexicalFeatureOptions = {}): Config["editor"] =>
   lexicalEditor({
     features: ({ defaultFeatures }) => {
@@ -45,11 +50,17 @@ export const defaultLexical = ({
         ItalicFeature(),
         OrderedListFeature(),
         UnorderedListFeature(),
-         InlineToolbarFeature(),
+        InlineToolbarFeature(),
         IndentFeature(),
         ...defaultFeatures,
       ];
-
+      if (enableBlock) {
+        features.push(
+          BlocksFeature({
+            blocks: [StickyElementBlock],
+          })
+        );
+      }
       if (enableHeading) {
         features.push(
           HeadingFeature({
@@ -62,23 +73,7 @@ export const defaultLexical = ({
         features.push(
           TextStateFeature({
             state: {
-              color: {
-                ...defaultColors.background,
-                ...defaultColors.text,
-                galaxy: {
-                  label: "Galaxy",
-                  css: {
-                    background: "linear-gradient(to right, #0000ff, #ff0000)",
-                    color: "white",
-                  },
-                },
-                sunset: {
-                  label: "Sunset",
-                  css: {
-                    background: "linear-gradient(to top, #ff5f6d, #6a3093)",
-                  },
-                },
-              } as any,
+              color: extendDefaultColor as any,
             },
           })
         );
