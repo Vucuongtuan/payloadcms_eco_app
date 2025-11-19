@@ -5,7 +5,6 @@ import { adminOrPublishedStatus } from "@/access/adminOrPublishedStatus";
 import { customerOnlyFieldAccess } from "@/access/customerOnlyFieldAccess";
 import { getServerSideURL } from "@/utilities/getURL";
 import { ecommercePlugin } from "@payloadcms/plugin-ecommerce";
-import { mcpPlugin } from "@payloadcms/plugin-mcp";
 import { nestedDocsPlugin } from "@payloadcms/plugin-nested-docs";
 import { searchPlugin } from "@payloadcms/plugin-search";
 import { seoPlugin } from "@payloadcms/plugin-seo";
@@ -126,14 +125,6 @@ export const plugins: Plugin[] = [
     generateLabel: (_, doc) => doc.title || doc.name || ("" as any),
     generateURL: (docs) => {
       return docs.reduce((url, doc) => `${url}/${doc.slug}`, "");
-    },
-  }),
-  // MCP plugin
-  mcpPlugin({
-    collections: {
-      posts: {
-        enabled: true,
-      },
     },
   }),
   // Ecommerce

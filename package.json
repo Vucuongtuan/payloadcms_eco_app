@@ -30,7 +30,6 @@
     "@payloadcms/payload-cloud": "3.62.1",
     "@payloadcms/plugin-ecommerce": "3.62.1",
     "@payloadcms/plugin-form-builder": "3.62.1",
-    "@payloadcms/plugin-mcp": "^3.64.0",
     "@payloadcms/plugin-nested-docs": "3.62.1",
     "@payloadcms/plugin-search": "3.62.1",
     "@payloadcms/plugin-seo": "3.62.1",
