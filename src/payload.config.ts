@@ -1,24 +1,28 @@
 // storage-adapter-import-placeholder
 
-import { Categories } from '@/collections/(ecommerce)/Categories';
-import { Media } from '@/collections/Media';
-import { Pages } from '@/collections/Pages';
-import { Users } from '@/collections/Users';
-import { Footer } from '@/globals/Footer';
-import { Header } from '@/globals/Header';
 import path from 'path';
 import { buildConfig } from 'payload';
 import sharp from 'sharp';
 import { fileURLToPath } from 'url';
-import { plugins } from './plugin';
 // i18n Translations
 // ---
 import { mongooseAdapter } from '@payloadcms/db-mongodb';
-import { EmailSubscribe, Newsletter, Posts, Reviews, Tags } from './collections';
-import { Screen } from './collections/(mobile)/Screen';
+import { Categories } from './collections/Categories';
+import { EmailSubscribe } from './collections/EmailSubscribe';
+import { Media } from './collections/Media';
+import { Newsletter } from './collections/Newsletter';
 import { Notifications } from './collections/Notifications';
+import { Pages } from './collections/Pages';
+import { Posts } from './collections/Posts';
+import { Reviews } from './collections/Reviews';
+import { Screen } from './collections/Screen';
+import { Tags } from './collections/Tags';
+import { Users } from './collections/Users';
 import { defaultLexical } from './fields/defaultLexical';
+import { Footer } from './globals/Footer';
+import { Header } from './globals/Header';
 import { Rate } from './globals/Rate';
+import { plugins } from './plugin';
 // ---
 
 // Config Environment
@@ -33,16 +37,14 @@ const configEnv = {
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
-const maxLengthSEO: Record<string, number> = {
-  title: 60,
-  description: 150
-}
+
 const allCollections = [Users, Media, Categories,Reviews, Newsletter, EmailSubscribe, Pages, Posts,Screen,Notifications,Tags]
 const golobalCollections = [Header, Footer,Rate]
 const applySearchForCollection = ['categories', 'products',  'posts']
 const applySEOForCollection = ['categories', 'products',  'posts', 'pages']
 
 export default buildConfig({
+  debug:true,
   admin: {
     components: {
       // The `BeforeLogin` component renders a message that you see while logging into your admin panel.

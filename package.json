@@ -4,8 +4,8 @@
   "description": "A blank template to get started with Payload 3.0",
   "license": "MIT",
   "scripts": {
-    "build": "cross-env NODE_OPTIONS=\"--no-deprecation --max-old-space-size=8000\" next build",
-    "dev": "cross-env NODE_OPTIONS=--no-deprecation pnpm run generate:types && next dev",
+    "build": "next build",
+    "dev": "next dev --turbo",
     "devsafe": "rm -rf .next && cross-env NODE_OPTIONS=--no-deprecation next dev ",
     "generate:importmap": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap",
     "generate:types": "cross-env PAYLOAD_NO_PRETTIER=true NODE_OPTIONS=--no-deprecation payload generate:types",
@@ -30,6 +30,7 @@
     "@payloadcms/payload-cloud": "3.62.1",
     "@payloadcms/plugin-ecommerce": "3.62.1",
     "@payloadcms/plugin-form-builder": "3.62.1",
+    "@payloadcms/plugin-mcp": "^3.64.0",
     "@payloadcms/plugin-nested-docs": "3.62.1",
     "@payloadcms/plugin-search": "3.62.1",
     "@payloadcms/plugin-seo": "3.62.1",

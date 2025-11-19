@@ -5,7 +5,7 @@ import { adminOrPublishedStatus } from "@/access/adminOrPublishedStatus";
 import { customerOnlyFieldAccess } from "@/access/customerOnlyFieldAccess";
 import { getServerSideURL } from "@/utilities/getURL";
 import { ecommercePlugin } from "@payloadcms/plugin-ecommerce";
-import { stripeAdapter } from "@payloadcms/plugin-ecommerce/payments/stripe";
+import { mcpPlugin } from "@payloadcms/plugin-mcp";
 import { nestedDocsPlugin } from "@payloadcms/plugin-nested-docs";
 import { searchPlugin } from "@payloadcms/plugin-search";
 import { seoPlugin } from "@payloadcms/plugin-seo";
@@ -17,7 +17,7 @@ import {
 import { vercelBlobStorage } from "@payloadcms/storage-vercel-blob";
 import { FieldsOverride } from "node_modules/@payloadcms/plugin-ecommerce/dist/types";
 import { Plugin } from "payload";
-import { ProductsCollection } from "./collections";
+import { ProductsCollection } from "./collections/Products";
 export const defaultMeta = {
   brandName: "Moon co.",
   description: {
@@ -128,6 +128,14 @@ export const plugins: Plugin[] = [
       return docs.reduce((url, doc) => `${url}/${doc.slug}`, "");
     },
   }),
+  // MCP plugin
+  mcpPlugin({
+    collections: {
+      posts: {
+        enabled: true,
+      },
+    },
+  }),
   // Ecommerce
   ecommercePlugin({
     access: {
@@ -140,48 +148,47 @@ export const plugins: Plugin[] = [
     customers: {
       slug: "users",
     },
-    payments: {
-      paymentMethods: [
-        stripeAdapter({
-          secretKey: process.env.STRIPE_SECRET_KEY!,
-          publishableKey: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!,
-          webhookSecret: process.env.STRIPE_WEBHOOKS_SIGNING_SECRET!,
-          webhooks: {
-            "payment_intent.succeeded": ({ event, req, stripe }) => {
-              console.log("🎉 Payment intent succeeded:", event.id);
-              console.log("Event data:", JSON.stringify(event.data, null, 2));
-              req.payload.logger.info(`Payment succeeded: ${event.id}`);
-            },
-            "payment_intent.payment_failed": ({ event, req, stripe }) => {
-              console.log("❌ Payment failed:", event.id);
-              console.log("Event data:", JSON.stringify(event.data, null, 2));
-              req.payload.logger.error(`Payment failed: ${event.id}`);
-            },
-          },
-        }),
+    currencies: {
+      supportedCurrencies: [
+        {
+          code: "USD",
+          decimals: 2,
+          symbol: "$",
+          label: "US Dollar",
+        },
+        {
+          code: "VND",
+          decimals: 0,
+          symbol: "₫",
+          label: "Vietnam Dong",
+        },
       ],
+      defaultCurrency: "VND",
+    },
+    payments: {
+      // paymentMethods: [
+      //   stripeAdapter({
+      //     secretKey: process.env.STRIPE_SECRET_KEY!,
+      //     publishableKey: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!,
+      //     webhookSecret: process.env.STRIPE_WEBHOOKS_SIGNING_SECRET!,
+      //     webhooks: {
+      //       "payment_intent.succeeded": ({ event, req, stripe }) => {
+      //         console.log("🎉 Payment intent succeeded:", event.id);
+      //         console.log("Event data:", JSON.stringify(event.data, null, 2));
+      //         req.payload.logger.info(`Payment succeeded: ${event.id}`);
+      //       },
+      //       "payment_intent.payment_failed": ({ event, req, stripe }) => {
+      //         console.log("❌ Payment failed:", event.id);
+      //         console.log("Event data:", JSON.stringify(event.data, null, 2));
+      //         req.payload.logger.error(`Payment failed: ${event.id}`);
+      //       },
+      //     },
+      //   }),
+      // ],
     },
     products: {
       productsCollectionOverride: ProductsCollection,
-      variants: {
-        variantOptionsCollectionOverride: ({ defaultCollection }) =>
-          ({
-            ...defaultCollection,
-            fields: defaultCollection.fields.map((f) =>
-              (f as { name: string }).name === "discount"
-                ? { ...f, defaultValue: "none" }
-                : f
-            ),
-          }) as any,
-        variantsCollectionOverride: ({ defaultCollection }) => ({
-          ...defaultCollection,
-          version: {
-            draft: {
-              autosave: false,
-            },
-          },
-        }),
-      },
+      variants: true,
     },
   }),
 
